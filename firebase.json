@@ -13,6 +13,47 @@
   },
   "hosting": [
     {
+      "target": "agenticops",
+      "public": "agenticops",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "errorDocument": "404.html",
+      "headers": [
+        {
+          "source": "**/*.@(svg|ico|png|jpg|jpeg|gif|webp)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=86400"
+            }
+          ]
+        },
+        {
+          "source": "**/*.@(html|json|xml|txt)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, no-store, must-revalidate"
+            }
+          ]
+        },
+        {
+          "source": "**/*.css",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=3600"
+            }
+          ]
+        }
+      ],
+      "cleanUrls": false,
+      "trailingSlash": false
+    },
+    {
       "target": "landing",
       "public": "landing",
       "ignore": [

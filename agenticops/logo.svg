@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AgenticOps">
+  <title>AgenticOps — Chrysalis shield mark</title>
+  <defs>
+    <linearGradient id="aoMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="55%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="aoWing" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#164e63"/>
+      <stop offset="50%" stop-color="#0891b2"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <radialGradient id="aoCore" cx="50%" cy="42%" r="60%">
+      <stop offset="0%" stop-color="#cffafe"/>
+      <stop offset="35%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </radialGradient>
+    <filter id="aoGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="108" fill="#020617"/>
+  <rect width="512" height="512" rx="108" fill="url(#aoCore)" opacity="0.12"/>
+
+  <!-- Chrysalis wings -->
+  <path d="M256 88 C148 130 84 214 84 298 C84 372 136 428 192 448 L192 318 C148 276 148 192 192 148 Z" fill="url(#aoWing)" opacity="0.88" filter="url(#aoGlow)"/>
+  <path d="M256 88 C364 130 428 214 428 298 C428 372 376 428 320 448 L320 318 C364 276 364 192 320 148 Z" fill="url(#aoWing)" opacity="0.88" filter="url(#aoGlow)"/>
+
+  <!-- Shield outline -->
+  <path d="M256 64 L432 148 V292 C432 376 364 436 256 488 C148 436 80 376 80 292 V148 Z"
+        fill="none" stroke="url(#aoMetal)" stroke-width="12" stroke-linejoin="round" filter="url(#aoGlow)"/>
+
+  <!-- Inner field -->
+  <path d="M256 108 L396 176 V284 C396 352 336 406 256 448 C176 406 116 352 116 284 V176 Z"
+        fill="#030712" stroke="rgba(34,211,238,0.22)" stroke-width="2"/>
+
+  <!-- Core orb -->
+  <circle cx="256" cy="278" r="76" fill="url(#aoCore)" filter="url(#aoGlow)"/>
+  <circle cx="256" cy="278" r="50" fill="#020617" opacity="0.96"/>
+
+  <!-- AO -->
+  <text x="256" y="302" text-anchor="middle" fill="#f0fdfa" font-family="system-ui,Segoe UI,sans-serif" font-size="54" font-weight="800" letter-spacing="-4">AO</text>
+
+  <!-- Verified dot -->
+  <circle cx="352" cy="154" r="14" fill="#10b981" stroke="#022c22" stroke-width="4"/>
+  <path d="M346 154 L350 160 L360 148" fill="none" stroke="#022c22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

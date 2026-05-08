@@ -1,0 +1,17 @@
+/* TEAM */
+  Founder & Architect: David
+  Site: https://agenticop.io
+  LinkedIn: https://www.linkedin.com/in/vibe-architect/
+  Location: United States
+
+/* SUB-BRANDS */
+  Flagship: wisptools.io — operations platform for WISP/ISP networks
+  Source:   https://github.com/theorem6
+
+/* THANKS */
+  Every agent that wrote, reviewed, and shipped alongside us.
+
+/* SITE */
+  Last update: 2026
+  Built with: HTML, CSS, agents
+  Hosted on:  Firebase Hosting

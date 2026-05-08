@@ -4,6 +4,9 @@
   },
   "targets": {
     "hosting": {
+      "agenticops": [
+        "agenticops-production"
+      ],
       "landing": [
         "wisptools-production"
       ],
@@ -13,6 +16,9 @@
     },
     "wisptools-production": {
       "hosting": {
+        "agenticops": [
+          "agenticops-production"
+        ],
         "landing": [
           "wisptools-production"
         ],
