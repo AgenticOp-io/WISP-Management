@@ -13,7 +13,8 @@ migrations and agent-led modernization for legacy stacks.
 - **wisptools.io** — public, MIT-licensed sub-brand. Live in production. Featured
   on the page as the proof point that the AgenticOps method works.
 - **Bandwidth Test Manager, Module Manager, Voice/SIP & UC, Distributed EPC + HSS,
-  Field App** — supporting open-source proofs of concept.
+  Field App (`wisp-field-app/` in repo)** — supporting proofs; Field App source:
+  [wisp-field-app on GitHub](https://github.com/theorem6/WISP-Management/tree/main/wisp-field-app).
 
 > **Operational guardrail:** The landing page contains **no public GitHub link
 > for Chrysalis**. If/when you flip Chrysalis open, update `index.html`, JSON-LD
