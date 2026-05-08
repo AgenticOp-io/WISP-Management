@@ -10,6 +10,29 @@ This guide keeps production stable now and makes the December switch fast.
 
 ---
 
+## Remove `agenticops.io` from Firebase Hosting
+
+Custom domains are **not** stored in `firebase.json`; Firebase keeps them on the Hosting site. To drop `agenticops.io` if it was added by mistake or you no longer control it:
+
+### Option A — Firebase Console
+
+1. Open **[Hosting → agenticops-production](https://console.firebase.google.com/project/wisptools-production/hosting/sites/agenticops-production)** (project `wisptools-production`).
+2. Under **Custom domains**, select **`agenticops.io`** and **`www.agenticops.io`** (if listed) → menu (**⋮**) → **Remove domain**.
+3. If the domain also appears on another site in the same project (e.g. `wisptools-production`), repeat on that site’s Hosting page.
+
+Also remove any leftover Firebase **verification TXT** / **A / CNAME** records for `agenticops.io` at your DNS host so nothing still points at Hosting.
+
+### Option B — Script (gcloud auth)
+
+From repo root, after `gcloud auth login`:
+
+```powershell
+.\scripts\firebase-remove-hosting-custom-domain.ps1 -WhatIf
+.\scripts\firebase-remove-hosting-custom-domain.ps1 -Domain agenticops.io
+```
+
+---
+
 ## 1) Current production domain (agenticop.io)
 
 Use Firebase Hosting site `agenticops-production` as the origin.
