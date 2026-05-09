@@ -9,7 +9,7 @@ This document captures **operator intent** and constraints gathered from ongoing
 | Layer | Name | Visibility | Notes |
 |-------|------|------------|--------|
 | Parent methodology / services brand | **AgenticOps** | Public site `agenticop.io` | **Transformative code** (verification-first). Narrative: Chrysalis as **first flagship**; long arc toward **macro systemic fragility** (finance, governance, cascades) — **no separate named “future project”** on site unless operator adds it. |
-| Engine (product name on site) | **Chrysalis** | **Private alpha** | No public repo link on the website. Planned MIT mention is **future tense** only. |
+| Engine (product name on site) | **Chrysalis** | **Private alpha** | Verification-backed migration; **legacy PHP estates** called out as primary proving surface (oracle from running PHP, replay, chimera). No public repo link yet; MIT **planned**. |
 | Public WISP / ISP proof stack | **wisptools.io** | Public MIT on GitHub | **WISP Management** (operations) + **Bandwidth Test Manager** (throughput proof). Featured as proof the methodology ships real systems. |
 | Field tooling | **WISP Field App** | Public repo path under WISP-Management | Cited as shipped proof where relevant. |
 

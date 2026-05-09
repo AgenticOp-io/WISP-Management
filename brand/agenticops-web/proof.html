@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Proof · Chrysalis &amp; wisptools.io · AgenticOps</title>
-  <meta name="description" content="Chrysalis verification engine (private alpha). wisptools.io production proof. Supporting PoCs." />
+  <meta name="description" content="Chrysalis: verified migration for legacy PHP sites — oracle capture, replay, chimera. Private alpha. wisptools.io production proof." />
   <meta name="theme-color" content="#020208" />
   <link rel="canonical" href="https://agenticop.io/proof.html" />
   <link rel="icon" href="/logo.svg" type="image/svg+xml" />
@@ -38,17 +38,19 @@
             <span class="ao-feature-sub">— the verification-backed migration engine</span>
           </h2>
           <p>
-            Chrysalis is the proof layer underneath every AgenticOps engagement. It records
-            what your legacy actually does, replays that behavior against any candidate
-            implementation, surfaces the gaps honestly, and orchestrates a chimera cutover
-            so old and new run side-by-side until correctness is earned. <strong>Not vibe-coded
-            rewrites — proof-grounded translation.</strong>
+            Chrysalis is the proof layer underneath every AgenticOps engagement. Its primary
+            job today is <strong>legacy PHP estates</strong> — the frameworks, custom apps, and
+            long-lived `.php` stacks that still carry huge amounts of the web. It records what
+            those sites <em>actually</em> do under real conditions, replays that behavior against
+            any candidate implementation (new language, new runtime, decomposed services), surfaces
+            mismatches honestly, and orchestrates chimera cutover until correctness is earned.
+            <strong>Not vibe-coded rewrites — proof-grounded translation.</strong>
           </p>
           <div class="ao-feature-grid">
             <div>
               <p class="ao-feature-label">Capabilities</p>
               <ul class="ao-bullets">
-                <li>Oracle corpus capture</li>
+                <li>Oracle corpus capture from <strong>running PHP</strong> estates</li>
                 <li>Deterministic replay harness</li>
                 <li>Behavioral diff &amp; coverage</li>
                 <li>Honest partial translation (“holes”)</li>
@@ -58,7 +60,8 @@
             <div>
               <p class="ao-feature-label">Where it fits</p>
               <ul class="ao-bullets">
-                <li>Legacy PHP / Perl / classic .NET</li>
+                <li><strong>Legacy PHP</strong> (primary proving surface)</li>
+                <li>Perl / classic .NET — same verify pattern</li>
                 <li>Monolith → service decomposition</li>
                 <li>Language &amp; framework migrations</li>
                 <li>Risk-bounded refactors at scale</li>
