@@ -245,18 +245,19 @@
   <script>
     (function () {
       var CONFIG = {
-        projectName: "verification-first agent ops",
+        projectName: "code that transforms",
         openingLine:
-          "I’m going to share more soon about AgenticOps — a frame for agent-assisted change where speed doesn’t get to skip evidence.",
+          "AgenticOps is about creating **code that transforms** — software that changes how behavior propagates, with evidence attached instead of narrative alone.",
         teaserLine:
-          "**What it tries to do:** use agents to accelerate exploration and drafting on hard migrations, while insisting on mechanical checks before you trust output — replay, behavior comparison, an explicit “no silent wrong answers” bar. The failure mode it targets is quiet drift: everything looks fine until it isn’t.\n\n**Concrete thread:** **live translation** from legacy **PHP** into **Node.js**, with an architecture that lets us add **other target languages later** when we’re ready — same verification mindset throughout, not “trust the rewrite.”\n\n**Where it honestly is:** early. Largely untested as a packaged approach — more thesis and build-in-progress than a proven playbook. I’m putting it forward now because critique early beats a polished story later.",
+          "**Chrysalis — our flagship (for now):** verification-backed migration on legacy stacks — oracle replay, chimera cutover, behavioral checks — so change is testable, not vibe-shipped.\n\n**The larger arc:** the same obsession — **transformation you can stress-test** — applies where fragility is macro-scale: coupling and contagion in finance, political and institutional stress, failure modes that show up as crashes and cascades. I’m not announcing a separate product there yet; I’m stating the direction AgenticOps sits under.\n\n**Where it honestly is:** early. Chrysalis and the stack are still hardening. I’d rather invite scrutiny than oversell.",
         quoteLine:
-          "Exploration can be automated; the proof still has to land.",
+          "Transform with proof — or don’t call it transformation.",
         url: "https://agenticop.io",
         urlDisplay: "https://agenticop.io",
         closingLine:
-          "Context, positioning, and what gets published next will live here:",
-        hashtags: "#AgenticOps #BuildInPublic #SoftwareEngineering #LegacyModernization"
+          "The fuller story — Chrysalis, method, proof — lives here:",
+        hashtags:
+          "#AgenticOps #SystemsThinking #SoftwareEngineering #ComplexSystems #BuildInPublic"
       };
 
       var titleEl = document.getElementById("preview-title");
@@ -268,7 +269,10 @@
       var ta = document.getElementById("li-text");
 
       titleEl.textContent = CONFIG.projectName;
-      openEl.textContent = CONFIG.openingLine;
+      openEl.innerHTML = CONFIG.openingLine.replace(
+        /\*\*(.+?)\*\*/g,
+        "<strong>$1</strong>"
+      );
       midEl.innerHTML = CONFIG.teaserLine.split(/\n\n+/).map(function (block) {
         return (
           "<p>" +
@@ -282,8 +286,9 @@
       urlEl.textContent = CONFIG.urlDisplay;
 
       var plainTeaser = CONFIG.teaserLine.replace(/\*\*(.+?)\*\*/g, "$1");
+      var plainOpen = CONFIG.openingLine.replace(/\*\*(.+?)\*\*/g, "$1");
       var post =
-        CONFIG.openingLine +
+        plainOpen +
         "\n\n" +
         plainTeaser +
         "\n\n" +
