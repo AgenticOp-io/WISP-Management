@@ -31,6 +31,7 @@ This document captures **operator intent** and constraints gathered from ongoing
 - **Layout:** `ao-layout.js` reads `document.body.dataset.aoPage` and injects shared header/footer. Adding a page means: new `.html` file, set `data-ao-page`, add nav entry in `ao-layout.js`, extend `sitemap.xml` if needed.
 - **Firebase Hosting:**
   - Typically **site ID:** `agenticops-production` inside GCP/Firebase project **`wisptools-production`** (operator may later move to a dedicated Firebase project via private repo — see `PRIVATE_REPOSITORY.md`).
+  - **Custom domain:** **`agenticop.io`** is tied to this Hosting site in Console (with **`agenticops-production.web.app`** as the default Firebase URL). Deploying updates the site; **both** URLs serve the new version automatically—do not expect to deploy “only” to `web.app` vs custom domain.
   - **Deploy:** From repository root **of this site** (`brand/agenticops-web/` in monorepo or standalone clone):  
     `firebase deploy --only hosting:agenticops`
   - **Rewrites:** Must **not** blanket-rewrite all routes to `index.html`; interior `.html` files must be served directly.

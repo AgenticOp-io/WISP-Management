@@ -33,8 +33,9 @@ Use this file when editing **this folder** (`brand/agenticops-web/` in the WISP-
 
 ## Firebase / domains
 
-- Custom domains live in **Firebase Console**, not only in `firebase.json`.
-- To remove a mistaken domain (e.g. `agenticops.io`): Console → Hosting → site → Custom domains → remove; or run `scripts/remove-firebase-custom-domain.ps1` with `gcloud auth login`.
+- **Custom domain is bound to the Hosting site, not to a single deploy URL.** In production, **`agenticop.io`** (and `www` if configured) is attached to site **`agenticops-production`** alongside the default Firebase URL **`https://agenticops-production.web.app`**. Every `firebase deploy --only hosting:agenticops` releases a new version to **that site**; traffic to **both** the custom domain and `*.web.app` serves the same content—no extra DNS step per deploy.
+- Custom domain records live in **Firebase Console → Hosting → agenticops-production → Custom domains**, not in `firebase.json`.
+- To remove a mistaken domain (e.g. `agenticops.io`): Console → remove custom domain; or run `scripts/remove-firebase-custom-domain.ps1` with `gcloud auth login`.
 
 ## When unsure
 
