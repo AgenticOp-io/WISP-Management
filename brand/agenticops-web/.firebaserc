@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "wisptools-production"
+  },
+  "targets": {
+    "hosting": {
+      "agenticops": ["agenticops-production"]
+    },
+    "wisptools-production": {
+      "hosting": {
+        "agenticops": ["agenticops-production"]
+      }
+    }
+  },
+  "etags": {}
+}

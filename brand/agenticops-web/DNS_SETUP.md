@@ -24,11 +24,11 @@ Also remove any leftover Firebase **verification TXT** / **A / CNAME** records f
 
 ### Option B — Script (gcloud auth)
 
-From repo root, after `gcloud auth login`:
+From **this site directory** (`brand/agenticops-web/` in the monorepo, or repo root after a private split), after `gcloud auth login`:
 
 ```powershell
-.\scripts\firebase-remove-hosting-custom-domain.ps1 -WhatIf
-.\scripts\firebase-remove-hosting-custom-domain.ps1 -Domain agenticops.io
+.\scripts\remove-firebase-custom-domain.ps1 -WhatIf
+.\scripts\remove-firebase-custom-domain.ps1 -Domain agenticops.io
 ```
 
 ---
@@ -115,6 +115,7 @@ Goal: keep SEO and links intact while flipping to the stronger spelling.
 2. Deploy:
 
 ```powershell
+cd brand/agenticops-web   # monorepo; omit if this folder is your repo root
 firebase deploy --only hosting:agenticops
 ```
 

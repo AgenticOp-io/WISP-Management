@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "YOUR_FIREBASE_PROJECT_ID"
+  },
+  "targets": {
+    "hosting": {
+      "agenticops": ["YOUR_HOSTING_SITE_ID"]
+    },
+    "YOUR_FIREBASE_PROJECT_ID": {
+      "hosting": {
+        "agenticops": ["YOUR_HOSTING_SITE_ID"]
+      }
+    }
+  }
+}

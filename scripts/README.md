@@ -9,6 +9,7 @@ Scripts are organized for **Windows (PowerShell)** and **Linux (Bash)**. Use the
 | **Full deploy** (Firebase + GCE) | Root: `deploy-all-complete.ps1` | `scripts/deployment/deploy-all.sh` |
 | **Backend to GCE** | Root: `deploy-backend-to-gce.ps1` | `scripts/deployment/update-backend-from-git.sh` (on server) |
 | **Firebase Hosting** | `firebase-deploy.ps1` or `firebase deploy --only hosting` | `firebase deploy --only hosting` |
+| **AgenticOps web** (`agenticop.io`) | `cd brand/agenticops-web` then `firebase deploy --only hosting:agenticops` | same |
 | **Nginx API routing fix** | `scripts/fix-nginx-api-routing-on-gce.ps1` | `scripts/fix-nginx-api-routing.sh` (run on GCE) |
 | **Firebase Admin on GCE** | `scripts/set-firebase-admin-on-gce.ps1` | — |
 | **Internal API key on GCE** | `scripts/set-internal-api-key-on-gce.ps1` | — |

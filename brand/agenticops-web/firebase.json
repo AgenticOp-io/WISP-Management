@@ -1,0 +1,59 @@
+{
+  "hosting": [
+    {
+      "target": "agenticops",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "**/*.md",
+        "docs/**",
+        "scripts/**",
+        "AGENTS.md",
+        ".firebaserc.example"
+      ],
+      "errorDocument": "404.html",
+      "headers": [
+        {
+          "source": "**/*.@(svg|ico|png|jpg|jpeg|gif|webp)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=86400"
+            }
+          ]
+        },
+        {
+          "source": "**/*.@(html|json|xml|txt)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, no-store, must-revalidate"
+            }
+          ]
+        },
+        {
+          "source": "**/*.css",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=3600"
+            }
+          ]
+        },
+        {
+          "source": "**/*.js",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=3600"
+            }
+          ]
+        }
+      ],
+      "cleanUrls": false,
+      "trailingSlash": false
+    }
+  ]
+}
