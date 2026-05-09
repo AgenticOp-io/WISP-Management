@@ -1,5 +1,8 @@
 # LinkedIn launch — AgenticOps.io
 
+**Branded HTML helper (teaser / upcoming project):** open locally  
+[`docs/linkedin-new-project-post.html`](docs/linkedin-new-project-post.html) — blog-style preview + plain-text post with **Copy to clipboard** (not deployed to Hosting).
+
 Chrysalis-led positioning. **Important:** Chrysalis is **private alpha** — do **not**
 link to a public GitHub repo. Refer to it only as the engine, available through
 Pilot/Run engagements, with an MIT open-source release planned.

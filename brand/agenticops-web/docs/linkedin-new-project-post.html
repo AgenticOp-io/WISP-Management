@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkedIn launch post — AgenticOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #010104;
+      --bg-card: #0c1228;
+      --text: #e8eefc;
+      --dim: #98a3b8;
+      --mute: #6b7289;
+      --cyan: #5eead4;
+      --violet: #a78bfa;
+      --line: rgba(148, 163, 184, 0.12);
+      --grad: linear-gradient(135deg, #22d3ee 0%, #a855f7 55%, #c084fc 100%);
+      --radius: 14px;
+      --font: 'DM Sans', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 100% 60% at 50% -10%, rgba(30, 58, 138, 0.35), transparent 55%),
+        radial-gradient(ellipse 70% 40% at 100% 30%, rgba(88, 28, 135, 0.14), transparent 50%);
+      min-height: 100vh;
+      line-height: 1.65;
+      padding: 32px 20px 48px;
+    }
+    .shell {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .brand-row img {
+      width: 48px;
+      height: 48px;
+    }
+    .brand-row span {
+      font-size: 0.85rem;
+      font-family: var(--mono);
+      letter-spacing: 0.02em;
+      color: var(--dim);
+    }
+    .blog-meta {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--mute);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin: 0 0 20px;
+      letter-spacing: -0.02em;
+    }
+    h1 .grad {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .article {
+      background: rgba(12, 18, 40, 0.65);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px 28px 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+    .article p {
+      margin: 0 0 1rem;
+      color: var(--dim);
+      font-size: 1.05rem;
+    }
+    .article p.lead {
+      color: var(--text);
+      font-size: 1.12rem;
+    }
+    .pullquote {
+      margin: 1.35rem 0;
+      padding: 16px 20px;
+      border-left: 3px solid transparent;
+      border-image: var(--grad) 1;
+      background: rgba(34, 211, 238, 0.06);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-style: italic;
+      color: var(--text);
+    }
+    .url-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 10px 16px;
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      color: var(--cyan);
+    }
+    .url-pill a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    .url-pill a:hover {
+      text-decoration: underline;
+    }
+    .panel {
+      margin-top: 28px;
+      padding: 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 0.8rem;
+      font-family: var(--mono);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--violet);
+    }
+    .hint {
+      font-size: 0.82rem;
+      color: var(--mute);
+      margin-bottom: 12px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 16px;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--text);
+      background: rgba(1, 1, 8, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      resize: vertical;
+    }
+    .btn-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: var(--grad);
+      color: #0f172a;
+    }
+    button:hover {
+      opacity: 0.92;
+    }
+    button.secondary {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid rgba(94, 234, 212, 0.4);
+    }
+    .toast {
+      font-size: 0.85rem;
+      color: var(--cyan);
+      margin-top: 8px;
+      min-height: 1.2em;
+    }
+    footer.note {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: var(--mute);
+      max-width: 52ch;
+    }
+  </style>
+</head>
+<body>
+  <!--
+    EDIT BEFORE SHARING (or use the generated LinkedIn text below):
+    PROJECT_NAME   — your upcoming project name (or leave teaser-only copy)
+    PROJECT_URL    — landing page (default: https://agenticop.io)
+    TEASER_LINE    — one line on what’s coming
+  -->
+  <div class="shell">
+    <div class="brand-row">
+      <img src="https://agenticop.io/logo.svg" width="48" height="48" alt="" />
+      <span>agenticop.io · draft post</span>
+    </div>
+
+    <p class="blog-meta">Notebook · building in public</p>
+    <h1>Something new is on the way — <span class="grad" id="preview-title">verification that scales</span></h1>
+
+    <article class="article" aria-label="Post preview">
+      <p class="lead" id="preview-open">
+        I’m getting ready to pull back the curtain on a project we’ve been hardening with real teams and real systems — not slides.
+      </p>
+      <p id="preview-mid">
+        If you’ve lived through legacy migrations, you know the failure mode: quiet regressions, heroic weekends, and “it worked in the demo.” The work ahead is about <strong>making change observable before it hits production</strong> — agents for speed, rigor for truth.
+      </p>
+      <p class="pullquote" id="preview-quote">
+        Agents explore. The stack has to prove it. That’s the bar we’re shipping toward.
+      </p>
+      <p id="preview-close">
+        Full write-up and links landing soon. Until then, everything about how we run pilots lives here:
+      </p>
+      <div class="url-pill">
+        <span aria-hidden="true">→</span>
+        <a id="preview-url" href="https://agenticop.io">https://agenticop.io</a>
+      </div>
+    </article>
+
+    <div class="panel">
+      <h2>Copy for LinkedIn</h2>
+      <p class="hint">LinkedIn accepts plain text only — paste this into a new post. Hashtags optional; trim lines to your voice.</p>
+      <textarea id="li-text" readonly></textarea>
+      <div class="btn-row">
+        <button type="button" id="copy-btn">Copy to clipboard</button>
+        <button type="button" class="secondary" id="open-li">Open LinkedIn</button>
+      </div>
+      <p class="toast" id="toast" role="status"></p>
+    </div>
+
+    <footer class="note">
+      This file is for your desktop (opens from <code>docs/</code>). It is not deployed with the public site. Refresh after editing the CONFIG block in the script below.
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var CONFIG = {
+        projectName: "the next chapter",
+        teaserLine:
+          "If you’ve lived through legacy migrations, you know the failure mode: quiet regressions, heroic weekends, and “it worked in the demo.” The work ahead is about making change observable before it hits production — agents for speed, rigor for truth.",
+        quoteLine:
+          "Agents explore. The stack has to prove it. That’s the bar we’re shipping toward.",
+        url: "https://agenticop.io",
+        urlDisplay: "https://agenticop.io",
+        closingLine:
+          "Full write-up and links landing soon. Until then, everything about how we run pilots lives here:",
+        hashtags: "#AgenticOps #BuildInPublic #Engineering #LegacyModernization"
+      };
+
+      var titleEl = document.getElementById("preview-title");
+      var midEl = document.getElementById("preview-mid");
+      var quoteEl = document.getElementById("preview-quote");
+      var closeEl = document.getElementById("preview-close");
+      var urlEl = document.getElementById("preview-url");
+      var ta = document.getElementById("li-text");
+
+      titleEl.textContent = CONFIG.projectName;
+      midEl.innerHTML = CONFIG.teaserLine.replace(
+        /\*\*(.+?)\*\*/g,
+        "<strong>$1</strong>"
+      );
+      quoteEl.textContent = CONFIG.quoteLine;
+      closeEl.textContent = CONFIG.closingLine;
+      urlEl.href = CONFIG.url;
+      urlEl.textContent = CONFIG.urlDisplay;
+
+      var plainTeaser = CONFIG.teaserLine.replace(/\*\*(.+?)\*\*/g, "$1");
+      var post =
+        "I’m getting ready to pull back the curtain on a project we’ve been hardening with real teams and real systems — not slides.\n\n" +
+        plainTeaser +
+        "\n\n" +
+        "“" +
+        CONFIG.quoteLine +
+        "”\n\n" +
+        CONFIG.closingLine +
+        "\n" +
+        CONFIG.urlDisplay +
+        "\n\n" +
+        CONFIG.hashtags;
+
+      ta.value = post;
+
+      document.getElementById("copy-btn").addEventListener("click", function () {
+        ta.select();
+        navigator.clipboard.writeText(ta.value).then(function () {
+          var t = document.getElementById("toast");
+          t.textContent = "Copied. Paste into LinkedIn.";
+          setTimeout(function () {
+            t.textContent = "";
+          }, 3500);
+        });
+      });
+
+      document.getElementById("open-li").addEventListener("click", function () {
+        window.open(
+          "https://www.linkedin.com/feed/?shareActive=true",
+          "_blank",
+          "noopener,noreferrer"
+        );
+      });
+    })();
+  </script>
+</body>
+</html>
