@@ -9,8 +9,8 @@
 .PARAMETER WhatIf
 #>
 param(
-  [string] $ProjectId = "agenticops-io-web",
-  [string] $SiteId = "agenticops-io-web",
+  [string] $ProjectId = "agenticop-io",
+  [string] $SiteId = "agenticop-io",
   [string] $Domain = "agenticops.io",
   [switch] $WhatIf
 )

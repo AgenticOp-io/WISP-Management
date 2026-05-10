@@ -1,13 +1,11 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Deploy this folder to Firebase Hosting site agenticops-production (wisptools-production),
-  where custom domain agenticop.io is usually attached.
+  Optional: deploy this folder to Hosting site agenticops-production (project wisptools-production).
 
 .DESCRIPTION
-  Primary firebase.json targets project agenticops-io-web. agenticop.io often still
-  points at the multi-site target on wisptools-production — run this script after
-  normal deploy so the public domain matches the dark multi-page site.
+  Public domain **agenticop.io** should use **`firebase deploy --only hosting --project agenticop-io`**.
+  Run this script when you still want **agenticops-production** / ***.firebaseapp.com** URLs to match the same static files.
 
 .EXAMPLE
   .\scripts\deploy-custom-domain-hosting.ps1

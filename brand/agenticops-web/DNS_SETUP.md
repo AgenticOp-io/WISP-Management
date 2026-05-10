@@ -8,9 +8,9 @@ Current decision:
 
 This guide keeps production stable now and makes the December switch fast.
 
-**Firebase Hosting for AgenticOps:** dedicated GCP/Firebase project **`agenticops-io-web`**, default site **`agenticops-io-web`** → **`https://agenticops-io-web.web.app`**. Long term, attach **`agenticop.io`** here and remove it from any other Hosting site.
+**Firebase Hosting for AgenticOps:** dedicated GCP/Firebase project **`agenticop-io`**, default site **`agenticop-io`** → **`https://agenticop-io.web.app`**. **`agenticop.io`** should be attached here (Console → Hosting → Custom domains).
 
-**Until DNS/custom domain is moved:** `agenticop.io` may still resolve to a **different** Firebase Hosting backend than `agenticops-io-web.web.app`. If you see a **white background**, inline `<style>`, and **`/agenticops.css` returns 404**, the apex domain is **not** serving this multi-page site — it is an older single-file deploy. Fix: in Firebase Console, find which Hosting site lists **`agenticop.io`** under **Custom domains**, then either remove the domain and add it to **`agenticops-io-web`**, or deploy the current dark site to **that** site (see `scripts/deploy-custom-domain-hosting.ps1` for **`agenticops-production`** on **`wisptools-production`**).
+**If the site looks wrong (white background, `/agenticops.css` 404):** the domain may still point at a **different** Hosting site, or an old deploy. Fix: confirm **`agenticop.io`** is listed on project **`agenticop-io`** / site **`agenticop-io`**. To mirror the same files to **`agenticops-production`** on **`wisptools-production`**, run `scripts/deploy-custom-domain-hosting.ps1`.
 
 ---
 
@@ -22,7 +22,7 @@ Custom domains are **not** stored in `firebase.json`; Firebase keeps them on the
 
 1. Open the Hosting site that wrongly lists the domain — historically **[agenticops-production](https://console.firebase.google.com/project/wisptools-production/hosting/sites/agenticops-production)** under **`wisptools-production`**, or any other site shown in Console for **`agenticop.io`** / **`www.agenticop.io`**.
 2. Under **Custom domains**, select those hostnames → menu (**⋮**) → **Remove domain**.
-3. Repeat on any other Firebase site until **`agenticop.io`** is free to add under **`agenticops-io-web`**.
+3. Repeat on any other Firebase site until **`agenticop.io`** is free to add under **`agenticop-io`**.
 
 Also remove any leftover Firebase **verification TXT** / **A / CNAME** records for `agenticops.io` at your DNS host so nothing still points at Hosting.
 
@@ -39,11 +39,11 @@ From **this site directory** (`brand/agenticops-web/` in the monorepo, or repo r
 
 ## 1) Current production domain (agenticop.io)
 
-Use Firebase project **`agenticops-io-web`** → Hosting → default site **`agenticops-io-web`** as the origin.
+Use Firebase project **`agenticop-io`** → Hosting → default site **`agenticop-io`** as the origin.
 
 ### Firebase console steps
 
-1. Firebase Console → **`agenticops-io-web`** → **Hosting** → site **`agenticops-io-web`** ([direct link](https://console.firebase.google.com/project/agenticops-io-web/hosting)).
+1. Firebase Console → **`agenticop-io`** → **Hosting** → site **`agenticop-io`** ([direct link](https://console.firebase.google.com/project/agenticop-io/hosting)).
 2. Add custom domain:
    - `agenticop.io`
    - `www.agenticop.io`
@@ -58,7 +58,7 @@ Use the exact values Firebase shows, but these are typical:
 agenticop.io      TXT    <firebase verification value>
 agenticop.io      A      151.101.1.195
 agenticop.io      A      151.101.65.195
-www.agenticop.io  CNAME  agenticops-io-web.web.app
+www.agenticop.io  CNAME  agenticop-io.web.app
 ```
 
 ### Quick verification
@@ -120,7 +120,7 @@ Goal: keep SEO and links intact while flipping to the stronger spelling.
 
 ```powershell
 cd brand/agenticops-web   # monorepo; omit if this folder is your repo root
-firebase deploy --only hosting --project agenticops-io-web
+firebase deploy --only hosting --project agenticop-io
 ```
 
 3. Add permanent redirects:

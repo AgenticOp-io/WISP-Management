@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "agenticops-io-web",
+    "default": "agenticop-io",
     "wisptools": "wisptools-production"
   },
   "targets": {

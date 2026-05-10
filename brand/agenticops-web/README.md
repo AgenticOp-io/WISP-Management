@@ -26,7 +26,7 @@ Multi-page site (no catch-all rewrite to `index.html` for `.html` routes).
 
 ## Deploy (Firebase)
 
-Dedicated Firebase project: **`agenticops-io-web`**. Default Hosting site ID matches the project ID → **`https://agenticops-io-web.web.app`**.
+Dedicated Firebase project: **`agenticop-io`**. Default Hosting site **`agenticop-io`** → **`https://agenticop-io.web.app`** (this is where **`agenticop.io`** should be attached).
 
 From **this directory** (not the monorepo root):
 
@@ -34,20 +34,20 @@ From **this directory** (not the monorepo root):
 
 ```bash
 cd brand/agenticops-web   # from monorepo root
-firebase deploy --only hosting --project agenticops-io-web
+firebase deploy --only hosting --project agenticop-io
 ```
 
-**Custom domain still on `wisptools-production` / site `agenticops-production`:** deploy the same files there so **`https://agenticop.io`** matches **`agenticops-io-web`** once Console/DNS point at the right place — or run this whenever the apex domain is still mapped to that site:
+**Also mirror to `wisptools-production` / site `agenticops-production`** (optional; **`*.firebaseapp.com`** / multi-site history): run when that site should stay in sync:
 
 ```powershell
 .\scripts\deploy-custom-domain-hosting.ps1
 ```
 
-Always pass **`--project agenticops-io-web`** for the dedicated project so the CLI never picks the monorepo root default (**`wisptools-production`**).
+Always pass **`--project agenticop-io`** for the public domain’s project so the CLI never picks the monorepo root default (**`wisptools-production`**).
 
 **Monorepo root** `firebase.json` does not deploy this site; deploy AgenticOps only from here.
 
-**Custom domain:** Prefer attaching **`agenticop.io`** to **`agenticops-io-web`** in Console and updating DNS per **`DNS_SETUP.md`**. Until then, keep **`agenticops-production`** in sync with the script above if that site still owns the domain.
+**Custom domain:** **`agenticop.io`** → project **`agenticop-io`**, site **`agenticop-io`** (see **`DNS_SETUP.md`**). **`agenticops-production`** on **`wisptools-production`** is optional mirror / legacy URL.
 
 ## Brand architecture (short)
 

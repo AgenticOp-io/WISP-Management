@@ -13,7 +13,7 @@ Use this file when editing **this folder** (`brand/agenticops-web/` in the WISP-
 
 1. **Chrysalis** — **Source:** https://github.com/4GEngineer/chrysalis (separate from WISP-Management). **Private alpha** = pilot engagement maturity, not hidden code. **PHP-first** (capture → replay → chimera). Link the repo from `proof.html` and key CTAs; keep license claims aligned with the repo’s **LICENSE** file.
 2. **Tone:** Confident, technical, anti-hype. Prefer “shipped,” “verified,” “in production” over vague “AI-powered.”
-3. **Hosting:** Dedicated Firebase project **`agenticops-io-web`**; default Hosting site **`agenticops-io-web`**. Deploy from **this directory**: `firebase deploy --only hosting --project agenticops-io-web` (always include **`--project`** when this folder lives inside the monorepo).
+3. **Hosting:** Dedicated Firebase project **`agenticop-io`**; default Hosting site **`agenticop-io`** (`https://agenticop-io.web.app`). Deploy from **this directory**: `firebase deploy --only hosting --project agenticop-io` (always include **`--project`** when this folder lives inside the monorepo).
 4. **URLs:** Multi-page site uses **real `.html` paths** (e.g. `/services.html`). Do **not** add a catch-all rewrite to `index.html` for HTML routes (that broke interior pages historically).
 5. **Shared chrome:** `ao-layout.js` injects nav/footer from `data-ao-page` on `<body>`. Edit navigation in **one place** there.
 6. **Styles:** `agenticops.css` — dark navy, cyan/violet accents. Keep typography: DM Sans + JetBrains Mono for labels/stages.
@@ -33,8 +33,8 @@ Use this file when editing **this folder** (`brand/agenticops-web/` in the WISP-
 
 ## Firebase / domains
 
-- **Custom domain is bound to the Hosting site, not to a single deploy URL.** In production, **`agenticop.io`** (and `www` if configured) is attached to project **`agenticops-io-web`** (site **`agenticops-io-web`**) alongside **`https://agenticops-io-web.web.app`**. Each deploy updates **that** site; custom domain and `*.web.app` stay in sync—no DNS change per deploy.
-- Custom domain records live in **Firebase Console → project `agenticops-io-web` → Hosting → Custom domains**, not in `firebase.json`.
+- **Custom domain is bound to the Hosting site, not to a single deploy URL.** In production, **`agenticop.io`** (and `www` if configured) is attached to project **`agenticop-io`** (site **`agenticop-io`**) alongside **`https://agenticop-io.web.app`**. Each deploy updates **that** site; custom domain and `*.web.app` stay in sync—no DNS change per deploy.
+- Custom domain records live in **Firebase Console → project `agenticop-io` → Hosting → Custom domains**, not in `firebase.json`.
 - To remove a mistaken domain (e.g. `agenticops.io`): Console → remove custom domain; or run `scripts/remove-firebase-custom-domain.ps1` with `gcloud auth login`.
 
 ## When unsure

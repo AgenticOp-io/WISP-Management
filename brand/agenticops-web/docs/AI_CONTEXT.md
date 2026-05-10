@@ -30,10 +30,10 @@ This document captures **operator intent** and constraints gathered from ongoing
 - **Stack:** Static HTML, CSS (`agenticops.css`), minimal vanilla JS (`ao-layout.js`). No Svelte/React build step for the marketing site.
 - **Layout:** `ao-layout.js` reads `document.body.dataset.aoPage` and injects shared header/footer. Adding a page means: new `.html` file, set `data-ao-page`, add nav entry in `ao-layout.js`, extend `sitemap.xml` if needed.
 - **Firebase Hosting:**
-  - **Dedicated project:** **`agenticops-io-web`**. Default Hosting site ID **`agenticops-io-web`** → **`https://agenticops-io-web.web.app`**.
-  - **Custom domain:** **`agenticop.io`** is tied to this project’s Hosting site in Console (migrate off **`wisptools-production`** / **`agenticops-production`** if still attached there). Deploy updates the site; **both** custom domain and `*.web.app` serve the same release.
+  - **Dedicated project:** **`agenticop-io`**. Default Hosting site **`agenticop-io`** → **`https://agenticop-io.web.app`** (where **`agenticop.io`** should be attached).
+  - **Optional mirror:** **`agenticops-production`** on **`wisptools-production`** (`deploy-custom-domain-hosting.ps1`) for legacy **`*.firebaseapp.com`** URLs.
   - **Deploy:** From **`brand/agenticops-web/`** (or private repo root):  
-    `firebase deploy --only hosting --project agenticops-io-web`  
+    `firebase deploy --only hosting --project agenticop-io`  
     In the monorepo, **`--project`** avoids the root default **`wisptools-production`**.
   - **Rewrites:** Must **not** blanket-rewrite all routes to `index.html`; interior `.html` files must be served directly.
 

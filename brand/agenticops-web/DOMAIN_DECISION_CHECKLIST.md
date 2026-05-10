@@ -28,7 +28,7 @@ If any answer is no -> **NO-GO (Path B)**.
 ### A1) Acquire and wire DNS
 
 - Register/purchase `agenticops.io`.
-- Add apex + `www` domains in Firebase Hosting on project **`agenticops-io-web`** (default site).
+- Add apex + `www` domains in Firebase Hosting on project **`agenticop-io`** (site **`agenticop-io`**).
 - Verify TXT and SSL active.
 
 ### A2) Flip canonical metadata
