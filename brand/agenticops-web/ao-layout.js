@@ -1,6 +1,6 @@
 /**
  * Shared nav + footer for multi-page AgenticOps site.
- * Set <body data-ao-page="home|services|method|proof|trust|about|contact">
+ * Set <body data-ao-page="home|services|method|proof|trust|about|contact|whitepaper">
  */
 (function () {
   var PAGE = document.body.getAttribute('data-ao-page') || 'home';
@@ -10,6 +10,7 @@
     ['services', '/services.html', 'Services'],
     ['method', '/method.html', 'Method'],
     ['proof', '/proof.html', 'Proof'],
+    ['whitepaper', '/whitepaper.html', 'Whitepaper'],
     ['trust', '/trust.html', 'Trust'],
     ['about', '/about.html', 'About']
   ];
@@ -67,6 +68,7 @@
       link('services', '/services.html', 'Services') +
       link('method', '/method.html', 'Method') +
       link('proof', '/proof.html', 'Proof') +
+      link('whitepaper', '/whitepaper.html', 'Whitepaper') +
       link('trust', '/trust.html', 'Trust') +
       link('about', '/about.html', 'About') +
       link('contact', '/contact.html', 'Contact') +

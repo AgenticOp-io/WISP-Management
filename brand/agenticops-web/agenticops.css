@@ -996,5 +996,87 @@ img { max-width: 100%; display: block; }
   font-weight: 600;
 }
 
+/* ---------- Markdown (whitepaper.html) ---------- */
+.ao-markdown-prose {
+  max-width: 72ch;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--ao-text-dim);
+}
+.ao-markdown-prose > :first-child { margin-top: 0; }
+.ao-markdown-prose h1,
+.ao-markdown-prose h2,
+.ao-markdown-prose h3 {
+  color: var(--ao-text);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 1.75rem 0 0.75rem;
+  line-height: 1.25;
+}
+.ao-markdown-prose h1 { font-size: 1.65rem; }
+.ao-markdown-prose h2 { font-size: 1.35rem; border-bottom: 1px solid var(--ao-line); padding-bottom: 0.35rem; }
+.ao-markdown-prose h3 { font-size: 1.12rem; color: var(--ao-cyan-soft); }
+.ao-markdown-prose p { margin: 0 0 1rem; }
+.ao-markdown-prose ul,
+.ao-markdown-prose ol { margin: 0 0 1rem; padding-left: 1.35rem; }
+.ao-markdown-prose li { margin: 0.35rem 0; }
+.ao-markdown-prose strong { color: var(--ao-text); }
+.ao-markdown-prose a { color: var(--ao-cyan-soft); text-decoration: underline; text-underline-offset: 3px; }
+.ao-markdown-prose a:hover { color: #fff; }
+.ao-markdown-prose hr {
+  border: none;
+  border-top: 1px solid var(--ao-line-strong);
+  margin: 1.75rem 0;
+}
+.ao-markdown-prose blockquote {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--ao-cyan);
+  background: rgba(6, 182, 212, 0.08);
+  color: var(--ao-text-dim);
+  font-size: 0.95rem;
+}
+.ao-markdown-prose pre {
+  background: var(--ao-bg-3);
+  border: 1px solid var(--ao-line);
+  border-radius: var(--ao-radius-sm);
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: var(--ao-mono);
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+.ao-markdown-prose code {
+  font-family: var(--ao-mono);
+  font-size: 0.88em;
+  background: rgba(12, 18, 40, 0.9);
+  padding: 0.12em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--ao-line);
+}
+.ao-markdown-prose pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+.ao-markdown-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+.ao-markdown-prose th,
+.ao-markdown-prose td {
+  border: 1px solid var(--ao-line-strong);
+  padding: 10px 12px;
+  text-align: left;
+}
+.ao-markdown-prose th {
+  background: rgba(12, 18, 40, 0.85);
+  color: var(--ao-text);
+  font-weight: 600;
+}
+
 /* ---------- Selection ---------- */
 ::selection { background: rgba(34,211,238,0.32); color: #fff; }

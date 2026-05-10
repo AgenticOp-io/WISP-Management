@@ -27,26 +27,20 @@ The **`CONFIG`** object keys are read by that script only. Safe to edit **values
 - **`CONFIG.projectName`** — short headline fragment inside the H1.
 - **`CONFIG.openingLine`**, **`CONFIG.teaserLine`** — use `**bold**` sparingly; script strips to plain text for LinkedIn.
 - **`CONFIG.quoteLine`**, **`CONFIG.closingLine`**, **`CONFIG.url`**, **`CONFIG.urlDisplay`**, **`CONFIG.hashtags`**.
-- **`CONFIG.whitepaperUrl`** / **`CONFIG.whitepaperLabel`** — public URL is **`https://agenticop.io/AGENTICOP.md`** (mirrored markdown at site root). Keep in sync with **`AGENTICOP.md`** in this folder and with the in-repo source in Chrysalis (`docs/AGENTICOP.md`).
+- **`CONFIG.whitepaperUrl`** / **`CONFIG.whitepaperLabel`** — public page is **`https://agenticop.io/whitepaper.html`**. Keep in sync with **`docs/WHITEPAPER.md`** + root **`WHITEPAPER.md`** (see below).
 
-## Canonical technical whitepaper
+## Technical whitepaper (site + git)
 
-- **Public URL (what you link in posts and on pages):** `https://agenticop.io/AGENTICOP.md` — served from **`brand/agenticops-web/AGENTICOP.md`** (Firebase does not deploy `docs/**`; this file lives at **site root**).
-- **Source of truth (engineering):** Chrysalis repository `docs/AGENTICOP.md` (may be private on GitHub). Refresh the mirror after substantive edits:
+- **Public page:** `https://agenticop.io/whitepaper.html` — loads **`/WHITEPAPER.md`** at site root and renders with [marked](https://marked.js.org/) (CDN on that page only).
+- **Canonical markdown (edit in git):** `brand/agenticops-web/docs/WHITEPAPER.md` — **not** deployed by Firebase (`docs/**` is ignored). Chrysalis **`docs/AGENTICOP.md`** is **install / internal** documentation only; do **not** link it from the marketing site.
+- **Deploy copy:** `brand/agenticops-web/WHITEPAPER.md` (same bytes as `docs/WHITEPAPER.md`) **is** uploaded to Hosting. After editing the doc, sync before deploy:
 
 ```powershell
 cd brand/agenticops-web
-$b64 = gh api repos/4GEngineer/chrysalis/contents/docs/AGENTICOP.md -q .content
-[IO.File]::WriteAllBytes("$PWD\AGENTICOP.md", [Convert]::FromBase64String($b64))
-# Re-apply the short "Public copy" blockquote at the top if the upstream file replaced it.
+.\scripts\sync-whitepaper.ps1
 ```
 
-When the **public path** or filename changes, update:
-
-1. `docs/linkedin-new-project-post.html` → `CONFIG.whitepaperUrl`  
-2. `index.html` → `/AGENTICOP.md` links  
-3. `proof.html` → `/AGENTICOP.md` link  
-4. This file, **`AGENTS.md`**, **`docs/AI_CONTEXT.md`**, and **`sitemap.xml`** if listed
+When the **URL or filenames** change, update: `whitepaper.html`, `index.html`, `proof.html`, `docs/linkedin-new-project-post.html` (`CONFIG.whitepaperUrl`), `sitemap.xml`, **`AGENTS.md`**, **`docs/AI_CONTEXT.md`**, and this file.
 
 ## Brand row logo
 

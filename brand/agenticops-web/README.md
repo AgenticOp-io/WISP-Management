@@ -14,6 +14,7 @@ Static multi-page site: verification-backed migrations and agent-led modernizati
 - **`AGENTS.md`** — concise rules and file map for Cursor (and similar).
 - **`docs/AI_CONTEXT.md`** — full operator intent, domain strategy, and constraints for future development sessions.
 - **`docs/LINKEDIN_POST_MAINTENANCE.md`** — what must stay stable in `docs/linkedin-new-project-post.html` when editing copy; whitepaper URL checklist.
+- **`docs/WHITEPAPER.md`** — technical whitepaper (git). Run **`scripts/sync-whitepaper.ps1`** then deploy; public URL **`/whitepaper.html`**.
 
 ## Layout
 
@@ -33,8 +34,9 @@ From **this directory** (not the monorepo root):
 
 **Dedicated project (default Firebase URL):**
 
-```bash
+```powershell
 cd brand/agenticops-web   # from monorepo root
+.\scripts\sync-whitepaper.ps1   # copy docs/WHITEPAPER.md → WHITEPAPER.md for whitepaper.html
 firebase deploy --only hosting --project agenticop-io
 ```
 

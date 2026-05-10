@@ -9,7 +9,7 @@ This document captures **operator intent** and constraints gathered from ongoing
 | Layer | Name | Visibility | Notes |
 |-------|------|------------|--------|
 | Parent methodology / services brand | **AgenticOps** | Public site `agenticop.io` | **Transformative code** (verification-first). Narrative: Chrysalis as **first flagship**; long arc toward **macro systemic fragility** (finance, governance, cascades) — **no separate named “future project”** on site unless operator adds it. |
-| Engine (product name on site) | **Chrysalis** | **GitHub + pilot alpha** | Repo: **https://github.com/4GEngineer/chrysalis** (org **4GEngineer**, not inside theorem6/WISP-Management). PHP-first verification migration; pilots scoped **one system at a time**. **Technical whitepaper** on the marketing site: **`https://agenticop.io/AGENTICOP.md`** (root `AGENTICOP.md`, mirror of Chrysalis `docs/AGENTICOP.md`). |
+| Engine (product name on site) | **Chrysalis** | **GitHub + pilot alpha** | Repo: **https://github.com/4GEngineer/chrysalis** (org **4GEngineer**, not inside theorem6/WISP-Management). PHP-first verification migration; pilots scoped **one system at a time**. **Technical whitepaper:** **`https://agenticop.io/whitepaper.html`** — source markdown **`docs/WHITEPAPER.md`**; root **`WHITEPAPER.md`** is deploy copy. Chrysalis **`docs/AGENTICOP.md`** is internal/install only, not linked from marketing. |
 | Public WISP / ISP proof stack | **wisptools.io** | Public MIT on GitHub | **WISP Management** (operations) + **Bandwidth Test Manager** (throughput proof). Featured as proof the methodology ships real systems. |
 | Field tooling | **WISP Field App** | Public repo path under WISP-Management | Cited as shipped proof where relevant. |
 
