@@ -37,10 +37,10 @@
   function headerHtml() {
     return (
       '<div class="ao-wrap ao-nav-inner">' +
-      '<a class="ao-brand" href="/" aria-label="AgenticOps home">' +
+      '<a class="ao-brand" href="/" aria-label="AgenticOp.io home">' +
       '<img class="ao-brand-mark" src="/logo.svg" alt="" width="56" height="56" loading="eager" />' +
       '<span class="ao-brand-stack">' +
-      '<span class="ao-brand-name">AgenticOps</span>' +
+      '<span class="ao-brand-name">AgenticOp.io</span>' +
       '<span class="ao-brand-domain">agenticop.io</span>' +
       '</span></a>' +
       '<nav class="ao-nav-links" aria-label="Primary">' +
@@ -60,7 +60,7 @@
       '<div class="ao-footer-brand">' +
       '<img class="ao-footer-mark" src="/logo.svg" alt="" width="48" height="48" loading="lazy" />' +
       '<span class="ao-brand-stack">' +
-      '<span class="ao-brand-name ao-brand-name--footer">AgenticOps</span>' +
+      '<span class="ao-brand-name ao-brand-name--footer">AgenticOp.io</span>' +
       '<span class="ao-brand-domain">agenticop.io</span>' +
       '</span></div>' +
       '<nav class="ao-footer-links" aria-label="Footer">' +
@@ -74,12 +74,12 @@
       link('contact', '/contact.html', 'Contact') +
       '<a href="https://wisptools.io" target="_blank" rel="noopener">wisptools.io</a>' +
       '<a href="https://github.com/4GEngineer/chrysalis" target="_blank" rel="noopener">Chrysalis</a>' +
-      '<a href="https://github.com/theorem6" target="_blank" rel="noopener">GitHub</a>' +
+      '<a href="https://github.com/AgenticOp-io" target="_blank" rel="noopener">GitHub</a>' +
       '<a href="https://www.linkedin.com/in/vibe-architect/" target="_blank" rel="noopener">LinkedIn</a>' +
       '</nav>' +
       '<p class="ao-footer-fine">© <span id="ao-year">' +
       year +
-      '</span> AgenticOps. One system at a time. Chrysalis proves. You ship.</p>' +
+      '</span> AgenticOp.io. One system at a time. Chrysalis proves. You ship.</p>' +
       '</div>'
     );
   }

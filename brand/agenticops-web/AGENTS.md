@@ -4,8 +4,9 @@ Use this file when editing **this folder** (`brand/agenticops-web/` in the WISP-
 
 ## What this is
 
-- **Product:** Static multi-page marketing site for **AgenticOps** (commercial / methodology brand). **Positioning:** AgenticOps is **transformative code** (verification-first); **Chrysalis** is the **first flagship** (legacy migration engine). The **long arc** names **macro-scale systemic fragility** (finance, governance, institutional cascades) as intellectual north star — **do not** imply a separate shipped product there unless explicitly directed.
-- **Canonical public domain:** `https://agenticop.io` (spelling **AgenticOps**, domain **`agenticop.io`** — note missing “s”).
+- **Product:** Static multi-page marketing site for **AgenticOp.io** (commercial / methodology brand). **Positioning:** AgenticOp.io is **transformative code** (verification-first); **Chrysalis** is the **first flagship** (legacy migration engine). The **long arc** names **macro-scale systemic fragility** (finance, governance, institutional cascades) as intellectual north star — **do not** imply a separate shipped product there unless explicitly directed.
+- **Canonical public domain:** `https://agenticop.io` — brand **AgenticOp.io** (not “AgenticOps”; avoid **`agenticops.*`** in new hostnames).
+- **GitHub org (target):** **`AgenticOp-io`** — see **`docs/GITHUB_ORG_MIGRATION.md`**.
 - **Optional future domain:** `agenticops.io` — only if acquired; see `DOMAIN_DECISION_CHECKLIST.md`. Do **not** assume it is attached to Firebase.
 - **Sibling brand:** **wisptools.io** — public MIT WISP stack (**WISP Management** + **Bandwidth Test Manager**). It is the **proof** shipped in production; link to it from this site where appropriate. **Do not** merge wisptools messaging into AgenticOps copy as if they were one product name.
 

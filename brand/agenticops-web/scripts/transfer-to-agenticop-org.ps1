@@ -1,17 +1,17 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Transfer listed repositories to the GitHub organization AgenticOps.
+  Transfer listed repositories to GitHub org AgenticOp-io (brand: AgenticOp.io).
 
 .DESCRIPTION
-  Requires: gh CLI logged in as a user who is admin on each SOURCE repo and can create repos in AgenticOps.
+  Requires: gh CLI; admin on source repos; create-repo permission on AgenticOp-io.
   Run: gh auth refresh -h github.com -s admin:org
 
 .PARAMETER WhatIf
   Print actions only; do not call the transfer API.
 #>
 param(
-  [string] $TargetOrg = "AgenticOps",
+  [string] $TargetOrg = "AgenticOp-io",
   [switch] $WhatIf
 )
 
@@ -36,7 +36,7 @@ function Test-RepoExists {
 
 Test-Gh
 
-Write-Host "Target organization: $TargetOrg"
+Write-Host "Target org: $TargetOrg (brand AgenticOp.io)"
 Write-Host ""
 
 foreach ($t in $Transfers) {
@@ -49,7 +49,7 @@ foreach ($t in $Transfers) {
 
   $exists = Test-RepoExists -Owner $owner -Name $name
   if (-not $exists) {
-    Write-Warning "Source repo not found or no access: $full (skip)"
+    Write-Warning "Source not found or no access: $full (skip)"
     continue
   }
 
@@ -73,4 +73,4 @@ foreach ($t in $Transfers) {
 }
 
 Write-Host ""
-Write-Host "Done. Verify in https://github.com/$TargetOrg and update git remotes."
+Write-Host "Done. Verify https://github.com/$TargetOrg"

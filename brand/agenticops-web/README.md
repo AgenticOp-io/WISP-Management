@@ -1,6 +1,6 @@
-# AgenticOps — marketing site (`agenticop.io`)
+# AgenticOp.io — marketing site (`agenticop.io`)
 
-**Brand:** AgenticOps · **Canonical domain:** **agenticop.io** (see `DOMAIN_DECISION_CHECKLIST.md` for optional `agenticops.io` migration).
+**Brand:** **AgenticOp.io** · **Domain:** **agenticop.io** (see `DOMAIN_DECISION_CHECKLIST.md` for optional `agenticops.io` migration).
 
 Static multi-page site: verification-backed migrations and agent-led modernization; **Chrysalis** source is **https://github.com/4GEngineer/chrysalis** (early); pilots described as private alpha.
 
@@ -15,7 +15,7 @@ Static multi-page site: verification-backed migrations and agent-led modernizati
 - **`docs/AI_CONTEXT.md`** — full operator intent, domain strategy, and constraints for future development sessions.
 - **`docs/LINKEDIN_POST_MAINTENANCE.md`** — what must stay stable in `docs/linkedin-new-project-post.html` when editing copy; whitepaper URL checklist.
 - **`docs/WHITEPAPER.md`** — technical whitepaper (git). Run **`scripts/sync-whitepaper.ps1`** then deploy; public URL **`/whitepaper.html`**.
-- **`docs/GITHUB_ORG_MIGRATION.md`** — consolidate repos under GitHub org **AgenticOps** (from **4GEngineer** + **theorem6**).
+- **`docs/GITHUB_ORG_MIGRATION.md`** — consolidate repos under GitHub org **`AgenticOp-io`** (brand **AgenticOp.io**).
 
 ## Layout
 
@@ -55,7 +55,7 @@ Always pass **`--project agenticop-io`** for the public domain’s project so th
 
 ## Brand architecture (short)
 
-- **AgenticOps** — this site.
+- **AgenticOp.io** — this site.
 - **Chrysalis** — https://github.com/4GEngineer/chrysalis
 - **wisptools.io** — public MIT WISP stack; proof point; links from this site are intentional.
 

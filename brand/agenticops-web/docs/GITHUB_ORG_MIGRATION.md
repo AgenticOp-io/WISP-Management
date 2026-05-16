@@ -1,6 +1,10 @@
-# GitHub: move to **AgenticOps** org umbrella
+# GitHub: **AgenticOp.io** org umbrella
 
-Snapshot from **`theorem6`** account (David Peterson), May 2026. Use this as the runbook; update after each step.
+Snapshot from **`theorem6`** (David Peterson), May 2026.
+
+**Brand:** **AgenticOp.io** (matches **https://agenticop.io**).  
+**GitHub org slug (no dots):** **`AgenticOp-io`** → **https://github.com/AgenticOp-io**  
+Do **not** use **`agenticops.*`** hostnames or the old **`AgenticOps`** org name for new work unless retiring legacy assets.
 
 ---
 
@@ -10,129 +14,93 @@ Snapshot from **`theorem6`** account (David Peterson), May 2026. Use this as the
 |----------------------|------|-----------|--------|
 | **[theorem6](https://github.com/theorem6)** | User | Owner | Personal account |
 | **[4GEngineer](https://github.com/4GEngineer)** | Organization | **Admin** | Main engineering org today |
-| **[AgenticOps](https://github.com/AgenticOps)** | Organization | **Not a member** (API) | Created 2023; **0 public repos**; slug **`AgenticOps`** is **taken** |
+| **[AgenticOps](https://github.com/AgenticOps)** | Organization | **Not a member** | Legacy slug; **0 public repos** — do **not** use for new branding |
+| **AgenticOp-io** | — | **Does not exist yet** | **Create** this org (slug appears available) |
 
-**theorem6 is not an organization** — only a user. Repos under `theorem6/...` are personal repos, not “under theorem6 org.”
+**theorem6** is a **user**, not an organization.
 
-### Repos you care about (target umbrella)
+### Repos → move under **AgenticOp-io**
 
-| Repo | Current location | Visibility |
-|------|------------------|------------|
-| **WISP-Management** | `4GEngineer/WISP-Management` | Public |
-| **chrysalis** | `4GEngineer/chrysalis` | (check in Console) |
-| **Bandwidth-Test-Manager** | `4GEngineer/Bandwidth-Test-Manager` | (check in Console) |
-| **fragility-discovery-engine** | `theorem6/fragility-discovery-engine` | Private |
-| **agenticops-web** | `theorem6/agenticops-web` | Private |
+| Repo | Current location |
+|------|------------------|
+| WISP-Management | `4GEngineer/WISP-Management` |
+| chrysalis | `4GEngineer/chrysalis` |
+| Bandwidth-Test-Manager | `4GEngineer/Bandwidth-Test-Manager` |
+| fragility-discovery-engine | `theorem6/fragility-discovery-engine` (private) |
+| agenticops-web | `theorem6/agenticops-web` (private) |
 
-### Other repos on **4GEngineer** (decide keep / archive / leave)
-
-- `ftth_9-25-25`, `ltepci`, `open5gs-distributed` — not in the AgenticOps product list; transfer only if you want one org for everything.
-
-### Stale references (fix after move)
-
-- Local clone **WISP-Management** may still use remote `theorem6/WISP-Management`; canonical remote is **`https://github.com/4GEngineer/WISP-Management.git`** (GitHub redirects old paths in some cases — still update remotes).
-- Marketing site **`proof.html`** still links some assets to **`theorem6/...`**; after migration, standardize on **`AgenticOps/...`**.
+Optional on **4GEngineer:** `ftth_9-25-25`, `ltepci`, `open5gs-distributed`.
 
 ---
 
-## Recommended strategy (pick one)
+## Recommended path: **create `AgenticOp-io`, transfer repos**
 
-### Path A — **Rename org `4GEngineer` → `AgenticOps`** (simplest if you control both slugs)
+GitHub organization logins **cannot** be `AgenticOp.io` (no dots). Use **`AgenticOp-io`** and set the org **display name** to **AgenticOp.io** in profile settings.
 
-Best when you own the empty **AgenticOps** org or can free the slug.
+### 1) Create the org
 
-1. **Free the slug `AgenticOps`:**
-   - If **you** own [github.com/AgenticOps](https://github.com/AgenticOps): Settings → rename org to e.g. `AgenticOps-archive` or delete if unused.
-   - If **someone else** owns it: recover access or choose Path B.
-2. **4GEngineer** → Settings → Profile → **Change organization name** → **`AgenticOps`**.
-   - GitHub sets up redirects from `4GEngineer/repo` → `AgenticOps/repo` for a period.
-3. **Transfer personal repos** into the renamed org:
-   - `theorem6/agenticops-web` → `AgenticOps/agenticops-web`
-   - `theorem6/fragility-discovery-engine` → `AgenticOps/fragility-discovery-engine`
-4. Update remotes, CI secrets, Firebase/GitHub deploy keys, and site links (`4GEngineer` → `AgenticOps`).
+1. [Create organization](https://github.com/organizations/plan) → choose a plan (Free is fine).
+2. **Organization account name:** **`AgenticOp-io`** (verify availability in the form).
+3. **Organization display name:** **AgenticOp.io**
+4. Add **theorem6** as **Owner**.
 
-**Pros:** One org, minimal transfer count for repos already on 4GEngineer.  
-**Cons:** Must resolve slug conflict with existing **AgenticOps** org.
+### 2) Transfer repositories
 
-### Path B — **Use existing `AgenticOps` org; transfer everything in**
-
-Best when you already control **AgenticOps** (or will get owner invite) and want to keep **4GEngineer** as legacy/archive.
-
-1. **AgenticOps** → Settings → Members → invite **`theorem6`** as **Owner**.
-2. Accept invite; confirm: `gh api user/memberships/orgs` includes `AgenticOps`.
-3. Run transfers (Console or script below):
-   - From **4GEngineer:** `WISP-Management`, `chrysalis`, `Bandwidth-Test-Manager`, (+ optional others).
-   - From **theorem6:** `agenticops-web`, `fragility-discovery-engine`.
-4. Optional: archive **4GEngineer** org after redirects settle.
-
-**Pros:** Brand name matches product without rename gymnastics if you already own AgenticOps.  
-**Cons:** Many transfers; need **admin** on source and **create repo** on target.
-
-### Path C — **New org** (only if `AgenticOps` slug unavailable and rename blocked)
-
-Create e.g. `AgenticOps-io` or `agenticops-engineering`, transfer all repos, update branding. Use only if A and B fail.
-
----
-
-## Transfer mechanics (Path B)
-
-**Requirements**
-
-- Admin on source repo (you have this on 4GEngineer as org admin; you own personal repos).
-- Permission to **create repositories** in target org **AgenticOps**.
-- No name collision in target (`AgenticOps/WISP-Management` must not already exist).
-
-**GitHub CLI** (after `gh auth refresh -h github.com -s admin:org`):
+**Requirements:** admin on each source repo; **create repository** permission on **AgenticOp-io**.
 
 ```powershell
+gh auth refresh -h github.com -s admin:org
 cd brand/agenticops-web/scripts
-.\transfer-to-agenticops-org.ps1 -WhatIf    # dry run
-.\transfer-to-agenticops-org.ps1            # execute
+.\transfer-to-agenticop-org.ps1 -WhatIf
+.\transfer-to-agenticop-org.ps1
 ```
 
-**Console:** Repo → Settings → General → **Transfer ownership** → organization **AgenticOps**.
+Or: each repo → **Settings** → **Transfer ownership** → **AgenticOp-io**.
 
-**API (single repo):**
+### 3) Retire or archive **4GEngineer**
 
-```powershell
-gh api repos/4GEngineer/chrysalis/transfer -X POST -f new_owner=AgenticOps
-```
+After transfers and redirect period:
 
-A trial transfer of `theorem6/agenticops-web` → `AgenticOps` failed with **422** (“Could not resolve…”) because **`theorem6` is not a member of `AgenticOps`** with transfer rights.
+- Archive **4GEngineer**, or leave as telecom/LTE-only repos if you moved only product repos.
+- Ignore / rename **AgenticOps** empty org if you control it (legacy slug conflict).
+
+### Alternative: rename **4GEngineer** → **AgenticOp-io**
+
+Only if **`AgenticOp-io` slug is free** and you prefer one rename over many transfers. Same slug rules apply; you still transfer **theorem6** personal repos into the org.
 
 ---
 
-## After migration checklist
+## After migration
 
-- [ ] `git remote set-url origin https://github.com/AgenticOps/WISP-Management.git` (and each clone)
-- [ ] GitHub Actions / deploy keys / Dependabot on new paths
-- [ ] Firebase / GCP linked to GitHub (re-authorize if needed)
-- [ ] Update **agenticop.io** links: `4GEngineer` → `AgenticOps`, `theorem6` → `AgenticOps` where appropriate
-- [ ] Update **README** clone URLs in WISP-Management, Chrysalis, BTM
-- [ ] LinkedIn / docs / `docs/CHRYSALIS_SOURCE_OF_TRUTH.md`
-- [ ] npm/pnpm lockfiles or submodules that embed old URLs (grep `github.com/4GEngineer` and `theorem6`)
+- [ ] `git remote set-url origin https://github.com/AgenticOp-io/WISP-Management.git` (each clone)
+- [ ] Org profile: display name **AgenticOp.io**, link **https://agenticop.io**, logo
+- [ ] GitHub Actions, deploy keys, Dependabot on new paths
+- [ ] Site + docs: `4GEngineer` / `theorem6` product links → **`AgenticOp-io`**
+- [ ] Footer org link: **https://github.com/AgenticOp-io**
 
 ---
 
-## Target layout (end state)
+## Target layout
 
 ```text
-github.com/AgenticOps/
-├── WISP-Management          # wisptools.io product monorepo
-├── chrysalis                # verification engine
+github.com/AgenticOp-io/     # brand: AgenticOp.io
+├── WISP-Management
+├── chrysalis
 ├── Bandwidth-Test-Manager
 ├── fragility-discovery-engine
-└── agenticops-web           # marketing site (or keep only in monorepo brand/)
+└── agenticops-web
 ```
 
-**theorem6** remains your personal account; product repos live under **AgenticOps**.
+**theorem6** stays your personal account; product code lives under **AgenticOp-io**.
 
 ---
 
-## What this repo cannot do automatically
+## Naming reference
 
-- Claim or delete the existing **AgenticOps** org without your login to that org’s owner account.
-- Rename **4GEngineer** without org-owner confirmation in the browser.
-- Transfer private repos without **`repo`** scope and target-org membership.
+| Use | Do not use for new work |
+|-----|-------------------------|
+| **AgenticOp.io** (brand) | AgenticOps (legacy marketing spelling) |
+| **agenticop.io** (domain) | agenticops.io (unless you own and redirect) |
+| **AgenticOp-io** (GitHub org slug) | 4GEngineer, theorem6/* for product repos |
 
-When **AgenticOps** membership is fixed, re-run `transfer-to-agenticops-org.ps1` and then ask for a follow-up pass to update marketing-site GitHub URLs.
+Repo folder names (`agenticops-web`, etc.) can stay as-is; only the **org owner** and **public URLs** change.
