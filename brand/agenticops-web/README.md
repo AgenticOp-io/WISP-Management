@@ -15,6 +15,7 @@ Static multi-page site: verification-backed migrations and agent-led modernizati
 - **`docs/AI_CONTEXT.md`** — full operator intent, domain strategy, and constraints for future development sessions.
 - **`docs/LINKEDIN_POST_MAINTENANCE.md`** — what must stay stable in `docs/linkedin-new-project-post.html` when editing copy; whitepaper URL checklist.
 - **`docs/WHITEPAPER.md`** — technical whitepaper (git). Run **`scripts/sync-whitepaper.ps1`** then deploy; public URL **`/whitepaper.html`**.
+- **`docs/GITHUB_ORG_MIGRATION.md`** — consolidate repos under GitHub org **AgenticOps** (from **4GEngineer** + **theorem6**).
 
 ## Layout
 
