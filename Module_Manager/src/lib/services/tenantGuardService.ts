@@ -212,6 +212,19 @@ class TenantGuardService {
       const tenants = await tenantStore.loadUserTenants(currentUser.uid, currentUser.email ?? undefined);
       
       if (tenants.length === 0) {
+        // Single-tenant demo deployments must never send users into org creation.
+        // If they have no access, stop and show a clear error.
+        if (isSingleTenantMode() && getConfiguredSingleTenantId()) {
+          console.warn('[TenantGuardService] Single-tenant mode: user has no access to configured tenant');
+          await goto('/login?error=no-tenant', { replaceState: true });
+          return {
+            success: false,
+            error: 'No access to the configured organization',
+            requiresRedirect: '/login?error=no-tenant',
+            isAdmin: false
+          };
+        }
+
         if (createDefaultTenant) {
           // Create default tenant
           console.log('[TenantGuardService] Creating default tenant...');
@@ -242,7 +255,7 @@ class TenantGuardService {
         return {
           success: false,
           error: 'No tenants available',
-          requiresRedirect: '/tenant-setup'
+          requiresRedirect: '/tenant-selector'
         };
       }
 
