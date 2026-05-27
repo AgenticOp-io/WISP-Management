@@ -5,6 +5,7 @@ import { browser } from '$app/environment';
 import { authService } from './authService';
 import { isPlatformAdmin } from './adminService';
 import { API_CONFIG, getApiProxyRequestUrl, getBackendDirectBase, getAdminApiRequest } from '$lib/config/api';
+import { getConfiguredSingleTenantId, isSingleTenantMode } from '$lib/config/tenantMode';
 import type {
   Tenant,
   UserTenantAssociation,
@@ -355,6 +356,13 @@ export class TenantService {
    */
   async getUserTenants(userId: string): Promise<Tenant[]> {
     try {
+      if (isSingleTenantMode()) {
+        const singleTenantId = getConfiguredSingleTenantId();
+        if (!singleTenantId) return [];
+        const result = await this.getTenant(singleTenantId);
+        return result.tenant ? [result.tenant] : [];
+      }
+
       const headers = await this.getAuthHeaders();
       // Use direct Cloud Function URL (Hosting rewrite to userTenants often 404s on custom domain)
       const userTenantsBase = API_CONFIG.CLOUD_FUNCTIONS.USER_TENANTS;

@@ -12,16 +12,22 @@
 
 import { getPublicEnv, isPublicFlagTrue } from './publicEnv';
 
+const DEFAULT_DEMO_TENANT_ID = '6a166eb07089304417ec967a';
+
 /** True only when the mode flag is on and a tenant id is configured (avoids half-configured demo builds). */
 export function isSingleTenantMode(): boolean {
-	if (!isPublicFlagTrue('PUBLIC_SINGLE_TENANT_MODE')) return false;
-	return getConfiguredSingleTenantId() != null;
+	const hasConfiguredId = getConfiguredSingleTenantId() != null;
+	if (!hasConfiguredId) return false;
+	// If an id is configured, default to single-tenant unless explicitly disabled.
+	const mode = getPublicEnv('PUBLIC_SINGLE_TENANT_MODE');
+	if (mode == null || String(mode).trim() === '') return true;
+	return isPublicFlagTrue('PUBLIC_SINGLE_TENANT_MODE');
 }
 
 /** Firestore/Mongo tenant document id for the sole organization (required when single-tenant mode is on). */
 export function getConfiguredSingleTenantId(): string | null {
 	const id = getPublicEnv('PUBLIC_SINGLE_TENANT_ID');
-	if (id == null || String(id).trim() === '') return null;
+	if (id == null || String(id).trim() === '') return DEFAULT_DEMO_TENANT_ID;
 	return String(id).trim();
 }
 

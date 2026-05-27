@@ -57,6 +57,7 @@ app.use(
 // Body parser
 app.use(express.json({ limit: appConfig.limits.jsonBodySize, strict: false }));
 app.use(express.urlencoded({ extended: true, limit: appConfig.limits.urlEncodedBodySize }));
+app.use(require('./middleware/single-tenant-fallback'));
 
 // Middleware
 app.use(require('./middleware/error-handler'));

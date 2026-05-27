@@ -4,7 +4,6 @@
   import { browser } from '$app/environment';
   import { get } from 'svelte/store';
   import { authService } from '$lib/services/authService';
-  import { tenantService } from '$lib/services/tenantService';
   import { tenantStore } from '$lib/stores/tenantStore';
   import type { User } from 'firebase/auth';
   import { isPlatformAdmin } from '$lib/services/adminService';
@@ -345,17 +344,8 @@
         return 'platform_admin';
       }
 
-      // No memberships yet — auto-create first org (multitenant). Skipped in single-tenant mode (org is fixed in env).
-      if (tenants.length === 0 && !(isSingleTenantMode() && getConfiguredSingleTenantId())) {
-        try {
-          console.log('[Login Page] No tenant memberships — creating default organization from email domain');
-          await createAutomaticTenant(user, email);
-          tenants = await tenantStore.loadUserTenants(user.uid, email);
-          console.log('[Login Page] After auto-create, tenants:', tenants.length);
-        } catch (autoErr: any) {
-          console.warn('[Login Page] Automatic tenant creation failed (user can use Tenant setup):', autoErr?.message || autoErr);
-        }
-      }
+      // Auto-creating organizations is disabled for demo single-tenant deployments.
+      // Users must belong to the configured tenant.
 
       // Prefer tenant already resolved by tenantStore (e.g. single-tenant mode in loadUserTenants)
       const savedTenantId = localStorage.getItem('selectedTenantId');
@@ -417,61 +407,6 @@
       localStorage.removeItem('selectedTenantId');
       localStorage.removeItem('selectedTenantName');
       return null;
-    }
-  }
-
-  /**
-   * Create an automatic tenant for a new user
-   * Uses email domain or generates a name from email
-   */
-  async function createAutomaticTenant(user: User, email: string): Promise<void> {
-    try {
-      // Extract organization name from email domain or use email prefix
-      const emailParts = email.split('@');
-      const domain = emailParts[1] || '';
-      const domainParts = domain.split('.');
-      const orgName = domainParts[0] || emailParts[0] || 'My Organization';
-      
-      // Capitalize first letter
-      const displayName = orgName.charAt(0).toUpperCase() + orgName.slice(1);
-      
-      // Generate subdomain (lowercase, alphanumeric + hyphens)
-      const subdomain = orgName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').trim();
-      
-      console.log('[Login Page] Creating tenant:', {
-        name: orgName,
-        displayName,
-        subdomain,
-        contactEmail: email,
-        userId: user.uid
-      });
-      
-      // Create tenant with user as owner
-      const result = await tenantService.createTenant(
-        orgName,
-        displayName,
-        email,
-        user.uid,
-        subdomain,
-        true,  // Create owner association
-        email  // Owner email
-      );
-      
-      if (result.success && result.tenantId) {
-        console.log('[Login Page] Tenant created:', result.tenantId);
-        
-        // Load the newly created tenant and set it as current
-        const { tenant } = await tenantService.getTenant(result.tenantId);
-        if (tenant) {
-          tenantStore.setCurrentTenant(tenant);
-          console.log('[Login Page] Tenant set as current:', tenant.displayName);
-        }
-      } else {
-        throw new Error(result.error || 'Failed to create tenant');
-      }
-    } catch (error: any) {
-      console.error('[Login Page] Automatic tenant creation failed:', error);
-      throw error;
     }
   }
 
@@ -830,16 +765,9 @@
       {/if}
 
       <div class="form-footer">
-        <a 
-          href="/signup" 
-          class="link-btn"
-          onclick={(e) => {
-            e.preventDefault();
-            goto('/signup');
-          }}
-        >
-          Don't have an account? Create one
-        </a>
+        <span class="link-btn" style="text-decoration: none; opacity: 0.8;">
+          Contact your admin for access
+        </span>
       </div>
 
       <div class="login-divider">
