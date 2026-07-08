@@ -15,10 +15,10 @@ jobs:
     name: Stage CWL export and deploy hosting
     runs-on: ubuntu-latest
     steps:
-      - name: Check required secret
+      - name: Check deploy credentials
         run: |
-          if [ -z "${{ secrets.FIREBASE_TOKEN }}" ]; then
-            echo "::error::FIREBASE_TOKEN is not set on this repository."
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" ] && [ -z "${{ secrets.FIREBASE_TOKEN }}" ]; then
+            echo "::error::Set FIREBASE_SERVICE_ACCOUNT (recommended) or FIREBASE_TOKEN on this repository."
             exit 1
           fi
 
@@ -45,13 +45,20 @@ jobs:
 
       - name: Deploy management + landing hosting
         env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          firebase deploy \
-            --only hosting:management,hosting:landing \
-            --project "${{ env.FIREBASE_PROJECT_ID }}" \
-            --token "$FIREBASE_TOKEN" \
-            --non-interactive
+          DEPLOY_ARGS=(deploy --only hosting:management,hosting:landing --project "${{ env.FIREBASE_PROJECT_ID }}" --non-interactive)
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-sa.json"
+            export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/firebase-sa.json"
+            firebase "${DEPLOY_ARGS[@]}"
+          elif [ -n "$FIREBASE_TOKEN" ]; then
+            firebase "${DEPLOY_ARGS[@]}" --token "$FIREBASE_TOKEN"
+          else
+            echo "::error::No Firebase deploy credentials available."
+            exit 1
+          fi
 
       - name: Deployment summary
         run: |
