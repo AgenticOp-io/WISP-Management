@@ -1,0 +1,59 @@
+name: Deploy CWL static export to Firebase
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FIREBASE_PROJECT_ID: wisptools-production
+  NODE_VERSION: "20"
+
+jobs:
+  deploy:
+    name: Stage CWL export and deploy hosting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check required secret
+        run: |
+          if [ -z "${{ secrets.FIREBASE_TOKEN }}" ]; then
+            echo "::error::FIREBASE_TOKEN is not set on this repository."
+            exit 1
+          fi
+
+      - name: Checkout WISP-Management
+        uses: actions/checkout@v4
+
+      - name: Checkout Chrysalis CWL static export
+        uses: actions/checkout@v4
+        with:
+          repository: AgenticOp-io/chrysalis
+          path: chrysalis
+
+      - name: Stage CWL static export into build/client
+        run: |
+          EXPORT=chrysalis/fixtures/hub-wisp-management/cwl-static-export
+          test -f "$EXPORT/index.html"
+          rm -rf Module_Manager/build/client
+          mkdir -p Module_Manager/build
+          cp -r "$EXPORT" Module_Manager/build/client
+          echo "Staged $(find Module_Manager/build/client -name 'index.html' | wc -l) pages"
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@latest
+
+      - name: Deploy management + landing hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          firebase deploy \
+            --only hosting:management,hosting:landing \
+            --project "${{ env.FIREBASE_PROJECT_ID }}" \
+            --token "$FIREBASE_TOKEN" \
+            --non-interactive
+
+      - name: Deployment summary
+        run: |
+          echo "Deployed CWL static export to hosting:management (management.wisptools.io)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Redeployed hosting:landing (wisptools.io apex / wisptools-production.web.app)" >> "$GITHUB_STEP_SUMMARY"
