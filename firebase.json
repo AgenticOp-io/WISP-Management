@@ -14,40 +14,12 @@
   "hosting": [
     {
       "target": "landing",
-      "public": "landing",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "errorDocument": "404.html",
-      "headers": [
-        {
-          "source": "**",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "no-cache, no-store, must-revalidate"
-            }
-          ]
-        }
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "cleanUrls": false,
-      "trailingSlash": false
-    },
-    {
-      "target": "management",
       "public": "Module_Manager/build/client",
       "ignore": [
         "firebase.json",
         "**/.*",
-        "**/node_modules/**"
+        "**/node_modules/**",
+        "**/*.apk"
       ],
       "errorDocument": "404.html",
       "headers": [
@@ -112,10 +84,6 @@
           "function": "isoProxy"
         },
         {
-          "source": "/cwmp/**",
-          "function": "handleCWMPMultitenant"
-        },
-        {
           "source": "/api/user-tenants/tenant/**",
           "function": "apiProxy"
         },
@@ -137,6 +105,31 @@
         }
       ],
       "cleanUrls": false,
+      "trailingSlash": false
+    },
+    {
+      "target": "management",
+      "public": "Module_Manager/build/client",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "**/*.apk"
+      ],
+      "errorDocument": "404.html",
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, no-store, must-revalidate"
+            }
+          ]
+        }
+      ],
+      "rewrites": [],
+      "cleanUrls": true,
       "trailingSlash": false
     }
   ]

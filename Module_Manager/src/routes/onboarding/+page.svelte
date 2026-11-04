@@ -39,10 +39,6 @@
         goto('/modules/cbrs-management');
         showWizard = false;
         break;
-      case 'setup-acs':
-        goto('/modules/acs-cpe-management');
-        showWizard = false;
-        break;
       case 'setup-monitoring':
         goto('/modules/monitoring');
         showWizard = false;

@@ -7,17 +7,11 @@
    */
   
   import { createEventDispatcher } from 'svelte';
-  import DeviceRegistrationWizard from './acs/DeviceRegistrationWizard.svelte';
-  import PresetCreationWizard from './acs/PresetCreationWizard.svelte';
-  import BulkOperationsWizard from './acs/BulkOperationsWizard.svelte';
-  import FirmwareUpdateWizard from './acs/FirmwareUpdateWizard.svelte';
-  import TroubleshootingWizard from './acs/TroubleshootingWizard.svelte';
-  import DeviceOnboardingWizard from './acs/DeviceOnboardingWizard.svelte';
   import DeploymentWizard from './deployment/DeploymentWizard.svelte';
   import InventoryCheckInWizard from './inventory/InventoryCheckInWizard.svelte';
   import WorkOrderCreationWizard from './workorders/WorkOrderCreationWizard.svelte';
   
-  export let moduleId: string = 'acs'; // Module identifier
+  export let moduleId: string = 'general'; // Module identifier
   export let availableWizards: Array<{
     id: string;
     name: string;
@@ -32,50 +26,8 @@
   let activeWizard: string | null = null;
   let wizardProps: Record<string, any> = {};
   
-  // Default ACS wizards
-  const defaultACSWizards = [
-    {
-      id: 'device-registration',
-      name: 'Device Registration',
-      description: 'Register CPE devices with GenieACS',
-      icon: '📱',
-      component: DeviceRegistrationWizard
-    },
-    {
-      id: 'preset-creation',
-      name: 'Create Preset',
-      description: 'Create a new configuration preset',
-      icon: '⚙️',
-      component: PresetCreationWizard
-    },
-    {
-      id: 'bulk-operations',
-      name: 'Bulk Operations',
-      description: 'Perform operations on multiple devices',
-      icon: '📦',
-      component: BulkOperationsWizard
-    },
-    {
-      id: 'firmware-update',
-      name: 'Firmware Update',
-      description: 'Update firmware on devices',
-      icon: '💾',
-      component: FirmwareUpdateWizard
-    },
-    {
-      id: 'troubleshooting',
-      name: 'Troubleshooting',
-      description: 'Diagnose and fix device issues',
-      icon: '🔍',
-      component: TroubleshootingWizard
-    },
-    {
-      id: 'device-onboarding',
-      name: 'Device Onboarding',
-      description: 'Comprehensive device onboarding',
-      icon: '👋',
-      component: DeviceOnboardingWizard
-    },
+  // Default non-ACS wizards
+  const defaultWizards = [
     {
       id: 'deployment',
       name: 'Deployment',
@@ -99,7 +51,7 @@
     }
   ];
   
-  $: wizards = availableWizards.length > 0 ? availableWizards : defaultACSWizards;
+  $: wizards = availableWizards.length > 0 ? availableWizards : defaultWizards;
   $: activeWizardComponent = activeWizard 
     ? wizards.find((w: any) => w.id === activeWizard)?.component 
     : null;

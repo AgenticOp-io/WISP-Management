@@ -15,6 +15,12 @@
   import { authService } from '../../services/authService';
   import { isPlatformAdmin } from '../../services/adminService';
   import { debug } from '../../utils/debug';
+  import {
+    buildSyntheticSingleTenant,
+    getConfiguredSingleTenantId,
+    isSingleTenantMode
+  } from '../../config/tenantMode';
+  import { isSimpleLoginOnly } from '../../config/loginMode';
   
   export let requireTenant = true; // If false, only checks auth
   export let adminOnly = false; // If true, only admins can access
@@ -57,23 +63,13 @@
     }
 
     try {
-      // Step 1: Check Firebase authentication with retry logic
-      let currentUser = authService.getCurrentUser();
+      // Step 1: Wait for Firebase auth (sign-in + client nav often need >500ms)
+      const authWaitMs = isSimpleLoginOnly() || isSingleTenantMode() ? 8000 : 5000;
+      const currentUser = await authService.waitForUser(authWaitMs);
       if (!currentUser) {
-        // Wait for auth state to initialize (with reduced retries)
-        let retries = 0;
-        const maxRetries = 5; // 0.5 seconds total wait (reduced from 1.5s)
-        while (!currentUser && retries < maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          currentUser = authService.getCurrentUser();
-          retries++;
-        }
-        
-        if (!currentUser) {
-          console.log('[TenantGuard] Not authenticated after retries, redirecting to login');
-          await goto('/login', { replaceState: true });
-          return;
-        }
+        console.log('[TenantGuard] Not authenticated after wait, redirecting to login');
+        await goto('/login', { replaceState: true });
+        return;
       }
       
       isAuthenticated = true;
@@ -158,12 +154,16 @@
               }
               
               if (tenants.length === 0) {
-                // No tenants - do NOT auto-launch tenant setup anymore.
-                // Always send the user to the tenant selector, where they can choose to create an organization.
-                console.log('[TenantGuard] No tenants found - redirecting to tenant selector');
-                isChecking = false;
-                await goto('/tenant-selector', { replaceState: true });
-                return;
+                if (isSingleTenantMode() && getConfiguredSingleTenantId()) {
+                  const synthetic = buildSyntheticSingleTenant();
+                  console.log('[TenantGuard] Single-tenant: using configured org without API link');
+                  tenantStore.setCurrentTenant(synthetic);
+                } else {
+                  console.log('[TenantGuard] No tenants found - redirecting to tenant selector');
+                  isChecking = false;
+                  await goto('/tenant-selector', { replaceState: true });
+                  return;
+                }
               } else if (tenants.length === 1) {
                 // Auto-select single tenant
                 console.log('[TenantGuard] Auto-selecting single tenant');

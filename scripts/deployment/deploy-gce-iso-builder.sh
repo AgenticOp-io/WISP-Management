@@ -390,7 +390,7 @@ Environment="GCE_PUBLIC_IP=$GCE_PUBLIC_IP"
 Environment="HSS_PORT=$HSS_PORT"
 
 # MongoDB Atlas connection (update after deployment)
-Environment="MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/wisptools"
+Environment="MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/wisptools"
 
 # API URLs
 Environment="HSS_API_URL=https://us-central1-lte-pci-mapper-65450042-bbf71.cloudfunctions.net/hssProxy"

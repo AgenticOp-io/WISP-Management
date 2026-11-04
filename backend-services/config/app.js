@@ -74,13 +74,6 @@ module.exports = {
   
   // External Service URLs
   externalServices: {
-    // GenieACS
-    genieacs: {
-      baseUrl: process.env.GENIEACS_URL || 'http://localhost:7557',
-      nbiUrl: process.env.GENIEACS_NBI_URL || 'http://localhost:7557',
-      apiKey: process.env.GENIEACS_API_KEY || ''
-    },
-    
     // ArcGIS Geocoding
     arcgis: {
       geocodeUrl: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates',

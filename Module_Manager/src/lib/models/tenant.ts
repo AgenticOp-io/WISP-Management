@@ -30,7 +30,6 @@ export interface Tenant {
 }
 
 export interface TenantSettings {
-  // GenieACS Configuration
   cwmpPort?: number;
   informInterval: number; // Device inform interval in seconds (default 300)
   

@@ -8,7 +8,7 @@ No login attempts are showing up in Firebase Authentication logs for `wisptools-
 The Firebase config in `Module_Manager/src/lib/firebase.ts` is **CORRECT**:
 - ✅ `projectId: 'wisptools-production'`
 - ✅ `appId: '1:1048161130237:web:160789736967985b655094'`
-- ✅ `apiKey: 'AIzaSyD_XK8eTNOfbEugJ27yucf_VLizOTgzkfA'`
+- ✅ `apiKey: 'YOUR_FIREBASE_OR_GOOGLE_API_KEY'`
 
 The build output confirms this config is being used.
 

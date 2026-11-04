@@ -215,7 +215,7 @@ curl http://136.112.111.167:3000/subscribers
 
 **GenieACS Config:** `/opt/genieacs/genieacs.env`
 ```bash
-GENIEACS_MONGODB_CONNECTION_URL=mongodb+srv://genieacs-user:***@cluster0.1radgkw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+GENIEACS_MONGODB_CONNECTION_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 GENIEACS_CWMP_PORT=7547
 GENIEACS_NBI_PORT=7557
 GENIEACS_FS_PORT=7567
@@ -224,7 +224,7 @@ GENIEACS_UI_PORT=3333
 
 **HSS API Config:** `/opt/hss-api/.env`
 ```bash
-MONGODB_URI=mongodb+srv://genieacs-user:***@cluster0.1radgkw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 PORT=3000
 NODE_ENV=production
 ```
@@ -392,7 +392,7 @@ app.use(cors());
 **Check MongoDB connection:**
 ```bash
 # Test from server
-mongo "mongodb+srv://genieacs-user:***@cluster0.1radgkw.mongodb.net/test"
+mongo "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/test"
 ```
 
 **Check MongoDB Atlas IP whitelist:**

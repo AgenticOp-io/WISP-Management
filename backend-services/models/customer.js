@@ -259,7 +259,11 @@ CustomerSchema.index({ tenantId: 1, serviceStatus: 1 });
 CustomerSchema.index({ tenantId: 1, serviceType: 1 });
 CustomerSchema.index({ 'serviceAddress.latitude': 1, 'serviceAddress.longitude': 1 });
 CustomerSchema.index({ 'networkInfo.imsi': 1 });
-CustomerSchema.index({ tenantId: 1, leadHash: 1 }, { unique: true, sparse: true });
+CustomerSchema.index({ tenantId: 1, leadHash: 1 }, {
+  unique: true,
+  // Sparse alone still indexes explicit nulls; only index real lead hashes.
+  partialFilterExpression: { leadHash: { $type: "string" } },
+});
 CustomerSchema.index({ macAddress: 1 }, { sparse: true });
 
 // Pre-save middleware - generate fullName

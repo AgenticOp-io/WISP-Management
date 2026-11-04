@@ -182,8 +182,8 @@ These are the **working, production-ready** scripts:
 
 ### **MongoDB Atlas**
 
-- **Cluster:** `cluster0.1radgkw.mongodb.net`
-- **Connection String:** `mongodb+srv://genieacs-user:***@cluster0.1radgkw.mongodb.net/`
+- **Cluster:** `CLUSTER.mongodb.net`
+- **Connection String:** `mongodb+srv://<username>:<password>@<cluster>.mongodb.net/`
 - **Databases:**
   - `open5gs` - HSS subscriber data
   - `genieacs` - CPE device data

@@ -148,7 +148,7 @@ Click "✅ Add Subscriber"
 
 ```bash
 # On your local machine or in Cloud Shell
-mongosh "mongodb+srv://user:****@cluster0.1radgkw.mongodb.net/open5gs"
+mongosh "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/open5gs"
 
 # View subscribers
 db.subscribers.find().pretty()
@@ -311,7 +311,7 @@ https://us-central1-lte-pci-mapper-65450042-bbf71.cloudfunctions.net/hssProxy
 
 **MongoDB:**
 ```
-mongodb+srv://user:****@cluster0.1radgkw.mongodb.net/open5gs
+mongodb+srv://<username>:<password>@<cluster>.mongodb.net/open5gs
 ```
 
 ---

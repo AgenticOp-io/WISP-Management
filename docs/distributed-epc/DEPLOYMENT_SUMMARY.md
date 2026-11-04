@@ -232,7 +232,7 @@ You'll be able to:
 - Web UI: `https://lte-pci-mapper--lte-pci-mapper-65450042-bbf71.us-east4.hosted.app`
 - HSS Module: `/modules/hss-management`
 - Backend Server: `136.112.111.167`
-- MongoDB: `cluster0.1radgkw.mongodb.net`
+- MongoDB: `CLUSTER.mongodb.net`
 
 ### **Services:**
 - Open5GS HSS: Port 3868 (S6a/Diameter)

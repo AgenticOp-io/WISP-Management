@@ -15,7 +15,6 @@
   import MikrotikDevicesPanel from './components/MikrotikDevicesPanel.svelte';
   import MonitoringSiteDetailsModal from './components/MonitoringSiteDetailsModal.svelte';
   import EPCDeploymentModal from '../deploy/components/EPCDeploymentModal.svelte';
-  import ACSDevicesPanel from './components/ACSDevicesPanel.svelte';
   
   import { API_CONFIG } from '$lib/config/api';
   import { monitoringService } from '$lib/services/monitoringService';
@@ -57,10 +56,6 @@
   // EPC Monitoring
   let epcDevices: any[] = [];
   let selectedEpcDevice: any = null;
-  
-  // ACS/TR-069 Monitoring
-  let acsDevices: any[] = [];
-  let selectedAcsDevice: any = null;
   
   // Help Modal
   let showHelpModal = false;
@@ -116,8 +111,6 @@
       
       if (tabParam === 'graphs') {
         mapView = 'graphs';
-      } else if (tabParam === 'acs' || tabParam === 'cpe') {
-        mapView = 'acs';
       }
       
       // deviceId will be handled by SNMPGraphsPanel after it loads devices
@@ -135,7 +128,6 @@
           loadNetworkDevices(),
           loadSNMPData(),
           loadEPCDevices(),
-          loadACSDevices()
         ]);
       } catch (err) {
         console.error('[Monitoring] Error loading initial data:', err);
@@ -153,7 +145,6 @@
             loadNetworkDevices(),
             loadSNMPData(),
             loadEPCDevices(),
-            loadACSDevices()
           ]).catch(err => console.error('[Monitoring] Auto-refresh error:', err));
         }
       }, 30000);
@@ -182,7 +173,6 @@
         loadNetworkDevices();
         loadSNMPData();
         loadEPCDevices();
-        loadACSDevices();
         // Clear the flag
         if (typeof window !== 'undefined') {
           localStorage.removeItem('monitoring-refresh-needed');
@@ -203,7 +193,6 @@
           loadNetworkDevices();
           loadSNMPData();
           loadEPCDevices();
-          loadACSDevices();
           localStorage.removeItem('monitoring-refresh-needed');
         }
       }
@@ -291,91 +280,6 @@
   
   function selectEpcDevice(device: any) {
     selectedEpcDevice = device;
-  }
-  
-  let isLoadingACSDevices = false;
-  let acsLoadError: string | null = null;
-  
-  async function loadACSDevices() {
-    if (!tenantId) {
-      acsDevices = [];
-      acsLoadError = null;
-      return;
-    }
-    
-    // Prevent concurrent loads
-    if (isLoadingACSDevices) {
-      console.log('[Monitoring] ACS load already in progress, skipping');
-      return;
-    }
-    
-    isLoadingACSDevices = true;
-    acsLoadError = null;
-    
-    try {
-      const user = auth().currentUser;
-      if (!user) {
-        acsDevices = [];
-        acsLoadError = 'Not authenticated';
-        return;
-      }
-      
-      const token = await authService.getAuthTokenForApi();
-      
-      // Create AbortController for timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      try {
-        const response = await fetch('/api/tr069/devices', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'X-Tenant-ID': tenantId,
-            'Content-Type': 'application/json'
-          },
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.devices) {
-            acsDevices = Array.isArray(data.devices) ? data.devices : [];
-            acsLoadError = null;
-          } else {
-            acsDevices = [];
-            acsLoadError = null; // No devices is not an error
-          }
-        } else {
-          const errorText = await response.text();
-          console.error('[Monitoring] Failed to load ACS devices:', response.status, errorText);
-          acsLoadError = `Failed to load: ${response.status}`;
-          // Don't clear existing devices on HTTP error, just log it
-        }
-      } catch (fetchError: any) {
-        clearTimeout(timeoutId);
-        throw fetchError;
-      }
-    } catch (err: any) {
-      console.error('[Monitoring] Failed to load ACS devices:', err);
-      if (err.name === 'AbortError') {
-        acsLoadError = 'Request timeout';
-        console.warn('[Monitoring] Request timed out, keeping existing ACS device list');
-      } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
-        acsLoadError = 'Network error';
-        console.warn('[Monitoring] Network error, keeping existing ACS device list');
-      } else {
-        acsLoadError = err.message || 'Unknown error';
-        // For other errors, keep existing data
-      }
-    } finally {
-      isLoadingACSDevices = false;
-    }
-  }
-  
-  function selectAcsDevice(device: any) {
-    selectedAcsDevice = device;
   }
   
   // Store event handler references for proper cleanup
@@ -626,7 +530,7 @@
       
       // Load all device sources in parallel for faster loading
       const startTime = performance.now();
-      const [epcResult, mikrotikResult, snmpResult, discoveredResult, hardwareDeploymentsResult, acsResult] = await Promise.allSettled([
+      const [epcResult, mikrotikResult, snmpResult, discoveredResult, hardwareDeploymentsResult] = await Promise.allSettled([
         monitoringService.getEPCDevices().catch(e => ({ success: false, error: e })),
         monitoringService.getMikrotikDevices().catch(e => ({ success: false, error: e })),
         monitoringService.getSNMPDevices().catch(e => ({ success: false, error: e })),
@@ -637,29 +541,6 @@
             return await coverageMapService.getAllHardwareDeployments(tenantId);
           } catch (e) {
             console.error('[Network Monitoring] Error loading hardware deployments:', e);
-            return [];
-          }
-        })(),
-        (async () => {
-          try {
-            const { authService } = await import('$lib/services/authService');
-            const user = authService.getCurrentUser();
-            if (!user) throw new Error('Not authenticated');
-            
-            const token = await authService.getAuthTokenForApi();
-            const response = await fetch('/api/tr069/devices', {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-Tenant-ID': tenantId,
-                'Content-Type': 'application/json'
-              }
-            });
-            
-            if (!response.ok) throw new Error(`Failed to load ACS devices: ${response.status}`);
-            const result = await response.json();
-            return result.success && result.devices ? result.devices : [];
-          } catch (e) {
-            console.error('[Network Monitoring] Error loading ACS devices:', e);
             return [];
           }
         })()
@@ -761,54 +642,6 @@
         console.error('[Network Monitoring] Error loading hardware deployments:', hardwareDeploymentsResult.reason);
       }
       
-      // Process ACS/TR-069 devices
-      if (acsResult.status === 'fulfilled' && Array.isArray(acsResult.value)) {
-        acsResult.value.forEach((device: any) => {
-          // Convert ACS device to unified device format
-          const deviceData: any = {
-            id: device._id || device.id,
-            name: device.manufacturer || device.model || 'TR-069 Device',
-            type: 'tr069',
-            deviceType: 'cpe',
-            status: device.status === 'Online' ? 'online' : 'offline',
-            location: device.location || {
-              coordinates: { latitude: 0, longitude: 0 },
-              address: 'TR-069 Device Location'
-            },
-            manufacturer: device.manufacturer,
-            model: device.model,
-            serialNumber: device.serialNumber,
-            ipAddress: device.ipAddress,
-            firmware: device.firmware,
-            lastContact: device.lastContact,
-            parameters: device.parameters || {},
-            metrics: {}
-          };
-          
-          // Ensure location has coordinates structure
-          if (!deviceData.location.coordinates && deviceData.location) {
-            deviceData.location = {
-              coordinates: {
-                latitude: deviceData.location.latitude || 0,
-                longitude: deviceData.location.longitude || 0
-              },
-              address: deviceData.location.address || 'TR-069 Device'
-            };
-          }
-          
-          addDevice(deviceData, 'tr069');
-        });
-        
-        // Store ACS devices separately for the ACS panel
-        acsDevices = acsResult.value.map((device: any) => ({
-          ...device,
-          status: device.status === 'Online' ? 'online' : 'offline'
-        }));
-      } else if (acsResult.status === 'rejected') {
-        console.error('[Network Monitoring] Error loading ACS devices:', acsResult.reason);
-        acsDevices = [];
-      }
-      
       networkDevices = devices;
     } catch (error) {
       console.error('[Network Monitoring] Failed to load network devices:', error);
@@ -889,7 +722,6 @@
     loadNetworkDevices();
     loadSNMPData();
     loadEPCDevices();
-    loadACSDevices();
     // Sites will be reloaded when MonitoringMap receives updated data
   }
 
@@ -1127,14 +959,6 @@
           <span class="control-icon">🖥️</span>
           <span class="control-label">Mikrotik</span>
         </button>
-        <button 
-          class="module-control-btn {mapView === 'acs' ? 'active' : ''}"
-          onclick={() => mapView = 'acs'}
-          title="ACS CPE Management"
-        >
-          <span class="control-icon">📡</span>
-          <span class="control-label">ACS CPE</span>
-        </button>
       </div>
     </div>
   </div>
@@ -1222,28 +1046,6 @@
         </div>
       {:else}
         <MikrotikDevicesPanel {tenantId} />
-      {/if}
-    </div>
-  {/if}
-  
-  <!-- ACS CPE Management View -->
-  {#if mapView === 'acs'}
-    <div class="acs-overlay">
-      {#if isLoadingACSDevices}
-        <div class="no-devices">
-          <p>⏳ Loading ACS devices...</p>
-        </div>
-      {:else if acsLoadError}
-        <div class="no-devices">
-          <p>⚠️ Error loading ACS devices: {acsLoadError}</p>
-          <button onclick={loadACSDevices} class="btn btn-primary">Retry</button>
-        </div>
-      {:else}
-        <ACSDevicesPanel 
-          {tenantId} 
-          devices={acsDevices}
-          onRefresh={loadACSDevices}
-        />
       {/if}
     </div>
   {/if}
@@ -1648,28 +1450,6 @@
     overflow-y: auto;
     padding: 2rem;
     z-index: 5;
-  }
-
-  .acs-overlay {
-    position: absolute;
-    top: 80px; /* Start below the module header menu */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--bg-primary);
-    overflow-y: auto;
-    z-index: 5;
-    padding: 1rem;
-  }
-  
-  .acs-overlay .no-devices {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 2rem;
-    text-align: center;
   }
   
 

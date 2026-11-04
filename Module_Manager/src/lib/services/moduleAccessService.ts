@@ -20,7 +20,6 @@ export interface TenantModuleConfig {
   enabledModules: {
     pciResolution: boolean;
     cbrsManagement: boolean;
-    acsManagement: boolean;
     hssManagement: boolean;
     coverageMap: boolean;
     inventory: boolean;

@@ -28,7 +28,7 @@
 
   function setupAcs() {
     dispatch('action', { type: 'setup-acs' });
-    goto('/modules/acs-cpe-management/settings');
+    goto('/modules/monitoring');
     handleClose();
   }
 
@@ -68,7 +68,7 @@
               <div class="module-card">
                 <span class="icon">⚙️</span>
                 <h4>ACS/TR-069</h4>
-                <p>Connect GenieACS for CPE</p>
+                <p>Configure network monitoring</p>
                 <button type="button" class="btn-secondary" on:click={setupAcs}>Setup ACS</button>
               </div>
               <div class="module-card">

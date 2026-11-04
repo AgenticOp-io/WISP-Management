@@ -1,10 +1,9 @@
 // Coverage Map Service - MongoDB Backend Version
 import type { TowerSite, Sector, CPEDevice, NetworkEquipment } from './models';
-import { getApiUrl } from '$lib/config/api';
+import { API_CONFIG, getApiProxyRequestUrl, getBackendDirectBase } from '$lib/config/api';
 import { debug } from '$lib/utils/debug';
 
-// API Configuration - Use centralized config
-const API_URL = getApiUrl('NETWORK');
+const NETWORK_API_PATH = API_CONFIG.PATHS.NETWORK;
 
 export class CoverageMapService {
   
@@ -59,10 +58,9 @@ export class CoverageMapService {
       throw new Error('No tenant selected');
     }
     
-    // Use relative URL (goes through Firebase Hosting rewrite to apiProxy)
-    // Use centralized API configuration
-    const apiPath = API_URL;
-    const url = `${apiPath}/${endpoint}`;
+    const logicalPath = `${NETWORK_API_PATH}/${endpoint}`;
+    const direct = getBackendDirectBase();
+    const url = direct ? `${direct}${logicalPath}` : getApiProxyRequestUrl(logicalPath);
     
     // Check if debug mode is enabled and add header
     const isDebugMode = typeof window !== 'undefined' && localStorage.getItem('wisptools_debug_enabled') === 'true';
@@ -78,15 +76,20 @@ export class CoverageMapService {
       });
     }
     
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+      'X-Tenant-ID': resolvedTenantId,
+      'Content-Type': 'application/json',
+      ...(options.headers as Record<string, string> | undefined)
+    };
+    // Omit on cross-origin GCE calls until nginx allows X-Debug-Mode in CORS preflight
+    if (!direct) {
+      headers['X-Debug-Mode'] = isDebugMode ? 'true' : 'false';
+    }
+
     const response = await fetch(url, {
       ...options,
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'X-Tenant-ID': resolvedTenantId,
-        'X-Debug-Mode': isDebugMode ? 'true' : 'false',
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
+      headers
     });
     
     if (!response.ok) {
@@ -374,31 +377,6 @@ export class CoverageMapService {
       }
     } catch (error: any) {
       errors.push(`CBRS import failed: ${error.message}`);
-    }
-    
-    return { imported, errors };
-  }
-  
-  /**
-   * Import ACS CPE devices
-   */
-  async importFromACS(tenantId: string): Promise<{ imported: number; errors: string[] }> {
-    const errors: string[] = [];
-    let imported = 0;
-    
-    try {
-      // Call backend endpoint to import from GenieACS data
-      const result = await this.apiCall('import/acs', {
-        method: 'POST',
-        body: JSON.stringify({ tenantId })
-      });
-      
-      imported = result.imported || 0;
-      if (result.errors) {
-        errors.push(...result.errors);
-      }
-    } catch (error: any) {
-      errors.push(`ACS import failed: ${error.message}`);
     }
     
     return { imported, errors };

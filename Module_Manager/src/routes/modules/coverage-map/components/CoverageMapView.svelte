@@ -123,9 +123,15 @@
   }
 
   export async function enableRectangleDrawing(): Promise<void> {
-    if (controller && controller.isReady()) {
-      await controller.enableRectangleDrawing();
+    const deadline = Date.now() + 20_000;
+    while (Date.now() < deadline) {
+      if (controller?.isReady()) {
+        await controller.enableRectangleDrawing();
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
+    console.warn('[CoverageMapView] Timed out waiting for map before enabling rectangle drawing');
   }
 
   export async function disableRectangleDrawing(): Promise<void> {

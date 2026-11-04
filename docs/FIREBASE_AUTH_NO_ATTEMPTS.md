@@ -99,7 +99,7 @@ When you click Sign In, you should see:
 ## Expected Console Output (Successful Login)
 
 ```
-🔥 Firebase Config: {apiKey: "AIzaSyD_XK8eTNOfbEugJ27yucf_VLizOTgzkfA...", authDomain: "wisptools-production.firebaseapp.com", projectId: "wisptools-production", appId: "1:1048161130237:web:160789736967985b655094"}
+🔥 Firebase Config: {apiKey: "YOUR_FIREBASE_OR_GOOGLE_API_KEY...", authDomain: "wisptools-production.firebaseapp.com", projectId: "wisptools-production", appId: "1:1048161130237:web:160789736967985b655094"}
 🔥 Initializing Firebase app: {projectId: "wisptools-production", authDomain: "wisptools-production.firebaseapp.com"}
 🔥 Firebase app initialized successfully: {name: "[DEFAULT]", projectId: "wisptools-production"}
 [AuthService] Initializing auth listener with: {app: "[DEFAULT]", projectId: "wisptools-production", authDomain: "wisptools-production.firebaseapp.com"}

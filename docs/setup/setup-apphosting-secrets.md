@@ -57,7 +57,7 @@ If you want to enable the CBRS module functionality, create the secrets:
 2. **Create Secret: google-sas-client-secret**
    - Click "CREATE SECRET"
    - Name: `google-sas-client-secret`
-   - Secret value: `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`
+   - Secret value: `YOUR_GOOGLE_OAUTH_CLIENT_SECRET`
    - Click "CREATE SECRET"
 
 3. **Grant Access to App Hosting**
@@ -77,7 +77,7 @@ If you want to enable the CBRS module functionality, create the secrets:
 
 ```bash
 # Create Google SAS secret
-echo -n "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" | \
+echo -n "YOUR_GOOGLE_OAUTH_CLIENT_SECRET" | \
   gcloud secrets create google-sas-client-secret \
     --project=lte-pci-mapper-65450042-bbf71 \
     --data-file=-
@@ -98,12 +98,12 @@ Instead of secrets, use plain environment variables in `apphosting.yaml`:
 ```yaml
 # Google SAS Configuration - Using environment variables instead of secrets
 - variable: GOOGLE_SAS_CLIENT_ID
-  value: 1044782186913-7ukvo096g0r9oal2lg2tehiunae49ceq.apps.googleusercontent.com
+  value: YOUR_CLIENT_ID.apps.googleusercontent.com
   availability:
     - RUNTIME
 
 - variable: GOOGLE_SAS_CLIENT_SECRET
-  value: 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
+  value: YOUR_GOOGLE_OAUTH_CLIENT_SECRET
   availability:
     - RUNTIME
 ```

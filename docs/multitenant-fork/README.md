@@ -8,6 +8,7 @@ This folder holds **migration and restoration** notes for operators who want a *
 |----------|---------|
 | [MULTITENANT_RESTORATION.md](./MULTITENANT_RESTORATION.md) | What to re-enable, env vars to clear, and rough order of work |
 | [SINGLE_TENANT_MODE.md](../guides/SINGLE_TENANT_MODE.md) | How single-tenant mode works today (inverse checklist) |
+| [single-tenant-fork/README.md](../single-tenant-fork/README.md) | Single-use branch (`fork/single-use`), simple login build |
 
 ## Git branch
 

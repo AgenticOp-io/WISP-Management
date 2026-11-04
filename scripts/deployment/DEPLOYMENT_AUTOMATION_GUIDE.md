@@ -108,7 +108,7 @@ bash scripts/deployment/deploy-frontend-updates.sh development
 **Usage:**
 ```bash
 # On GCE server
-sudo bash scripts/deployment/update-mongodb-atlas.sh "mongodb+srv://user:pass@cluster.mongodb.net/wisptools"
+sudo bash scripts/deployment/update-mongodb-atlas.sh "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/wisptools"
 ```
 
 **Get your Atlas connection string:**

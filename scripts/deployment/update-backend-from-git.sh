@@ -12,7 +12,7 @@ echo "🔄 Updating backend from GitHub..."
 echo ""
 
 # GitHub token for private repository access (required – set in env or .env)
-# Do not commit tokens. Use: export GITHUB_TOKEN=ghp_... or add to /opt/lte-pci-mapper/.env
+# Do not commit tokens. Use: export GITHUB_TOKEN=YOUR_GITHUB_PAT or add to /opt/lte-pci-mapper/.env
 if [ -z "$GITHUB_TOKEN" ]; then
   if [ -f "$REPO_DIR/.env" ]; then
     source "$REPO_DIR/.env" 2>/dev/null || true
@@ -20,7 +20,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
 fi
 if [ -z "$GITHUB_TOKEN" ]; then
   echo "❌ GITHUB_TOKEN is not set. Set it in the environment or in $REPO_DIR/.env"
-  echo "   Example: export GITHUB_TOKEN=ghp_xxxxxxxx"
+  echo "   Example: export GITHUB_TOKEN=YOUR_GITHUB_PAT"
   exit 1
 fi
 GIT_REPO_URL="https://${GITHUB_TOKEN}@github.com/theorem6/WISP-Management.git"

@@ -1,5 +1,4 @@
 // Firebase Functions - Main Entry Point
-// Combines PCI analysis and GenieACS integration
 
 // Import shared Firebase initialization (must be first)
 import { db, auth } from './firebaseInit.js';
@@ -66,95 +65,6 @@ export const analyzePCI = onRequest({
     }
   });
 });
-
-// Export GenieACS bridge functions (connects to real GenieACS)
-// NOTE: Single-tenant versions are deprecated - use multi-tenant versions below
-// Keeping for backward compatibility but not recommended for new implementations
-/*
-export {
-  proxyGenieACSNBI,
-  syncGenieACSDevices,
-  getDeviceParameters,
-  executeDeviceTask,
-  getDevicePerformanceMetrics
-} from './genieacsBridge.js';
-
-// Export simplified GenieACS integration functions (Firestore only - fallback)
-export {
-  syncCPEDevices,
-  getCPEDevices,
-  getCPEDevice,
-  updateCPELocation,
-  getCPEPerformanceMetrics
-} from './simpleGenieacsIntegration.js';
-
-// Export simplified GenieACS core services (placeholders)
-export {
-  genieacsCWMP,
-  genieacsNBI,
-  genieacsFS,
-  genieacsUI
-} from './simpleGenieacsServices.js';
-*/
-
-// Export Multi-Tenant GenieACS functions (PRIMARY - USE THESE)
-export {
-  proxyGenieACSNBIMultitenant,
-  syncGenieACSDevicesMultitenant,
-  handleCWMPMultitenant,
-  getDeviceParametersMultitenant,
-  executeDeviceTaskMultitenant
-} from './genieacsBridgeMultitenant.js';
-
-export {
-  genieacsNBIMultitenant,
-  genieacsFSMultitenant
-} from './genieacsServicesMultitenant.js';
-
-
-// Export Firestore-based presets management (legacy - fallback)
-export {
-  getPresets,
-  createPreset,
-  deletePreset,
-  initializeSamplePresets
-} from './cleanPresetsManagement.js';
-
-// Export Firestore-based faults management (legacy - fallback)
-export {
-  getFaults,
-  getFault,
-  createFault,
-  resolveFault,
-  initializeSampleFaults
-} from './faultsManagement.js';
-
-// Export MongoDB-backed presets management (primary)
-export {
-  getMongoPresets,
-  createMongoPreset,
-  updateMongoPreset,
-  deleteMongoPreset,
-  toggleMongoPreset
-} from './mongoPresetsManagement.js';
-
-// Export MongoDB-backed faults management (primary)
-export {
-  getMongoFaults,
-  getMongoFault,
-  acknowledgeMongoFault,
-  deleteMongoFault,
-  createMongoFault,
-  deleteResolvedMongoFaults
-} from './mongoFaultsManagement.js';
-
-// Export MongoDB initialization and health check functions
-export {
-  checkMongoHealth,
-  initializeMongoPresets,
-  initializeMongoFaults,
-  initializeMongoDatabase
-} from './mongoInitialization.js';
 
 // Export CBRS Management functions (modular)
 export {

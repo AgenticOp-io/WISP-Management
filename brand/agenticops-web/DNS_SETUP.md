@@ -1,4 +1,4 @@
-# DNS setup for agenticop.io (current) + migration to agenticops.io (December)
+﻿# DNS setup for agenticop.io (current) + migration to agenticops.io (December)
 
 Current decision:
 
@@ -8,7 +8,7 @@ Current decision:
 
 This guide keeps production stable now and makes the December switch fast.
 
-**Firebase Hosting for AgenticOps:** dedicated GCP/Firebase project **`agenticop-io`**, default site **`agenticop-io`** → **`https://agenticop-io.web.app`**. **`agenticop.io`** should be attached here (Console → Hosting → Custom domains).
+**Firebase Hosting for AgenticOp.io:** dedicated GCP/Firebase project **`agenticop-io`**, default site **`agenticop-io`** → **`https://agenticop-io.web.app`**. **`agenticop.io`** should be attached here (Console → Hosting → Custom domains).
 
 **If the site looks wrong (white background, `/agenticops.css` 404):** the domain may still point at a **different** Hosting site, or an old deploy. Fix: confirm **`agenticop.io`** is listed on project **`agenticop-io`** / site **`agenticop-io`**. To mirror the same files to **`agenticops-production`** on **`wisptools-production`**, run `scripts/deploy-custom-domain-hosting.ps1`.
 

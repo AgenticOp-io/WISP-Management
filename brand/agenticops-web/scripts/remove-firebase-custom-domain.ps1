@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Remove a custom domain from Firebase Hosting via the Hosting REST API.
@@ -9,8 +9,8 @@
 .PARAMETER WhatIf
 #>
 param(
-  [string] $ProjectId = "agenticop-io",
-  [string] $SiteId = "agenticop-io",
+  [string] $ProjectId = "AgenticOps",
+  [string] $SiteId = "AgenticOps",
   [string] $Domain = "agenticops.io",
   [switch] $WhatIf
 )

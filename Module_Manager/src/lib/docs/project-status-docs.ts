@@ -13,7 +13,6 @@ export const projectStatusContent = `
   <li><strong>Wizards:</strong> All 19+ wizards implemented and in-app (Site/Deployment, Subscriber/Plan/Group, RMA, Customer Onboarding, Conflict Resolution, CBRS Device Registration, Organization Setup, Initial Configuration, Troubleshooting, Device Onboarding, etc.). Access via <code>/wizards</code> or each module’s wizard menu.</li>
   <li><strong>Customer form:</strong> Add/Edit Customer includes service type (4G/5G, FWA, WiFi, Fiber), LTE auth (IMSI, Ki, OPc), MAC address, and QoS.</li>
   <li><strong>Customer Portal:</strong> Branding (Portal Setup), tickets, billing (Stripe/PayPal, invoices), FAQ, KB, service status, live-chat placeholder. Routes at <code>/modules/customers/portal/*</code>.</li>
-  <li><strong>ACS:</strong> Preset Management at <code>/modules/acs-cpe-management/presets</code>. Parameter editor, customer link/unlink, diagnostics/reboot/refresh; alerts and firmware UI exist.</li>
   <li><strong>Documentation:</strong> Integrated at <code>/help</code> and <code>/docs</code>; key repo docs have frontmatter. API_BASE_URL documented in <code>.env.example</code> and deployment docs.</li>
 </ul>
 

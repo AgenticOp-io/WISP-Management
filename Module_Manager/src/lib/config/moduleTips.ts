@@ -1389,62 +1389,6 @@ export const moduleTips: ModuleTipsConfig = {
         <p>From <strong>Service locations</strong>, use <strong>Coverage map</strong> when lat/lon exist to open the map centered on that point (<code>focusLat</code> / <code>focusLng</code>).</p>
       `
     }
-  ],
-  'acs-cpe-management': [
-    {
-      id: 'acs-1',
-      title: 'ACS CPE overview',
-      icon: '📡',
-      content: `
-        <h4>TR-069 CPE management</h4>
-        <p>Manage CPE devices via GenieACS: device discovery, GPS map, real-time status, parameter read/write, presets, and fault management. Check <strong>Administration → Service Status</strong> (CWMP 7547, NBI 7557, etc.).</p>
-      `
-    },
-    {
-      id: 'acs-2',
-      title: 'Configuring CPE for ACS',
-      icon: '⚙️',
-      content: `
-        <h4>Point CPE to ACS</h4>
-        <p>Set CPE ACS URL to <code>https://your-app.web.app/cwmp</code>. Devices appear after initial inform. <code>/cwmp</code> proxies to GenieACS CWMP (port 7547).</p>
-      `
-    },
-    {
-      id: 'acs-3',
-      title: 'Map view',
-      icon: '🗺️',
-      content: `
-        <h4>GPS devices on map</h4>
-        <p><strong>Green</strong> – online; <strong>Red</strong> – offline. Click marker for device details; performance icon opens full modal. Use zoom, pan, basemap switch, Auto-Fit.</p>
-      `
-    },
-    {
-      id: 'acs-4',
-      title: 'Preset management',
-      icon: '📋',
-      content: `
-        <h4>Configuration templates</h4>
-        <p>Go to <strong>/modules/acs-cpe-management/presets</strong>. Create presets, use parameter editor, link/unlink customers. Apply presets to devices for consistent config.</p>
-      `
-    },
-    {
-      id: 'acs-5',
-      title: 'Diagnostics & reboot',
-      icon: '🔧',
-      content: `
-        <h4>Device actions</h4>
-        <p>From device details: <strong>Diagnostics</strong>, <strong>Reboot</strong>, <strong>Refresh</strong>. Use for troubleshooting and remote management.</p>
-      `
-    },
-    {
-      id: 'acs-6',
-      title: 'Fault management',
-      icon: '🚨',
-      content: `
-        <h4>Device faults</h4>
-        <p>Track and acknowledge device faults. View fault list and clear or acknowledge as needed.</p>
-      `
-    }
   ]
 };
 

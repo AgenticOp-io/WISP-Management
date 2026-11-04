@@ -137,7 +137,7 @@ function handleEditBackdropKeydown(event: KeyboardEvent) {
     localStorage.setItem('selectedTenantId', selectedTenant.id);
     localStorage.setItem('selectedTenantName', selectedTenant.displayName);
     closeEditModal();
-    goto('/modules/acs-cpe-management');
+    goto('/modules/coverage-map');
   }
 
   function handleManageUsers() {

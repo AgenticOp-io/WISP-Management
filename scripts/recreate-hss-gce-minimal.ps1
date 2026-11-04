@@ -12,7 +12,7 @@ param(
     [string]$Project = "lte-pci-mapper-65450042-bbf71",
     [string]$Zone = "us-central1-a",
     [string]$InstanceName = "acs-hss-server",
-    [string]$MachineType = "e2-micro",
+    [string]$MachineType = "e2-small",
     [int]$BootDiskGb = 20,
     [string]$StaticAddressName = "hss-wisptools-static",
     [switch]$ReserveStaticIp = $true,

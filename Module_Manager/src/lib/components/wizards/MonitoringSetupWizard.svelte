@@ -23,7 +23,6 @@
     { id: 'welcome', title: 'Welcome', icon: '📊' },
     { id: 'snmp', title: 'SNMP Setup', icon: '🔧' },
     { id: 'mikrotik', title: 'MikroTik (Optional)', icon: '📡' },
-    { id: 'acs', title: 'ACS (TR-069)', icon: '🛰️' },
     { id: 'complete', title: 'Complete!', icon: '🎉' }
   ];
   
@@ -33,21 +32,10 @@
   let mikrotikEnabled = false;
   let mikrotikUsername = '';
   let mikrotikPassword = '';
-  let genieacsUrl = '';
-  let genieacsApiUrl = '';
-  let acsLoaded = false;
   let snmpLoaded = false;
 
   $: if (show && autoStart) {
     currentStep = 0;
-  }
-
-  $: if (show && $currentTenant?.cwmpUrl && genieacsUrl !== $currentTenant.cwmpUrl) {
-    genieacsUrl = $currentTenant.cwmpUrl;
-  }
-
-  $: if (show && !acsLoaded) {
-    loadAcsConfiguration();
   }
 
   $: if (show && !snmpLoaded && $currentTenant?.id) {
@@ -56,7 +44,6 @@
   
   function handleClose() {
     snmpLoaded = false;
-    acsLoaded = false;
     dispatch('close');
   }
   
@@ -82,16 +69,6 @@
       error = 'No tenant selected';
       return;
     }
-
-    if (!genieacsUrl.trim()) {
-      error = 'Tenant ACS URL is missing. Please contact support.';
-      return;
-    }
-
-    if (!genieacsApiUrl.trim()) {
-      error = 'GenieACS NBI API URL is required';
-      return;
-    }
     
     isLoading = true;
     error = '';
@@ -114,25 +91,6 @@
         throw new Error(data?.error || data?.message || 'Failed to save SNMP configuration');
       }
 
-      const normalizedCwmpUrl = genieacsUrl.trim().replace(/\/$/, '');
-      const normalizedNbiUrl = genieacsApiUrl.trim().replace(/\/$/, '');
-
-      const acsResponse = await fetch('/api/tr069/configuration', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-tenant-id': tenantId
-        },
-        body: JSON.stringify({
-          genieacsUrl: normalizedCwmpUrl,
-          genieacsApiUrl: normalizedNbiUrl
-        })
-      });
-      const acsData = await acsResponse.json();
-      if (!acsResponse.ok || acsData?.success === false) {
-        throw new Error(acsData?.error || acsData?.message || 'Failed to save ACS configuration');
-      }
-
       success = 'Monitoring configuration saved successfully!';
       
       // Move to completion step
@@ -149,29 +107,6 @@
   function completeSetup() {
     dispatch('complete');
     handleClose();
-  }
-
-  async function loadAcsConfiguration() {
-    const tenantId = $currentTenant?.id;
-    if (!tenantId) return;
-
-    try {
-      const response = await fetch('/api/tr069/configuration', {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-tenant-id': tenantId
-        }
-      });
-      const data = await response.json();
-      if (response.ok && data?.config) {
-        genieacsUrl = $currentTenant?.cwmpUrl || data.config.genieacsUrl || genieacsUrl;
-        genieacsApiUrl = data.config.genieacsApiUrl || genieacsApiUrl;
-      }
-      acsLoaded = true;
-    } catch (err) {
-      console.warn('[MonitoringSetupWizard] Failed to load ACS configuration', err);
-      acsLoaded = true;
-    }
   }
 
   async function loadSnmpConfiguration() {
@@ -249,7 +184,6 @@
                 <ul>
                   <li>✅ SNMP credentials for device polling</li>
                   <li>✅ MikroTik device credentials (optional)</li>
-                  <li>✅ ACS (TR-069) endpoints for CPE management</li>
                   <li>✅ Ping monitoring (automatic)</li>
                 </ul>
               </div>
@@ -354,54 +288,9 @@
               <p><strong>Note:</strong> MikroTik monitoring is optional. You can skip this step if you don't have MikroTik devices or want to configure them later.</p>
             </div>
           </div>
+
           
         {:else if currentStep === 3}
-          <!-- ACS Setup Step -->
-          <div class="wizard-panel">
-            <h3>ACS (TR-069) Configuration</h3>
-            <p>Use your tenant's ACS endpoint and provide the GenieACS NBI API URL.</p>
-            
-            <div class="form-group">
-              <label>
-                Tenant ACS URL <span class="required">*</span>
-              </label>
-              <div class="form-input" style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="flex: 1; word-break: break-all;">{genieacsUrl || 'Not available'}</span>
-                {#if genieacsUrl}
-                  <button
-                    type="button"
-                    class="btn-secondary"
-                    style="padding: 0.35rem 0.75rem; font-size: 0.75rem;"
-                    on:click={() => navigator.clipboard?.writeText(genieacsUrl)}
-                  >
-                    Copy
-                  </button>
-                {/if}
-              </div>
-              <small class="form-hint">This is generated automatically per tenant during setup.</small>
-            </div>
-            
-            <div class="form-group">
-              <label for="genieacs-api-url">
-                GenieACS NBI API URL <span class="required">*</span>
-              </label>
-              <input
-                id="genieacs-api-url"
-                type="text"
-                bind:value={genieacsApiUrl}
-                placeholder="http://your-acs-server:7557"
-                class="form-input"
-                disabled={isLoading}
-              />
-              <small class="form-hint">NBI API base URL used for device actions and metrics</small>
-            </div>
-            
-            <div class="info-card">
-              <p><strong>💡 Tip:</strong> Keep your NBI URL pointing at the GenieACS server (default port 7557).</p>
-            </div>
-          </div>
-          
-        {:else if currentStep === 4}
           <!-- Complete Step -->
           <div class="wizard-panel">
             <h3>🎉 Monitoring Setup Complete!</h3>
@@ -413,21 +302,14 @@
                 <span class="icon">📊</span>
                 <div>
                   <strong>View Device Monitoring</strong>
-                  <p>See device status, SNMP/TR-069 metrics, and topology</p>
+                  <p>See device status, SNMP metrics, and topology</p>
                 </div>
               </a>
-              <a href="/modules/acs-cpe-management/monitoring" class="next-step-item">
-                <span class="icon">📈</span>
-                <div>
-                  <strong>ACS CPE Metrics</strong>
-                  <p>Per-device TR-069 metrics and Performance Analytics</p>
-                </div>
-              </a>
-              <a href="/modules/acs-cpe-management/alerts" class="next-step-item">
+              <a href="/modules/monitoring" class="next-step-item">
                 <span class="icon">🔔</span>
                 <div>
-                  <strong>ACS Alert Rules</strong>
-                  <p>Configure alerts for CPE outages and performance</p>
+                  <strong>Alert Rules</strong>
+                  <p>Configure alerts for device outages and performance</p>
                 </div>
               </a>
             </div>
@@ -448,9 +330,9 @@
         {/if}
         
         <div class="footer-actions">
-        {#if currentStep === 3}
+          {#if currentStep === 2}
             <button class="btn-primary" on:click={saveConfiguration} disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save & Complete →'}
+              {isLoading ? 'Saving...' : 'Save & Continue →'}
             </button>
           {:else if currentStep < steps.length - 1}
             <button class="btn-primary" on:click={nextStep} disabled={isLoading}>

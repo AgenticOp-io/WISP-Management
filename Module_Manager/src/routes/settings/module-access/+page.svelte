@@ -25,7 +25,6 @@
   const modules = [
     { key: 'pciResolution' as keyof ModuleAccess, name: 'PCI Resolution', icon: '📊' },
     { key: 'cbrsManagement' as keyof ModuleAccess, name: 'CBRS Management', icon: '📡' },
-    { key: 'acsManagement' as keyof ModuleAccess, name: 'ACS CPE Management', icon: '📡' },
     { key: 'hssManagement' as keyof ModuleAccess, name: 'HSS Management', icon: '🔐' },
     { key: 'coverageMap' as keyof ModuleAccess, name: 'Coverage Map', icon: '🗺️' },
     { key: 'inventory' as keyof ModuleAccess, name: 'Inventory', icon: '📦' },

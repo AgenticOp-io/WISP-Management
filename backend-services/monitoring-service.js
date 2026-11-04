@@ -100,54 +100,6 @@ class MonitoringService {
   }
 
   // ============================================
-  // GENIEACS METRICS COLLECTION
-  // ============================================
-
-  async collectGenieACSMetrics(tenantId) {
-    try {
-      const db = require('./monitoring-schema').Metric.db;
-      
-      // Total devices
-      const totalDevices = await db.collection('devices').countDocuments({
-        tenant_id: tenantId
-      });
-      await this.recordMetric(tenantId, 'genieacs', 'total_devices', totalDevices);
-
-      // Online devices
-      const onlineDevices = await db.collection('devices').countDocuments({
-        tenant_id: tenantId,
-        '_lastInform': { $gte: new Date(Date.now() - 15 * 60 * 1000) } // Last 15 minutes
-      });
-      await this.recordMetric(tenantId, 'genieacs', 'online_devices', onlineDevices);
-
-      // Offline devices
-      const offlineDevices = totalDevices - onlineDevices;
-      await this.recordMetric(tenantId, 'genieacs', 'offline_devices', offlineDevices);
-
-      // Devices with faults
-      const faultyDevices = await db.collection('faults').countDocuments({
-        tenant_id: tenantId,
-        resolved: false
-      });
-      await this.recordMetric(tenantId, 'genieacs', 'faulty_devices', faultyDevices);
-
-      const faultRate = totalDevices > 0 ? (faultyDevices / totalDevices) * 100 : 0;
-      await this.recordMetric(tenantId, 'genieacs', 'fault_rate', faultRate, {}, '%');
-
-      return {
-        total_devices: totalDevices,
-        online_devices: onlineDevices,
-        offline_devices: offlineDevices,
-        faulty_devices: faultyDevices,
-        fault_rate: faultRate
-      };
-    } catch (error) {
-      console.error('Error collecting GenieACS metrics:', error);
-      throw error;
-    }
-  }
-
-  // ============================================
   // CBRS METRICS COLLECTION
   // ============================================
 
@@ -211,12 +163,6 @@ class MonitoringService {
           break;
         case 'hss-api':
           ({ status, responseTime, errorMessage } = await this.checkHSSAPI());
-          break;
-        case 'genieacs-cwmp':
-          ({ status, responseTime, errorMessage } = await this.checkGenieACS('cwmp', 7547));
-          break;
-        case 'genieacs-nbi':
-          ({ status, responseTime, errorMessage } = await this.checkGenieACS('nbi', 7557));
           break;
         case 'mongodb':
           ({ status, responseTime, errorMessage } = await this.checkMongoDB());
@@ -300,38 +246,6 @@ class MonitoringService {
       });
 
       if (response.ok) {
-        return { 
-          status: 'healthy', 
-          responseTime: Date.now() - start,
-          errorMessage: null
-        };
-      } else {
-        return { 
-          status: 'degraded', 
-          responseTime: Date.now() - start,
-          errorMessage: `HTTP ${response.status}`
-        };
-      }
-    } catch (error) {
-      return { status: 'down', responseTime: 0, errorMessage: error.message };
-    }
-  }
-
-  async checkGenieACS(service, port) {
-    try {
-      const fetch = require('node-fetch');
-      const start = Date.now();
-
-      const urls = {
-        cwmp: `http://136.112.111.167:${port}`,
-        nbi: `http://136.112.111.167:${port}/devices?limit=1`
-      };
-
-      const response = await fetch(urls[service] || urls.nbi, {
-        timeout: 5000
-      });
-
-      if (response.ok || response.status === 200) {
         return { 
           status: 'healthy', 
           responseTime: Date.now() - start,
@@ -801,13 +715,11 @@ class MonitoringService {
 
         for (const tenant of tenants) {
           await this.collectHSSMetrics(tenant.tenant_id);
-          await this.collectGenieACSMetrics(tenant.tenant_id);
           await this.collectCBRSMetrics(tenant.tenant_id);
           
           // Health checks
           await this.checkServiceHealth(tenant.tenant_id, 'hss-daemon');
           await this.checkServiceHealth(tenant.tenant_id, 'hss-api');
-          await this.checkServiceHealth(tenant.tenant_id, 'genieacs-nbi');
           await this.checkServiceHealth(tenant.tenant_id, 'mongodb');
           
           // Evaluate alert rules

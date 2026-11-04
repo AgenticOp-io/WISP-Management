@@ -4,8 +4,12 @@
 import { browser } from '$app/environment';
 import { authService } from './authService';
 import { isPlatformAdmin } from './adminService';
-import { API_CONFIG, getApiProxyRequestUrl, getBackendDirectBase, getAdminApiRequest } from '$lib/config/api';
-import { getConfiguredSingleTenantId, isSingleTenantMode } from '$lib/config/tenantMode';
+import { API_CONFIG, getBackendDirectBase, getAdminApiRequest, resolveApiRequestUrl } from '$lib/config/api';
+import {
+  buildSyntheticSingleTenant,
+  getConfiguredSingleTenantId,
+  isSingleTenantMode
+} from '$lib/config/tenantMode';
 import type {
   Tenant,
   UserTenantAssociation,
@@ -109,11 +113,9 @@ export class TenantService {
    */
   async getTenant(tenantId: string): Promise<{ tenant: Tenant | null; error?: 'not_found' | 'unauthorized' }> {
     try {
-      const headers = await this.getAuthHeaders();
-      // Use same-origin URL so request goes through Hosting rewrite to apiProxy (avoids cross-origin 401).
-      // path param helps apiProxy resolve route when Hosting rewrites send req.url as '/'
       const path = `/api/user-tenants/tenant/${tenantId}`;
-      const url = `${path}?path=${encodeURIComponent(path)}`;
+      const url = resolveApiRequestUrl(path);
+      const headers = await this.getAuthHeaders(getBackendDirectBase() ? undefined : path);
 
       const response = await fetch(url, {
         method: 'GET',
@@ -121,7 +123,12 @@ export class TenantService {
       });
 
       if (!response.ok) {
-        if (response.status === 404) return { tenant: null, error: 'not_found' };
+        if (response.status === 404) {
+          if (isSingleTenantMode() && getConfiguredSingleTenantId() === tenantId) {
+            return { tenant: buildSyntheticSingleTenant() };
+          }
+          return { tenant: null, error: 'not_found' };
+        }
         if (response.status === 401) return { tenant: null, error: 'unauthorized' };
         throw new Error(`Failed to get tenant: ${response.statusText}`);
       }
@@ -131,6 +138,9 @@ export class TenantService {
       return { tenant };
     } catch (error) {
       console.error('Error getting tenant:', error);
+      if (isSingleTenantMode() && getConfiguredSingleTenantId() === tenantId) {
+        return { tenant: buildSyntheticSingleTenant() };
+      }
       return { tenant: null };
     }
   }

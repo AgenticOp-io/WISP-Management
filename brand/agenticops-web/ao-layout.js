@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Shared nav + footer for multi-page AgenticOps site.
  * Set <body data-ao-page="home|services|method|proof|trust|about|contact|whitepaper">
  */
@@ -73,8 +73,8 @@
       link('about', '/about.html', 'About') +
       link('contact', '/contact.html', 'Contact') +
       '<a href="https://wisptools.io" target="_blank" rel="noopener">wisptools.io</a>' +
-      '<a href="https://github.com/4GEngineer/chrysalis" target="_blank" rel="noopener">Chrysalis</a>' +
-      '<a href="https://github.com/AgenticOp-io" target="_blank" rel="noopener">GitHub</a>' +
+      '<a href="https://github.com/AgenticOp-io/chrysalis" target="_blank" rel="noopener">Chrysalis</a>' +
+      '<a href="https://github.com/AgenticOp-io" target="_blank" rel="noopener" title="AgenticOp.io on GitHub">AgenticOp.io</a>' +
       '<a href="https://www.linkedin.com/in/vibe-architect/" target="_blank" rel="noopener">LinkedIn</a>' +
       '</nav>' +
       '<p class="ao-footer-fine">© <span id="ao-year">' +

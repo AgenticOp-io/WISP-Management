@@ -1,106 +1,85 @@
-# GitHub: **AgenticOp.io** org umbrella
+﻿# GitHub: **AgenticOp.io** umbrella (`AgenticOp-io`)
 
-Snapshot from **`theorem6`** (David Peterson), May 2026.
+Snapshot from **`theorem6`**, May 2026.
 
-**Brand:** **AgenticOp.io** (matches **https://agenticop.io**).  
-**GitHub org slug (no dots):** **`AgenticOp-io`** → **https://github.com/AgenticOp-io**  
-Do **not** use **`agenticops.*`** hostnames or the old **`AgenticOps`** org name for new work unless retiring legacy assets.
+| Layer | Name |
+|-------|------|
+| **Public brand / domain** | **AgenticOp.io** → https://agenticop.io |
+| **Marketing voice** | **Agentic Ops** (two words) — verification-backed modernization |
+| **GitHub org slug** | **`AgenticOp-io`** → https://github.com/AgenticOp-io (no dots in slug) |
+| **Legacy GitHub org** | **4GEngineer** — **deleted** May 2026 |
+| **Unavailable slug** | **`AgenticOps`** — taken by another org; do **not** use for new repos or links |
 
 ---
 
 ## What exists today
 
-| GitHub account / org | Type | Your role | Notes |
-|----------------------|------|-----------|--------|
-| **[theorem6](https://github.com/theorem6)** | User | Owner | Personal account |
-| **[4GEngineer](https://github.com/4GEngineer)** | Organization | **Admin** | Main engineering org today |
-| **[AgenticOps](https://github.com/AgenticOps)** | Organization | **Not a member** | Legacy slug; **0 public repos** — do **not** use for new branding |
-| **AgenticOp-io** | — | **Does not exist yet** | **Create** this org (slug appears available) |
+| Account / org | Role | Notes |
+|---------------|------|--------|
+| **[theorem6](https://github.com/theorem6)** | User | Personal account |
+| **4GEngineer** | — | **Deleted** (repos removed) |
+| **[AgenticOps](https://github.com/AgenticOps)** | — | **Not ours** — ignore |
+| **[AgenticOp-io](https://github.com/AgenticOp-io)** | Owner | Canonical org for all product repos |
 
-**theorem6** is a **user**, not an organization.
+### Repos (on **AgenticOp-io**)
 
-### Repos → move under **AgenticOp-io**
-
-| Repo | Current location |
-|------|------------------|
-| WISP-Management | `4GEngineer/WISP-Management` |
-| chrysalis | `4GEngineer/chrysalis` |
-| Bandwidth-Test-Manager | `4GEngineer/Bandwidth-Test-Manager` |
-| fragility-discovery-engine | `theorem6/fragility-discovery-engine` (private) |
-| agenticops-web | `theorem6/agenticops-web` (private) |
-
-Optional on **4GEngineer:** `ftth_9-25-25`, `ltepci`, `open5gs-distributed`.
+| Repo | Location |
+|------|----------|
+| WISP-Management | `AgenticOp-io/WISP-Management` |
+| chrysalis | `AgenticOp-io/chrysalis` |
+| Bandwidth-Test-Manager | `AgenticOp-io/Bandwidth-Test-Manager` |
+| fragility-discovery-engine | `AgenticOp-io/fragility-discovery-engine` |
+| agenticops-web | `AgenticOp-io/agenticops-web` |
 
 ---
 
-## Recommended path: **create `AgenticOp-io`, transfer repos**
+## Steps (completed May 2026)
 
-GitHub organization logins **cannot** be `AgenticOp.io` (no dots). Use **`AgenticOp-io`** and set the org **display name** to **AgenticOp.io** in profile settings.
+### 1) Create org **AgenticOp-io**
 
-### 1) Create the org
-
-1. [Create organization](https://github.com/organizations/plan) → choose a plan (Free is fine).
-2. **Organization account name:** **`AgenticOp-io`** (verify availability in the form).
-3. **Organization display name:** **AgenticOp.io**
-4. Add **theorem6** as **Owner**.
+1. [Create organization](https://github.com/organizations/plan) (Free is fine).
+2. **Account name:** `AgenticOp-io`
+3. **Display name:** `AgenticOp.io`
+4. **Website:** https://agenticop.io
+5. Add **theorem6** as **Owner**.
 
 ### 2) Transfer repositories
-
-**Requirements:** admin on each source repo; **create repository** permission on **AgenticOp-io**.
 
 ```powershell
 gh auth refresh -h github.com -s admin:org
 cd brand/agenticops-web/scripts
-.\transfer-to-agenticop-org.ps1 -WhatIf
-.\transfer-to-agenticop-org.ps1
+.\transfer-to-agenticop-io-org.ps1 -WhatIf
+.\transfer-to-agenticop-io-org.ps1
 ```
 
-Or: each repo → **Settings** → **Transfer ownership** → **AgenticOp-io**.
+Requires: admin on each **4GEngineer** repo; **create repository** on **AgenticOp-io**.
 
-### 3) Retire or archive **4GEngineer**
+**May 2026 status:** All five product repos live under **AgenticOp-io** (including **chrysalis**).
 
-After transfers and redirect period:
+### 3) Post-migration
 
-- Archive **4GEngineer**, or leave as telecom/LTE-only repos if you moved only product repos.
-- Ignore / rename **AgenticOps** empty org if you control it (legacy slug conflict).
-
-### Alternative: rename **4GEngineer** → **AgenticOp-io**
-
-Only if **`AgenticOp-io` slug is free** and you prefer one rename over many transfers. Same slug rules apply; you still transfer **theorem6** personal repos into the org.
+- [x] `git remote set-url origin https://github.com/AgenticOp-io/WISP-Management.git`
+- [x] Org profile: display **AgenticOp.io**, link **https://agenticop.io**
+- [x] Site links use `github.com/AgenticOp-io/...`
+- [x] Retired **4GEngineer** org and remaining telecom repos
 
 ---
 
-## After migration
+## Naming cheat sheet
 
-- [ ] `git remote set-url origin https://github.com/AgenticOp-io/WISP-Management.git` (each clone)
-- [ ] Org profile: display name **AgenticOp.io**, link **https://agenticop.io**, logo
-- [ ] GitHub Actions, deploy keys, Dependabot on new paths
-- [ ] Site + docs: `4GEngineer` / `theorem6` product links → **`AgenticOp-io`**
-- [ ] Footer org link: **https://github.com/AgenticOp-io**
+| Use for | Name |
+|---------|------|
+| Domain, legal-ish brand | **AgenticOp.io** |
+| Prose / LinkedIn | **Agentic Ops** |
+| GitHub URLs | **AgenticOp-io** |
+| Old engineering org | **4GEngineer** (removed) |
+| Do not use | **AgenticOps** (GitHub org slug conflict) |
 
----
+Firebase Hosting stays on GCP project **`agenticop-io`** (separate from GitHub org slug).
 
-## Target layout
+## GitHub org branding (live)
 
-```text
-github.com/AgenticOp-io/     # brand: AgenticOp.io
-├── WISP-Management
-├── chrysalis
-├── Bandwidth-Test-Manager
-├── fragility-discovery-engine
-└── agenticops-web
-```
-
-**theorem6** stays your personal account; product code lives under **AgenticOp-io**.
-
----
-
-## Naming reference
-
-| Use | Do not use for new work |
-|-----|-------------------------|
-| **AgenticOp.io** (brand) | AgenticOps (legacy marketing spelling) |
-| **agenticop.io** (domain) | agenticops.io (unless you own and redirect) |
-| **AgenticOp-io** (GitHub org slug) | 4GEngineer, theorem6/* for product repos |
-
-Repo folder names (`agenticops-web`, etc.) can stay as-is; only the **org owner** and **public URLs** change.
+- **Profile:** display name **AgenticOp.io**, blog **https://agenticop.io**, contact **hello@agenticop.io**
+- **Org README:** [AgenticOp-io/.github/profile/README.md](https://github.com/AgenticOp-io/.github/blob/main/profile/README.md) (shown on https://github.com/AgenticOp-io)
+- **Local source copy:** `brand/agenticops-web/.github-profile-README.md` (edit here, then push to `.github` repo)
+- **Avatar (400×400):** `brand/agenticops-web/org-avatar-400.png` (from `logo.svg`; matches `?s=400` on avatars CDN). Also in [`.github/profile/avatar.png`](https://github.com/AgenticOp-io/.github/blob/main/profile/avatar.png). Upload: **Org settings → Profile**, or `gh auth refresh -s user` then `node scripts/upload-org-avatar.mjs`.

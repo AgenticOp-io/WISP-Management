@@ -7,7 +7,6 @@ import { currentTenant } from './tenantStore';
 export interface ModulePermissions {
   pciResolution: boolean;
   cbrsManagement: boolean;
-  acsManagement: boolean;
   hssManagement: boolean;
   coverageMap: boolean;
   inventory: boolean;
@@ -25,7 +24,6 @@ export interface ModulePermissions {
 const DEFAULT_PERMISSIONS: ModulePermissions = {
   pciResolution: true,
   cbrsManagement: true,
-  acsManagement: true,
   hssManagement: true,
   coverageMap: true,
   inventory: true,
@@ -59,7 +57,6 @@ export const modulePermissions = derived(
     return {
       pciResolution: enabledModules.pciResolution ?? true,
       cbrsManagement: enabledModules.cbrsManagement ?? true,
-      acsManagement: enabledModules.acsManagement ?? true,
       hssManagement: enabledModules.hssManagement ?? true,
       coverageMap: enabledModules.coverageMap ?? true,
       inventory: enabledModules.inventory ?? true,
@@ -96,15 +93,6 @@ export const MODULE_DEFINITIONS = [
     icon: '📊',
     color: 'var(--primary)',
     path: '/modules/pci-resolution'
-  },
-  {
-    id: 'acs-cpe-management',
-    permissionKey: 'acsManagement' as keyof ModulePermissions,
-    name: 'ACS CPE Management',
-    description: 'TR-069 device management and CPE monitoring with GPS mapping',
-    icon: '📡',
-    color: 'var(--success)',
-    path: '/modules/acs-cpe-management'
   },
   {
     id: 'cbrs-management',

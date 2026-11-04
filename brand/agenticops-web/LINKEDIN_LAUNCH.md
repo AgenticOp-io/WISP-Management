@@ -1,9 +1,9 @@
-# LinkedIn launch — AgenticOps.io
+﻿# LinkedIn launch — AgenticOps.io
 
 **Branded HTML helper (teaser / upcoming project):** open locally  
 [`docs/linkedin-new-project-post.html`](docs/linkedin-new-project-post.html) — blog-style preview + plain-text post with **Copy to clipboard** (not deployed to Hosting).
 
-Chrysalis-led positioning. **Source:** https://github.com/4GEngineer/chrysalis — **early**
+Chrysalis-led positioning. **Source:** https://github.com/AgenticOp-io/chrysalis — **early**
 development; **private alpha** describes **pilot engagements** (scoped hands-on work),
 not hidden code. Link the repo when it helps; **verify LICENSE in-repo** before making
 legal claims about licensing.
@@ -29,7 +29,7 @@ Three drop-in versions: a **long-form announcement post**, a **short post**, and
 >
 > 🦋 **Chrysalis** is the verification-backed migration engine under the hood:
 > oracle corpus, automated replay, chimera cutover. Not vibe-coded rewrites —
-> proof-grounded translation. Source is on GitHub (**github.com/4GEngineer/chrysalis**);
+> proof-grounded translation. Source is on GitHub (**github.com/AgenticOp-io/chrysalis**);
 > maturity is early; pilots are scoped **one system at a time**.
 >
 > ⚙️ **AgenticOps** is the operating model that wraps it. The contract is simple:
@@ -52,7 +52,7 @@ Three drop-in versions: a **long-form announcement post**, a **short post**, and
 >
 > 👉 https://agenticop.io
 > 🔧 Production proof: https://wisptools.io
-> 🦋 Chrysalis (early): https://github.com/4GEngineer/chrysalis
+> 🦋 Chrysalis (early): https://github.com/AgenticOp-io/chrysalis
 > 📩 Pilot / access: hello@agenticop.io
 >
 > #AgenticOps #Chrysalis #LegacyModernization #AgenticAI #AIEngineering #VerifiedMigrations #VPEngineering #CTO #BuildInPublic
@@ -71,7 +71,7 @@ Three drop-in versions: a **long-form announcement post**, a **short post**, and
 > let’s talk. Pilots open.
 >
 > 👉 https://agenticop.io
-> 🦋 https://github.com/4GEngineer/chrysalis
+> 🦋 https://github.com/AgenticOp-io/chrysalis
 >
 > #AgenticOps #Chrysalis #LegacyModernization #AI
 
@@ -95,7 +95,7 @@ Three drop-in versions: a **long-form announcement post**, a **short post**, and
 > The “systems enforce correctness” part is **Chrysalis** — a verification-backed
 > migration engine I’ve been hardening over the last year. Oracle corpus,
 > automated replay, chimera cutover. Source is public on GitHub
-> (**github.com/4GEngineer/chrysalis**); maturity is early; pilots are how we
+> (**github.com/AgenticOp-io/chrysalis**); maturity is early; pilots are how we
 > engage one legacy system at a time.
 >
 > The proving ground was **wisptools.io**: a multi-tenant LTE/ISP operations
@@ -108,7 +108,7 @@ Three drop-in versions: a **long-form announcement post**, a **short post**, and
 >
 > 👉 https://agenticop.io
 > 🔧 https://wisptools.io
-> 🦋 https://github.com/4GEngineer/chrysalis
+> 🦋 https://github.com/AgenticOp-io/chrysalis
 > 📩 hello@agenticop.io
 
 ---
@@ -122,7 +122,7 @@ Three drop-in versions: a **long-form announcement post**, a **short post**, and
 
 ## Things to keep out of public posts (unless you mean them)
 
-- ❌ Claiming a **final** license for Chrysalis without checking **LICENSE** in **github.com/4GEngineer/chrysalis**
+- ❌ Claiming a **final** license for Chrysalis without checking **LICENSE** in **github.com/AgenticOp-io/chrysalis**
 - ❌ Customer logos / pilot names without written consent
 - ❌ Specific architectural internals beyond "oracle corpus / replay / chimera cutover"
 - ✅ Link the repo when useful; pair **early / pilots** with **public source** so expectations stay honest

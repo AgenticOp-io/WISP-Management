@@ -145,6 +145,20 @@ class TenantService {
         throw new Error('tenantId and userId are required');
       }
 
+      const singleTenantId = process.env.SINGLE_TENANT_ID && String(process.env.SINGLE_TENANT_ID).trim();
+      if (singleTenantId && singleTenantId === String(tenantId).trim()) {
+        if (!mongoose.Types.ObjectId.isValid(tenantId)) {
+          throw new Error('Invalid tenantId format');
+        }
+        const tenant = await Tenant.findById(new mongoose.Types.ObjectId(tenantId)).lean();
+        if (!tenant) return null;
+        return {
+          ...tenant,
+          id: tenant._id.toString(),
+          userRole: 'owner'
+        };
+      }
+
       // Check if user is assigned to this tenant
       const userTenant = await UserTenant.findOne({
         userId: userId,

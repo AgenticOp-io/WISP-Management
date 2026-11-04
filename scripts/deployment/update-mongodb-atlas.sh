@@ -1,6 +1,6 @@
 #!/bin/bash
 # Update MongoDB Atlas Connection String
-# Usage: bash update-mongodb-atlas.sh "mongodb+srv://username:password@cluster.mongodb.net/wisptools"
+# Usage: bash update-mongodb-atlas.sh "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/wisptools"
 
 set -e
 
@@ -41,7 +41,7 @@ echo ""
 
 # Get connection string
 if [ -z "$1" ]; then
-    echo "Usage: bash update-mongodb-atlas.sh \"mongodb+srv://user:pass@cluster.mongodb.net/dbname\""
+    echo "Usage: bash update-mongodb-atlas.sh \"mongodb+srv://<username>:<password>@<cluster>.mongodb.net/dbname\""
     echo ""
     echo "Get your connection string from:"
     echo "  1. Login to MongoDB Atlas"

@@ -53,23 +53,16 @@ Every wizard has at least one starting point in a module or the dashboard:
 |--------|-----------------|-------------|
 | **FirstTimeSetupWizard** | Dashboard, `/onboarding` | Shown when onboarding not complete; or go to `/onboarding` |
 | **MonitoringSetupWizard** | `/modules/monitoring` | "Get Started with Setup Wizard" button, empty-state CTA, or module-control wizard button |
-| **ACSSetupWizard** | `/modules/acs-cpe-management` | "⚙️ Setup ACS" button, or empty-state "Run ACS Setup" |
 | **CBRSSetupWizard** | `/modules/cbrs-management` | "Run Setup Wizard" (banner or toolbar), or DeviceList "Get Started" |
 | **DeploymentWizard** | `/modules/deploy` | "Deploy Equipment Wizard" / deployment wizard trigger |
 | **WorkOrderCreationWizard** | `/modules/work-orders` | "Create" button opens wizard |
 | **InventoryCheckInWizard** | `/modules/inventory` | "Check in" button |
-| **DeviceOnboardingWizard** | `/modules/acs-cpe-management` | "👋 Onboard Device" button |
-| **TroubleshootingWizard** | `/modules/acs-cpe-management` | "🔍 Troubleshoot" button (when a device is selected) |
-| **PresetCreationWizard** | `/modules/acs-cpe-management` | "🧙 More wizards" → "⚙️ Preset Creation" |
-| **BulkOperationsWizard** | `/modules/acs-cpe-management` | "🧙 More wizards" → "📦 Bulk Operations" |
-| **FirmwareUpdateWizard** | `/modules/acs-cpe-management` | "🧙 More wizards" → "💾 Firmware Update" |
-| **DeviceRegistrationWizard** | `/modules/acs-cpe-management` | "🧙 More wizards" → "📱 Device Registration" |
 
 ## ACS Wizards
 
 ### Device Registration Wizard
 
-**Purpose:** Guides users through registering CPE devices with GenieACS/TR-069.
+**Purpose:** Guides users through registering CPE devices with device management.
 
 **Features:**
 - Manual device registration

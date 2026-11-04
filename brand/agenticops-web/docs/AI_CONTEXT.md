@@ -1,4 +1,4 @@
-# AI development context — AgenticOps web & branding
+﻿# AI development context — AgenticOps web & branding
 
 This document captures **operator intent** and constraints gathered from ongoing work. Use it when continuing development in Cursor or another AI-assisted workflow.
 
@@ -8,8 +8,8 @@ This document captures **operator intent** and constraints gathered from ongoing
 
 | Layer | Name | Visibility | Notes |
 |-------|------|------------|--------|
-| Parent methodology / services brand | **AgenticOp.io** | Public site `agenticop.io` | **Transformative code** (verification-first). Narrative: Chrysalis as **first flagship**; long arc toward **macro systemic fragility** (finance, governance, cascades) — **no separate named “future project”** on site unless operator adds it. GitHub org target: **`AgenticOp-io`**. |
-| Engine (product name on site) | **Chrysalis** | **GitHub + pilot alpha** | Repo: **https://github.com/4GEngineer/chrysalis** (org **4GEngineer**, not inside theorem6/WISP-Management). PHP-first verification migration; pilots scoped **one system at a time**. **Technical whitepaper:** **`https://agenticop.io/whitepaper.html`** — source markdown **`docs/WHITEPAPER.md`**; root **`WHITEPAPER.md`** is deploy copy. Chrysalis **`docs/AGENTICOP.md`** is internal/install only, not linked from marketing. |
+| Parent methodology / services brand | **AgenticOp.io** | Public site `agenticop.io` | **Transformative code** (verification-first). Narrative: Chrysalis as **first flagship**; long arc toward **macro systemic fragility** (finance, governance, cascades) — **no separate named “future project”** on site unless operator adds it. GitHub org target: **`AgenticOp-io`** (brand **AgenticOp.io** / **Agentic Ops**; not slug `AgenticOps`). |
+| Engine (product name on site) | **Chrysalis** | **GitHub + pilot alpha** | Repo: **https://github.com/AgenticOp-io/chrysalis** (org **`AgenticOp-io`**, not inside WISP-Management). PHP-first verification migration; pilots scoped **one system at a time**. **Technical whitepaper:** **`https://agenticop.io/whitepaper.html`** — source markdown **`docs/WHITEPAPER.md`**; root **`WHITEPAPER.md`** is deploy copy. Chrysalis **`docs/AGENTICOP.md`** is internal/install only, not linked from marketing. |
 | Public WISP / ISP proof stack | **wisptools.io** | Public MIT on GitHub | **WISP Management** (operations) + **Bandwidth Test Manager** (throughput proof). Featured as proof the methodology ships real systems. |
 | Field tooling | **WISP Field App** | Public repo path under WISP-Management | Cited as shipped proof where relevant. |
 
@@ -56,7 +56,7 @@ This document captures **operator intent** and constraints gathered from ongoing
 
 ## Editorial guardrails (summary)
 
-- Chrysalis: link **https://github.com/4GEngineer/chrysalis** where appropriate; distinguish from theorem6/WISP-Management URLs.
+- Chrysalis: link **https://github.com/AgenticOp-io/chrysalis** where appropriate; distinguish from AgenticOp-io/WISP-Management URLs.
 - WISPTools / Bandwidth Test Manager / Field App: public links OK when used as **proof**.
 - Voice: anti-hype, engineering credibility, migration verification themes.
 

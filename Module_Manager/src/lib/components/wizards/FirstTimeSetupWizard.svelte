@@ -273,8 +273,8 @@
               <div class="module-card">
                 <span class="icon">⚙️</span>
                 <h4>ACS/TR-069</h4>
-                <p>Connect GenieACS for CPE device management</p>
-                <button class="btn-secondary" on:click={() => dispatch('action', { type: 'setup-acs' })}>
+                <p>Configure monitoring and alerts</p>
+                <button class="btn-secondary" on:click={() => dispatch('action', { type: 'setup-monitoring' })}>
                   Setup ACS
                 </button>
               </div>

@@ -85,7 +85,7 @@ import type { MapModuleMode, MapCapabilities } from '$lib/map/MapCapabilities';
   let showDevicePanel = false;
   let showUnifiedDeviceModal = false;
   let selectedDevice: any = null;
-  let selectedDeviceType: 'snmp' | 'tr069' | 'mikrotik' | 'epc' | 'network-equipment' | 'unknown' = 'unknown';
+  let selectedDeviceType: 'snmp' | 'mikrotik' | 'epc' | 'network-equipment' | 'unknown' = 'unknown';
   let allDevices: any[] = []; // Combined devices from all sources
   
   async function loadAllDevicesForManagement() {
@@ -298,6 +298,25 @@ import type { MapModuleMode, MapCapabilities } from '$lib/map/MapCapabilities';
   
   // References
   let mapComponent: any;
+  let pendingRectangleDrawing = false;
+
+  async function enableRectangleDrawingOnMap(): Promise<void> {
+    if (!mapComponent) {
+      pendingRectangleDrawing = true;
+      console.warn('[CoverageMap] Map component not ready — queueing rectangle drawing');
+      return;
+    }
+    pendingRectangleDrawing = false;
+    console.log('[CoverageMap] Enabling rectangle drawing...');
+    await mapComponent.enableRectangleDrawing();
+  }
+
+  $: if (browser && mapComponent && !isLoading && pendingRectangleDrawing) {
+    enableRectangleDrawingOnMap().catch((err: unknown) => {
+      console.error('[CoverageMap] Failed to enable queued rectangle drawing:', err);
+      pendingRectangleDrawing = false;
+    });
+  }
 
   /** Voice / SIP / E911: center map when opening from service location link */
   let lastVoiceFocusKey = '';
@@ -648,27 +667,7 @@ import type { MapModuleMode, MapCapabilities } from '$lib/map/MapCapabilities';
       };
       
       // Load devices from all sources in parallel
-      const [tr069Result, snmpResult, mikrotikResult, epcResult, networkEquipmentResult] = await Promise.allSettled([
-        // TR-069 devices from GenieACS
-        (async () => {
-          try {
-            const response = await fetch('/api/tr069/devices', {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-Tenant-ID': tenantId,
-                'Content-Type': 'application/json'
-              }
-            });
-            if (response.ok) {
-              const data = await response.json();
-              return data.success ? (data.devices || []) : [];
-            }
-            return [];
-          } catch (e) {
-            console.error('[CoverageMap] Error loading TR-069 devices:', e);
-            return [];
-          }
-        })(),
+      const [snmpResult, mikrotikResult, epcResult, networkEquipmentResult] = await Promise.allSettled([
         // SNMP devices
         (async () => {
           try {
@@ -705,11 +704,6 @@ import type { MapModuleMode, MapCapabilities } from '$lib/map/MapCapabilities';
         // Network equipment (already loaded as equipment array)
         Promise.resolve(equipment || [])
       ]);
-      
-      // Process TR-069 devices
-      if (tr069Result.status === 'fulfilled') {
-        tr069Result.value.forEach((device: any) => addDevice(device, 'tr069'));
-      }
       
       // Process SNMP devices
       if (snmpResult.status === 'fulfilled') {
@@ -1010,17 +1004,6 @@ import type { MapModuleMode, MapCapabilities } from '$lib/map/MapCapabilities';
     }
     setTimeout(() => { error = ''; success = ''; }, 5000);
   }
-  
-  async function handleImportFromACS() {
-    const result = await coverageMapService.importFromACS(tenantId);
-    if (result.errors.length > 0) {
-      error = result.errors.join(', ');
-    } else {
-      success = `Imported ${result.imported} devices from ACS module`;
-      await loadAllData();
-    }
-    setTimeout(() => { error = ''; success = ''; }, 5000);
-  }
 
   function handleSharedMapMessage(event: MessageEvent) {
     const { source, type, payload } = event.data || {};
@@ -1132,22 +1115,9 @@ import type { MapModuleMode, MapCapabilities } from '$lib/map/MapCapabilities';
           });
         }
       } else if (type === 'enable-rectangle-drawing') {
-        if (mapComponent) {
-          console.log('[CoverageMap] Enabling rectangle drawing...');
-          mapComponent.enableRectangleDrawing().catch((err: any) => {
-            console.error('[CoverageMap] Failed to enable rectangle drawing:', err);
-          });
-        } else {
-          console.warn('[CoverageMap] Map component not ready for rectangle drawing');
-          // Try again after a short delay
-          setTimeout(() => {
-            if (mapComponent) {
-              mapComponent.enableRectangleDrawing().catch((err: any) => {
-                console.error('[CoverageMap] Failed to enable rectangle drawing (retry):', err);
-              });
-            }
-          }, 500);
-        }
+        enableRectangleDrawingOnMap().catch((err: unknown) => {
+          console.error('[CoverageMap] Failed to enable rectangle drawing:', err);
+        });
       } else if (type === 'disable-rectangle-drawing') {
         if (mapComponent) {
           console.log('[CoverageMap] Disabling rectangle drawing...');
@@ -1352,8 +1322,8 @@ import type { MapModuleMode, MapCapabilities } from '$lib/map/MapCapabilities';
     }
     
     // Check if this is a read-only item from ACS or CBRS
-    if (data?.modules?.acs || data?.modules?.cbrs) {
-      success = `This ${type} is managed by the ${data.modules.acs ? 'ACS' : 'CBRS'} module (read-only)`;
+    if (data?.modules?.cbrs) {
+      success = `This ${type} is managed by the CBRS module (read-only)`;
       setTimeout(() => success = '', 5000);
       return;
     }

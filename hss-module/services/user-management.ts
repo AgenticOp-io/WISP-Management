@@ -2,11 +2,10 @@
  * User Management Service
  * 
  * High-level service for managing subscribers with business logic
- * Provides user-friendly interface over HSS Core and ACS Integration
+ * Provides user-friendly interface over HSS Core
  */
 
 import HSSCoreService from './hss-core';
-import ACSIntegrationService from './acs-integration';
 import { MongoClient, Db, Collection } from 'mongodb';
 
 interface CreateSubscriberRequest {
@@ -36,17 +35,14 @@ interface BulkImportSubscriber {
 
 export class UserManagementService {
   private hssCore: HSSCoreService;
-  private acsIntegration: ACSIntegrationService;
   private db: Db;
   private auditLogCollection: Collection;
 
   constructor(
     mongoUri: string,
-    encryptionKey: string,
-    genieacsApiUrl: string = 'http://localhost:7557'
+    encryptionKey: string
   ) {
     this.hssCore = new HSSCoreService(mongoUri, encryptionKey);
-    this.acsIntegration = new ACSIntegrationService(mongoUri, genieacsApiUrl);
     this.initializeAuditLog(mongoUri);
   }
 
@@ -290,8 +286,7 @@ export class UserManagementService {
    * Get subscriber with full details including CPE
    */
   async getSubscriberDetails(imsi: string): Promise<any> {
-    const unifiedView = await this.acsIntegration.getUnifiedSubscriberView(imsi);
-    return unifiedView;
+    return await this.hssCore.getSubscriber(imsi);
   }
 
   /**
@@ -307,53 +302,31 @@ export class UserManagementService {
       cpe_online?: boolean;
     }
   ): Promise<any[]> {
-    if (query.serial_number) {
-      // Search by CPE serial number
-      const subscriber = await this.acsIntegration.getSubscriberBySerial(query.serial_number);
+    if (query.imsi) {
+      const subscriber = await this.getSubscriberDetails(query.imsi);
       return subscriber ? [subscriber] : [];
     }
-
-    if (query.imsi) {
-      // Search by IMSI
-      const subscriber = await this.getSubscriberDetails(query.imsi);
-      return [subscriber];
-    }
-
-    // List with filters
-    return await this.acsIntegration.listSubscribersWithCPE(
-      tenantId,
-      {
-        status: query.status,
-        cpe_online: query.cpe_online
-      }
-    );
+    const subscribers = await this.hssCore.listSubscribers(tenantId, 10000);
+    return subscribers.filter((sub: any) => {
+      if (query.msisdn && sub.msisdn !== query.msisdn) return false;
+      if (query.status && sub.status !== query.status) return false;
+      return true;
+    });
   }
 
   /**
    * Get dashboard statistics
    */
   async getDashboardStats(tenantId: string): Promise<any> {
-    const [subscriberStats, correlationStats] = await Promise.all([
-      this.hssCore.getSubscriberStats(tenantId),
-      this.acsIntegration.getCorrelationStats(tenantId)
-    ]);
-
+    const subscriberStats = await this.hssCore.getSubscriberStats(tenantId);
     return {
       subscribers: subscriberStats,
-      cpe_correlation: correlationStats,
       health: {
-        subscribers_without_cpe: correlationStats.subscribers_without_cpe,
-        cpe_offline: correlationStats.cpe_offline,
-        active_and_online: correlationStats.cpe_online
+        subscribers_without_cpe: 0,
+        cpe_offline: 0,
+        active_and_online: 0
       }
     };
-  }
-
-  /**
-   * Sync all CPE devices from ACS
-   */
-  async syncACSDevices(tenantId?: string): Promise<any> {
-    return await this.acsIntegration.syncCPEDevices(tenantId);
   }
 
   /**
@@ -438,23 +411,9 @@ export class UserManagementService {
         subscriber_status: 'inactive'
       };
     }
-
-    // Check CPE status
-    const cpe = await this.acsIntegration.getCPEByIMSI(imsi);
-    
-    if (!cpe) {
-      return {
-        allowed: true,
-        reason: 'No CPE registered yet (will register on first attach)',
-        subscriber_status: 'active',
-        cpe_status: 'not_registered'
-      };
-    }
-
     return {
       allowed: true,
-      subscriber_status: 'active',
-      cpe_status: cpe.cpe.online ? 'online' : 'offline'
+      subscriber_status: 'active'
     };
   }
 }

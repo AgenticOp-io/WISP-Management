@@ -245,10 +245,13 @@ export class AuthService {
    */
   async signIn(email: string, password: string): Promise<AuthResult<UserProfile>> {
     try {
-      console.log('[AuthService] Attempting sign in with:', { email, projectId: 'wisptools-production' });
+      const normalizedEmail = String(email || '').trim().toLowerCase();
       const auth = getAuth();
-      console.log('[AuthService] Auth instance:', { app: auth.app.name, config: auth.app.options });
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('[AuthService] Attempting sign in with:', {
+        email: normalizedEmail,
+        projectId: auth.app.options.projectId
+      });
+      const userCredential = await signInWithEmailAndPassword(auth, normalizedEmail, password);
       console.log('[AuthService] Sign in successful:', { email: userCredential.user.email, uid: userCredential.user.uid });
       return {
         success: true,
@@ -570,6 +573,32 @@ export class AuthService {
       return authUser;
     }
     return this.currentUser;
+  }
+
+  /**
+   * Wait until Firebase auth has a user (or timeout).
+   * Use after sign-in / client navigation — getCurrentUser() is often null for a few hundred ms.
+   */
+  async waitForUser(timeoutMs = 5000): Promise<User | null> {
+    if (!browser) return null;
+    const immediate = this.getCurrentUser();
+    if (immediate) return immediate;
+
+    return new Promise((resolve) => {
+      let settled = false;
+      const finish = (user: User | null) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        unsub();
+        resolve(user);
+      };
+
+      const timer = setTimeout(() => finish(this.getCurrentUser()), timeoutMs);
+      const unsub = this.onAuthStateChange((user) => {
+        if (user) finish(user);
+      });
+    });
   }
 
   /**

@@ -36,6 +36,7 @@ interface MapViewExtentPayload {
 
   let currentUser: any = null;
   let mapContainer: HTMLDivElement;
+  let sharedMapRef: SharedMap | null = null;
   let latestMapExtent: MapViewExtentPayload | null = null;
   let showReportModal = false;
   let showHardwareModal = false;
@@ -1088,13 +1089,7 @@ function handleAddRequirementOverlayKeydown(event: KeyboardEvent) {
     discoveryResults = [];
     // Disable drawing mode
     isDrawingRectangle = false;
-    const iframe = mapContainer?.querySelector('iframe') as HTMLIFrameElement | null;
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage({
-        source: 'plan-page',
-        type: 'disable-rectangle-drawing'
-      }, '*');
-    }
+    postPlanPageMessageToMap('disable-rectangle-drawing');
   }
 
   async function handleRectangleDrawn(event: CustomEvent<any>) {
@@ -1176,13 +1171,7 @@ function handleAddRequirementOverlayKeydown(event: KeyboardEvent) {
       }
       
       // Clear the drawing rectangle after discovery completes
-      const iframe = mapContainer?.querySelector('iframe') as HTMLIFrameElement | null;
-      if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.postMessage({
-          source: 'plan-page',
-          type: 'clear-drawing-graphics'
-        }, '*');
-      }
+      postPlanPageMessageToMap('clear-drawing-graphics');
       
     } catch (err: any) {
       console.error('[Plan] Address discovery failed:', err);
@@ -1194,19 +1183,47 @@ function handleAddRequirementOverlayKeydown(event: KeyboardEvent) {
     }
   }
 
-  async function openMarketingTools(project?: PlanProject, options: { closeProjectModal?: boolean } = {}) {
-    const { closeProjectModal: shouldCloseProjectModal = false } = options;
-
-    const targetPlan =
+  function resolveMarketingTargetPlan(project?: PlanProject): PlanProject | null {
+    return (
       project ??
       selectedProject ??
       activeProject ??
       contextActivePlan ??
       projects.find((plan) => plan.status === 'active') ??
-      projects[0];
+      projects[0] ??
+      null
+    );
+  }
+
+  function postPlanPageMessageToMap(type: string, detail?: unknown): boolean {
+    if (sharedMapRef?.postPlanPageMessage(type, detail)) {
+      return true;
+    }
+    const iframe = mapContainer?.querySelector('iframe') as HTMLIFrameElement | null;
+    if (iframe?.contentWindow) {
+      iframe.contentWindow.postMessage({ source: 'plan-page', type, ...(detail !== undefined ? { detail } : {}) }, '*');
+      return true;
+    }
+    return false;
+  }
+
+  async function waitAndPostPlanPageMessage(type: string, detail?: unknown, maxAttempts = 24): Promise<boolean> {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      if (postPlanPageMessageToMap(type, detail)) {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+    return false;
+  }
+
+  function openMarketingWizard(project?: PlanProject, options: { closeProjectModal?: boolean } = {}) {
+    const { closeProjectModal: shouldCloseProjectModal = false } = options;
+    const targetPlan = resolveMarketingTargetPlan(project);
 
     if (!targetPlan) {
-      console.warn('[Plan] No project available for address discovery');
+      error = 'Create or select a project before running the marketing wizard.';
+      setTimeout(() => (error = ''), 5000);
       return;
     }
 
@@ -1215,42 +1232,51 @@ function handleAddRequirementOverlayKeydown(event: KeyboardEvent) {
     }
 
     selectedProject = targetPlan;
-    
-    // Ensure modal is closed
+    isDrawingRectangle = false;
+    postPlanPageMessageToMap('disable-rectangle-drawing');
+    showMarketingModal = true;
+    console.log('[Plan] Opened marketing discovery wizard', {
+      planId: targetPlan.id,
+      planName: targetPlan.name
+    });
+  }
+
+  async function openMarketingTools(project?: PlanProject, options: { closeProjectModal?: boolean } = {}) {
+    const { closeProjectModal: shouldCloseProjectModal = false } = options;
+    const targetPlan = resolveMarketingTargetPlan(project);
+
+    if (!targetPlan) {
+      error = 'Create or select a project before finding addresses.';
+      setTimeout(() => (error = ''), 5000);
+      return;
+    }
+
+    if (shouldCloseProjectModal) {
+      closeProjectModal();
+    }
+
+    selectedProject = targetPlan;
     showMarketingModal = false;
 
-    // Enable rectangle drawing on the map
     try {
-      const iframe = mapContainer?.querySelector('iframe') as HTMLIFrameElement | null;
-      if (!iframe) {
-        error = 'Map not ready. Please wait for the map to load.';
-        setTimeout(() => error = '', 5000);
+      const posted = await waitAndPostPlanPageMessage('enable-rectangle-drawing');
+      if (!posted) {
+        error = 'Map not ready. Wait for the map to finish loading, then try again.';
+        setTimeout(() => (error = ''), 5000);
         return;
       }
 
-      // Wait for iframe to be ready
-      if (!iframe.contentWindow) {
-        error = 'Map iframe not ready. Please wait for the map to load.';
-        setTimeout(() => error = '', 5000);
-        return;
-      }
-
-      // Send message to enable rectangle drawing
-      iframe.contentWindow.postMessage({
-        source: 'plan-page',
-        type: 'enable-rectangle-drawing'
-      }, '*');
-      
       isDrawingRectangle = true;
+      successMessage = 'Click and drag on the map to draw a search area.';
+      setTimeout(() => (successMessage = ''), 6000);
       console.log('[Plan] Enabled rectangle drawing for address discovery', {
         planId: targetPlan.id,
-        planName: targetPlan.name,
-        iframeSrc: iframe.src
+        planName: targetPlan.name
       });
     } catch (err: any) {
       console.error('[Plan] Failed to enable rectangle drawing:', err);
       error = 'Failed to enable drawing mode. Please try again.';
-      setTimeout(() => error = '', 5000);
+      setTimeout(() => (error = ''), 5000);
     }
   }
 
@@ -1841,7 +1867,7 @@ TOTAL COST: $${purchaseOrder.totalCost.toLocaleString()}
   <div class="app">
     <!-- Full Screen Map -->
     <div class="map-fullscreen" bind:this={mapContainer}>
-      <SharedMap mode={mapMode} on:viewExtent={handleMapExtent} />
+      <SharedMap bind:this={sharedMapRef} mode={mapMode} on:viewExtent={handleMapExtent} />
     </div>
 
     <!-- Enhanced Header Overlay -->
@@ -1870,7 +1896,13 @@ TOTAL COST: $${purchaseOrder.totalCost.toLocaleString()}
         </button>
         <ModuleWizardMenu
           wizards={getWizardsForPath('/modules/plan')}
-          on:select={() => openMarketingTools()}
+          on:select={(e) => {
+            if (e.detail?.id === 'marketing-discovery') {
+              openMarketingWizard();
+            } else {
+              openMarketingTools();
+            }
+          }}
         />
         <button
           class="module-control-btn marketing-btn"

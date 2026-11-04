@@ -192,10 +192,6 @@
         goto('/modules/cbrs-management');
         showOnboardingWizard = false;
         break;
-      case 'setup-acs':
-        goto('/modules/acs-cpe-management');
-        showOnboardingWizard = false;
-        break;
       case 'setup-monitoring':
         goto('/modules/monitoring');
         showOnboardingWizard = false;

@@ -10,6 +10,7 @@
  * @see docs/multitenant-fork/README.md
  */
 
+import type { Tenant } from '../models/tenant';
 import { getPublicEnv, isPublicFlagTrue } from './publicEnv';
 
 const DEFAULT_DEMO_TENANT_ID = '6a166eb07089304417ec967a';
@@ -36,6 +37,45 @@ export function getConfiguredSingleTenantDisplayName(): string | null {
 	const n = getPublicEnv('PUBLIC_SINGLE_TENANT_DISPLAY_NAME');
 	if (n == null || String(n).trim() === '') return null;
 	return String(n).trim();
+}
+
+/** Minimal tenant object when API cannot load org details (demo / SINGLE_TENANT_ID without UserTenant link). */
+export function buildSyntheticSingleTenant(): Tenant {
+	const id = getConfiguredSingleTenantId() || DEFAULT_DEMO_TENANT_ID;
+	const displayName = getConfiguredSingleTenantDisplayName() || 'WISPTools Demo ISP';
+	const now = new Date();
+	return {
+		id,
+		name: 'demo-wisp',
+		displayName,
+		subdomain: 'wisptools-demo',
+		cwmpUrl: `https://${id}.wisptools.io/cwmp`,
+		userRole: 'owner',
+		contactEmail: 'demo@wisptools.io',
+		settings: {
+			informInterval: 300,
+			acsUsername: 'admin',
+			acsPassword: '',
+			requireAuth: false,
+			enableAutoDiscovery: true,
+			enablePCIMonitoring: true,
+			enablePerformanceMonitoring: true,
+			emailNotifications: false,
+			notificationEmails: [],
+			dataRetentionDays: 90,
+			timezone: 'America/Denver'
+		},
+		createdAt: now,
+		updatedAt: now,
+		createdBy: 'single-tenant-demo',
+		status: 'active',
+		limits: {
+			maxDevices: 5000,
+			maxUsers: 100,
+			maxNetworks: 50,
+			storageQuotaMB: 10240
+		}
+	};
 }
 
 export function assertSingleTenantConfigured(): void {

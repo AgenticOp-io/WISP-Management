@@ -4,7 +4,6 @@
  * PORT ALLOCATION:
  * - Port 3000: User Management System API (THIS SERVICE)
  * - Port 3001: Open5GS HSS (DO NOT USE)
- * - Port 3002: GenieACS UI (DO NOT USE)
  * 
  * This server handles:
  * - User-tenant associations
@@ -48,7 +47,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`📡 Health check: http://localhost:${PORT}/health`);
   console.log(`🔐 Auth endpoints: http://localhost:${PORT}/api/auth/*`);
   console.log(`📊 MongoDB status: ${getConnectionStatus().isConnected ? 'Connected' : 'Disconnected'}`);
-  console.log(`⚠️  Note: Open5GS HSS uses port 3001, GenieACS UI uses port 3002`);
+  console.log(`⚠️  Note: Open5GS HSS uses port 3001`);
 });
 
 // Handle server errors

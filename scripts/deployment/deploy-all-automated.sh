@@ -366,7 +366,7 @@ Environment="HSS_PORT=3001"
 Environment="ISO_API_PORT=3002"
 
 # MongoDB Atlas connection (update with: systemctl edit wisptools-backend)
-Environment="MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/wisptools"
+Environment="MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/wisptools"
 
 # API URLs
 Environment="HSS_API_URL=https://us-central1-lte-pci-mapper-65450042-bbf71.cloudfunctions.net/hssProxy"

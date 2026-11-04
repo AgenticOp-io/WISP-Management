@@ -7,7 +7,11 @@ import { browser } from '$app/environment';
 import type { Tenant } from '../models/tenant';
 import { isPlatformAdmin } from '../services/adminService';
 import { debug } from '../utils/debug';
-import { getConfiguredSingleTenantId, isSingleTenantMode } from '../config/tenantMode';
+import {
+  buildSyntheticSingleTenant,
+  getConfiguredSingleTenantId,
+  isSingleTenantMode
+} from '../config/tenantMode';
 import {
 	notifyAfterTenantResolved,
 	type TenantResolutionSource
@@ -236,6 +240,12 @@ function createTenantStore() {
             const list = await tenantService.getUserTenants(userId);
             const match = list.find((t) => t.id === singleId);
             if (match) tenant = match;
+          }
+          if (!tenant && isSingleTenantMode()) {
+            tenant = buildSyntheticSingleTenant();
+            console.warn(
+              '[TenantStore] Single-tenant: using synthetic org (API link missing); deploy SINGLE_TENANT_ID on API or run demo:seed'
+            );
           }
           if (tenant) {
             update((state) => ({

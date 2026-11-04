@@ -146,6 +146,15 @@ router.post('/', async (req, res) => {
       customerId,
       fullName
     });
+    // Sparse/partial leadHash uniqueness: never persist explicit null (collides across tenants' non-leads).
+    if (customer.leadHash == null) {
+      customer.leadHash = undefined;
+      customer.set('leadHash', undefined);
+      if (customer.$__.activePaths) {
+        try { customer.unmarkModified('leadHash'); } catch (_e) { /* ignore */ }
+      }
+      delete customer._doc.leadHash;
+    }
     
     // Validate the customer object before saving
     const validationError = customer.validateSync();
@@ -188,10 +197,52 @@ router.post('/', async (req, res) => {
     // Handle specific MongoDB errors
     if (error.name === 'MongoServerError') {
       if (error.code === 11000) {
+        const dupField = Object.keys(error.keyPattern || {})[0];
+        // Production quirk: unique (tenantId, leadHash) treated null as a key — Object.keys reports tenantId.
+        if (
+          (dupField === 'tenantId' || error.message?.includes('leadHash')) &&
+          !req._customerIndexHealed
+        ) {
+          try {
+            const indexes = await Customer.collection.indexes();
+            for (const idx of indexes) {
+              const keys = Object.keys(idx.key || {});
+              if (
+                (keys.length === 1 && keys[0] === 'tenantId' && idx.unique) ||
+                (keys.length === 2 && keys.includes('tenantId') && keys.includes('leadHash') && idx.unique)
+              ) {
+                console.warn('[Customer API] Dropping bad unique index:', idx.name, idx.key);
+                await Customer.collection.dropIndex(idx.name);
+              }
+            }
+            // Clear explicit null leadHash values that defeat sparse uniqueness.
+            await Customer.collection.updateMany(
+              { leadHash: null },
+              { $unset: { leadHash: '' } }
+            );
+            await Customer.collection.createIndex(
+              { tenantId: 1, leadHash: 1 },
+              { unique: true, name: 'tenantId_1_leadHash_1', partialFilterExpression: { leadHash: { $type: 'string' } } }
+            );
+            req._customerIndexHealed = true;
+            // Retry save once after heal (same request body / tenant).
+            const retryCount = await Customer.countDocuments({ tenantId: req.tenantId });
+            const retryId = `${Boolean(req.body.isLead) ? 'LEAD' : 'CUST'}-${new Date().getFullYear()}-${String(retryCount + 1).padStart(4, '0')}`;
+            const retryFullName = req.body.fullName || `${req.body.firstName || ''} ${req.body.lastName || ''}`.trim();
+            const retryPayload = { ...req.body, tenantId: req.tenantId, customerId: retryId, fullName: retryFullName };
+            if (retryPayload.leadHash == null) delete retryPayload.leadHash;
+            const retryCustomer = new Customer(retryPayload);
+            if (retryCustomer._doc && retryCustomer._doc.leadHash == null) delete retryCustomer._doc.leadHash;
+            await retryCustomer.save();
+            return res.status(201).json(retryCustomer);
+          } catch (healErr) {
+            console.error('[Customer API] Index heal failed:', healErr);
+          }
+        }
         return res.status(409).json({ 
           error: 'Duplicate customer',
           message: 'A customer with this ID already exists',
-          duplicateField: Object.keys(error.keyPattern || {})[0]
+          duplicateField: dupField
         });
       }
     }

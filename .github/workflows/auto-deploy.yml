@@ -128,7 +128,7 @@ jobs:
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       run: |
-        firebase deploy --only hosting --project ${{ env.FIREBASE_PROJECT_ID }} --token "$FIREBASE_TOKEN"
+        firebase deploy --only hosting:landing --project ${{ env.FIREBASE_PROJECT_ID }} --token "$FIREBASE_TOKEN"
 
   deploy-rules:
     name: Deploy Firestore Rules

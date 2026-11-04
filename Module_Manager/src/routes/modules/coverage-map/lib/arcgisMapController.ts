@@ -2239,7 +2239,7 @@ export class CoverageMapController {
       const fallbackKeys = new Set<string>();
 
       this.marketingLeads.forEach((lead) => {
-        const streetKey = this.normalizeStreetKey(lead.addressLine1);
+        const streetKey = normalizeStreetKey(lead.addressLine1);
         if (streetKey) {
           const existingIndex = streetKeyIndex.get(streetKey);
           if (existingIndex === undefined) {

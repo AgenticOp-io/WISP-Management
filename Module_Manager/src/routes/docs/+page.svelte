@@ -26,7 +26,7 @@
   <ul>
     <li><strong>Multi-tenant</strong> – Manage multiple organizations</li>
     <li><strong>HSS</strong> – Home Subscriber Server for Open5GS</li>
-    <li><strong>Device management</strong> – TR-069/CWMP via GenieACS</li>
+    <li><strong>Device management</strong> – network equipment and CPE inventory</li>
     <li><strong>Network planning</strong> – Coverage mapping, PCI resolution</li>
     <li><strong>Monitoring</strong> – SNMP and performance graphs</li>
     <li><strong>CBRS/SAS</strong> – Spectrum Access System integration</li>

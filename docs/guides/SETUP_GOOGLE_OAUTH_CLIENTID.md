@@ -39,7 +39,7 @@
 
 6. **Copy your Client ID** - it will look like:
    ```
-   1044782186913-abc123def456ghi789.apps.googleusercontent.com
+   YOUR_CLIENT_ID.apps.googleusercontent.com
    ```
 
 ---
@@ -73,13 +73,13 @@
 2. **Replace:**
    ```yaml
    - variable: PUBLIC_GOOGLE_OAUTH_CLIENT_ID
-     value: "1044782186913-REPLACEME.apps.googleusercontent.com"
+     value: "YOUR_CLIENT_ID.apps.googleusercontent.com"
    ```
 
    **With your actual Client ID:**
    ```yaml
    - variable: PUBLIC_GOOGLE_OAUTH_CLIENT_ID
-     value: "1044782186913-abc123def456ghi789.apps.googleusercontent.com"
+     value: "YOUR_CLIENT_ID.apps.googleusercontent.com"
    ```
 
 3. **Commit and push:**

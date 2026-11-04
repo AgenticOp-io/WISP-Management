@@ -17,6 +17,8 @@ const CORS_ALLOW_HEADERS = [
   'Authorization',
   'Content-Type',
   'X-Tenant-ID',
+  'X-User-Email',
+  'X-Debug-Mode',
   'X-Requested-Path',
   'X-Requested-Uri',
   'X-Original-URL',
@@ -228,7 +230,6 @@ try {
   console.warn('   → Install node-routeros package to enable MikroTik management');
 }
 
-app.use('/api/tr069', require('./routes/tr069'));
 app.use('/api/snmp', require('./routes/snmp'));
 app.use('/api/mme', require('./routes/mme-status')); // MME subscriber status reporting
 
@@ -245,15 +246,6 @@ console.log('   → SNMP polling runs ONLY on remote EPC/SNMP agents');
 console.log('⚠️ Ping monitoring service DISABLED - cloud backend should not perform ping sweeps');
 console.log('   → Ping monitoring runs ONLY on remote EPC/SNMP agents');
 console.log('   → Backend only receives and stores metrics from remote agents');
-
-// Start ACS Alert Service
-try {
-  const acsAlertService = require('./services/acs-alert-service');
-  acsAlertService.start(60000); // Check every minute
-  console.log('✅ ACS Alert Service started');
-} catch (error) {
-  console.error('❌ Failed to start ACS Alert Service:', error);
-}
 
 // EPC management routes (includes delete endpoint)
 app.use('/api/epc-management', require('./routes/epc-management'));

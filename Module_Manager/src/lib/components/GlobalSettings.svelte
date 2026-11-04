@@ -21,7 +21,7 @@
   import BrandingManagement from './BrandingManagement.svelte';
   import { isDebugEnabled, enableDebug, disableDebug } from '$lib/utils/debug';
   
-  let activeTab: 'appearance' | 'acs' | 'info' | 'import' | 'users' | 'branding' | 'debug' = 'appearance';
+  let activeTab: 'appearance' | 'info' | 'import' | 'users' | 'branding' | 'debug' = 'appearance';
   let showImportSystem = false;
   let loading = false;
   let saveSuccess = false;
@@ -33,13 +33,6 @@
   // Debug settings
   let debugEnabled = false;
   let showDebugWarning = false;
-  
-  // ACS credentials
-  let acsSettings = {
-    username: '',
-    password: '',
-    url: ''
-  };
   
   // Company info
   let companyInfo = {
@@ -62,7 +55,6 @@
   
   async function loadAppSettingsFromBackend() {
     const settings = await getTenantAppSettings($currentTenant?.id);
-    acsSettings = { ...acsSettings, ...settings.acsSettings };
     companyInfo = { ...companyInfo, ...settings.companyInfo };
   }
   
@@ -75,30 +67,14 @@
     
     // Load debug setting
     debugEnabled = isDebugEnabled();
-    
-    // Load ACS and company from backend (or localStorage fallback) when tenant is set
-    const tenantId = typeof window !== 'undefined' ? ($currentTenant?.id ?? localStorage.getItem('selectedTenantId') ?? undefined) : undefined;
-    if (tenantId) {
-      getTenantAppSettings(tenantId).then((s) => {
-        acsSettings = { ...acsSettings, ...s.acsSettings };
-        companyInfo = { ...companyInfo, ...s.companyInfo };
-      });
-    } else {
-      const savedACS = localStorage.getItem('acs_settings');
-      if (savedACS) {
-        try {
-          acsSettings = { ...acsSettings, ...JSON.parse(savedACS) };
-        } catch (e) {
-          console.error('Failed to parse ACS settings:', e);
-        }
-      }
-      const savedCompany = localStorage.getItem('company_info');
-      if (savedCompany) {
-        try {
-          companyInfo = { ...companyInfo, ...JSON.parse(savedCompany) };
-        } catch (e) {
-          console.error('Failed to parse company info:', e);
-        }
+
+    // Load company settings from localStorage fallback
+    const savedCompany = localStorage.getItem('company_info');
+    if (savedCompany) {
+      try {
+        companyInfo = { ...companyInfo, ...JSON.parse(savedCompany) };
+      } catch (e) {
+        console.error('Failed to parse company info:', e);
       }
     }
   }
@@ -134,25 +110,6 @@
     
     saveSuccess = true;
     setTimeout(() => saveSuccess = false, 2000);
-  }
-  
-  async function saveACSSettings() {
-    loading = true;
-    saveError = '';
-    try {
-      const ok = await saveTenantAppSettings($currentTenant?.id, { acsSettings });
-      if (ok) {
-        saveSuccess = true;
-        setTimeout(() => (saveSuccess = false), 2000);
-      } else {
-        saveError = 'Failed to save ACS settings. Check your connection.';
-      }
-    } catch (error: unknown) {
-      console.error('Failed to save ACS settings:', error);
-      saveError = error instanceof Error ? error.message : 'Failed to save ACS settings';
-    } finally {
-      loading = false;
-    }
   }
   
   async function saveCompanyInfo() {
@@ -241,13 +198,6 @@
         </button>
         <button 
           class="tab" 
-          class:active={activeTab === 'acs'}
-          on:click={() => activeTab = 'acs'}
-        >
-          🔐 ACS Credentials
-        </button>
-        <button 
-          class="tab" 
           class:active={activeTab === 'info'}
           on:click={() => activeTab = 'info'}
         >
@@ -318,42 +268,7 @@
               </button>
             </div>
           </div>
-        {:else if activeTab === 'acs'}
-          <div class="tab-content">
-            <h3>ACS Credentials</h3>
-            <p class="description">Configure your ACS (GenieACS) connection</p>
-            
-            <div class="form-group">
-              <label>ACS URL</label>
-              <input 
-                type="url" 
-                bind:value={acsSettings.url}
-                placeholder="https://acs.example.com"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label>Username</label>
-              <input 
-                type="text" 
-                bind:value={acsSettings.username}
-                placeholder="admin"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label>Password</label>
-              <input 
-                type="password" 
-                bind:value={acsSettings.password}
-                placeholder="••••••••"
-              />
-            </div>
-            
-            <button class="btn-save" on:click={saveACSSettings} disabled={loading}>
-              {loading ? 'Saving...' : 'Save ACS Settings'}
-            </button>
-          </div>
+
         {:else if activeTab === 'info'}
           <div class="tab-content">
             <h3>Company Information</h3>
@@ -433,7 +348,7 @@
         {:else if activeTab === 'import'}
           <div class="tab-content">
             <h3>Data Import</h3>
-            <p class="description">Import data from CSV files for all database objects (except ACS items)</p>
+            <p class="description">Import data from CSV files for all database objects </p>
             
             <div class="import-info">
               <p>Use the import system to bulk import:</p>

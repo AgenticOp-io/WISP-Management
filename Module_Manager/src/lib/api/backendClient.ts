@@ -14,10 +14,6 @@ export interface HealthStatus {
   status: string;
   timestamp: string;
   services: {
-    genieacs_cwmp: string;
-    genieacs_nbi: string;
-    genieacs_fs: string;
-    genieacs_ui: string;
     mongodb: string;
   };
 }
@@ -181,16 +177,6 @@ export class BackendClient {
    */
   async getDeviceStats(): Promise<DeviceStats> {
     return this.request<DeviceStats>('/devices/stats');
-  }
-  
-  /**
-   * GenieACS NBI Proxy
-   */
-  async genieacsNbiRequest<T>(
-    path: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    return this.request<T>(`/genieacs/nbi/${path}`, options);
   }
 }
 

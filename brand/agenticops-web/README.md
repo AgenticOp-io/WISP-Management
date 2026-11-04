@@ -1,8 +1,8 @@
-# AgenticOp.io — marketing site (`agenticop.io`)
+﻿# AgenticOp.io — marketing site (`agenticop.io`)
 
 **Brand:** **AgenticOp.io** · **Domain:** **agenticop.io** (see `DOMAIN_DECISION_CHECKLIST.md` for optional `agenticops.io` migration).
 
-Static multi-page site: verification-backed migrations and agent-led modernization; **Chrysalis** source is **https://github.com/4GEngineer/chrysalis** (early); pilots described as private alpha.
+Static multi-page site: verification-backed migrations and agent-led modernization; **Chrysalis** source is **https://github.com/AgenticOp-io/chrysalis** (early); pilots described as private alpha.
 
 ## Where this folder lives
 
@@ -49,14 +49,14 @@ firebase deploy --only hosting --project agenticop-io
 
 Always pass **`--project agenticop-io`** for the public domain’s project so the CLI never picks the monorepo root default (**`wisptools-production`**).
 
-**Monorepo root** `firebase.json` does not deploy this site; deploy AgenticOps only from here.
+**Monorepo root** `firebase.json` does not deploy this site; deploy the AgenticOp.io site only from here.
 
 **Custom domain:** **`agenticop.io`** → project **`agenticop-io`**, site **`agenticop-io`** (see **`DNS_SETUP.md`**). **`agenticops-production`** on **`wisptools-production`** is optional mirror / legacy URL.
 
 ## Brand architecture (short)
 
 - **AgenticOp.io** — this site.
-- **Chrysalis** — https://github.com/4GEngineer/chrysalis
+- **Chrysalis** — https://github.com/AgenticOp-io/chrysalis
 - **wisptools.io** — public MIT WISP stack; proof point; links from this site are intentional.
 
 ## SEO

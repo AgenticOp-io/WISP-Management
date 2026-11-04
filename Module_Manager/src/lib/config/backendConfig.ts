@@ -5,14 +5,6 @@ export interface BackendConfig {
   // Main backend API
   backendApiUrl: string;
   
-  // GenieACS endpoints
-  genieacs: {
-    nbiUrl: string;
-    cwmpUrl: string;
-    fsUrl: string;
-    uiUrl: string;
-  };
-  
   // STUN/TURN configuration
   stun: {
     server: string;
@@ -40,10 +32,6 @@ function getBackendConfig(): BackendConfig {
   };
   
   const backendApiUrl = getEnv('PUBLIC_BACKEND_API_URL') || 'http://localhost:3000/api';
-  const genieacsNbiUrl = getEnv('PUBLIC_GENIEACS_NBI_URL') || 'http://localhost:7557';
-  const genieacsCwmpUrl = getEnv('PUBLIC_GENIEACS_CWMP_URL') || 'http://localhost:7547';
-  const genieacsFsUrl = getEnv('PUBLIC_GENIEACS_FS_URL') || 'http://localhost:7567';
-  const genieacsUiUrl = getEnv('PUBLIC_GENIEACS_UI_URL') || 'http://localhost:8080';
   const stunServer = getEnv('PUBLIC_STUN_SERVER') || 'stun:localhost:3478';
   
   // Parse STUN server
@@ -53,12 +41,6 @@ function getBackendConfig(): BackendConfig {
   
   return {
     backendApiUrl,
-    genieacs: {
-      nbiUrl: genieacsNbiUrl,
-      cwmpUrl: genieacsCwmpUrl,
-      fsUrl: genieacsFsUrl,
-      uiUrl: genieacsUiUrl
-    },
     stun: {
       server: `stun:${stunHost}:${stunPort}`,
       port: stunPort
@@ -78,17 +60,6 @@ export function buildApiUrl(path: string): string {
   return `${base}/${cleanPath}`;
 }
 
-export function buildGenieacsNbiUrl(path: string): string {
-  const base = backendConfig.genieacs.nbiUrl.replace(/\/$/, '');
-  const cleanPath = path.replace(/^\//, '');
-  return `${base}/${cleanPath}`;
-}
-
-export function buildGenieacsFsUrl(path: string): string {
-  const base = backendConfig.genieacs.fsUrl.replace(/\/$/, '');
-  const cleanPath = path.replace(/^\//, '');
-  return `${base}/${cleanPath}`;
-}
 
 // Validate configuration
 export function validateBackendConfig(): { valid: boolean; errors: string[] } {
@@ -96,10 +67,6 @@ export function validateBackendConfig(): { valid: boolean; errors: string[] } {
   
   if (!backendConfig.backendApiUrl) {
     errors.push('Backend API URL is not configured');
-  }
-  
-  if (!backendConfig.genieacs.nbiUrl) {
-    errors.push('GenieACS NBI URL is not configured');
   }
   
   if (!backendConfig.stun.server) {
@@ -116,8 +83,6 @@ export function validateBackendConfig(): { valid: boolean; errors: string[] } {
 if (typeof window === 'undefined') {
   console.log('Backend Configuration:', {
     backendApiUrl: backendConfig.backendApiUrl,
-    genieacsNbiUrl: backendConfig.genieacs.nbiUrl,
-    genieacsCwmpUrl: backendConfig.genieacs.cwmpUrl,
     stunServer: backendConfig.stun.server
   });
   

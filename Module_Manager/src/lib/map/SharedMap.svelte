@@ -19,21 +19,18 @@
   let unsubscribe: (() => void) | undefined;
   const dispatch = createEventDispatcher();
 
-  // Always use wisptools.io for iframe URLs
+  // Coverage map must load from the management app host (same origin by default).
+  // wisptools.io is the marketing landing site only — it has no /modules/coverage-map route.
   const coverageMapHost = (() => {
     if (!browser) return '';
-    
+
     const envHost = import.meta.env.VITE_COVERAGE_MAP_HOST;
-    if (envHost && typeof envHost === 'string') {
+    if (envHost && typeof envHost === 'string' && envHost.trim() !== '') {
       return envHost.replace(/\/$/, '');
     }
-    
-    // FORCE wisptools.io - it's already set up as the frontend
-    console.log('[SharedMap] 🔵🔵🔵 Setting iframe host to wisptools.io');
-    return 'https://wisptools.io';
+
+    return window.location.origin;
   })();
-  
-  console.log('[SharedMap] 🔵🔵🔵 coverageMapHost:', coverageMapHost);
 
   const buildUrl = (state: MapLayerState = mapState) => {
     const params = new URLSearchParams();
@@ -164,6 +161,32 @@
       console.error('[SharedMap] Failed to request extent from iframe:', err);
     }
   };
+
+  /** Post a plan-page message into the coverage-map iframe (Find Addresses / drawing). */
+  export function postPlanPageMessage(type: string, detail?: unknown): boolean {
+    const targetWindow = iframeWindow ?? iframeEl?.contentWindow ?? null;
+    if (!targetWindow) {
+      return false;
+    }
+    try {
+      targetWindow.postMessage(
+        {
+          source: 'plan-page',
+          type,
+          ...(detail !== undefined ? { detail } : {})
+        },
+        '*'
+      );
+      return true;
+    } catch (err) {
+      console.error('[SharedMap] Failed to post plan-page message:', type, err);
+      return false;
+    }
+  }
+
+  export function isCoverageMapIframeReady(): boolean {
+    return iframeLoaded && !!(iframeWindow ?? iframeEl?.contentWindow);
+  }
 
   const handleMessage = (event: MessageEvent) => {
     const { source, type } = event.data || {};

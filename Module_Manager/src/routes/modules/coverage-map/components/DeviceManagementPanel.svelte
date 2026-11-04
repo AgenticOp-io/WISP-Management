@@ -3,7 +3,6 @@
   import { createEventDispatcher } from 'svelte';
   import { currentTenant } from '$lib/stores/tenantStore';
   import { authService } from '$lib/services/authService';
-  import { loadCPEDevices, type CPEDevice } from '../../acs-cpe-management/lib/cpeDataService';
   
   const dispatch = createEventDispatcher();
   
@@ -11,9 +10,8 @@
   export let devices: any[] = []; // All devices from various sources
   
   let searchQuery = '';
-  let selectedDeviceType: 'all' | 'snmp' | 'tr069' | 'mikrotik' | 'epc' | 'network-equipment' = 'all';
+  let selectedDeviceType: 'all' | 'snmp' | 'mikrotik' | 'epc' | 'network-equipment' = 'all';
   let selectedStatus: 'all' | 'online' | 'offline' = 'all';
-  let tr069Devices: CPEDevice[] = [];
   let isLoading = false;
   let refreshInterval: number | null = null;
   
@@ -35,12 +33,10 @@
     
     try {
       // Load TR-069 devices
-      tr069Devices = await loadCPEDevices();
       
       // Combine all devices
       const allDevices = [
         ...devices, // SNMP, MikroTik, EPC from props
-        ...tr069Devices.map(d => ({ ...d, _deviceType: 'tr069' }))
       ];
       
       dispatch('devicesLoaded', { devices: allDevices });
@@ -54,7 +50,6 @@
   function filterDevices() {
     let filtered = [
       ...devices,
-      ...tr069Devices.map(d => ({ ...d, _deviceType: 'tr069' }))
     ];
     
     // Filter by type
@@ -91,7 +86,6 @@
   
   function detectDeviceType(dev: any): string {
     if (dev._deviceType) return dev._deviceType;
-    if (dev.parameters || dev._lastInform) return 'tr069';
     if (dev.epc_id || dev.deployment_type === 'epc') return 'epc';
     if (dev.identity?.includes('MikroTik') || dev.routeros_version) return 'mikrotik';
     if (dev.snmp_config || dev.snmp_version) return 'snmp';
@@ -101,7 +95,6 @@
   
   function getDeviceTypeLabel(type: string): string {
     const labels: Record<string, string> = {
-      'tr069': 'TR-069',
       'snmp': 'SNMP',
       'mikrotik': 'MikroTik',
       'epc': 'EPC',
@@ -113,7 +106,6 @@
   
   function getDeviceTypeIcon(type: string): string {
     const icons: Record<string, string> = {
-      'tr069': '📡',
       'snmp': '🔌',
       'mikrotik': '🌐',
       'epc': '📶',
@@ -180,7 +172,6 @@
       <div class="filters">
         <select bind:value={selectedDeviceType} class="filter-select">
           <option value="all">All Types</option>
-          <option value="tr069">TR-069 / ACS</option>
           <option value="snmp">SNMP</option>
           <option value="mikrotik">MikroTik</option>
           <option value="epc">EPC</option>

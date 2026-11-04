@@ -1,4 +1,4 @@
-# Publishing this site from a private GitHub repository
+﻿# Publishing this site from a private GitHub repository
 
 ## Goal
 
@@ -26,7 +26,7 @@ Local clone used for the first push may live outside the monorepo (e.g. `Downloa
    git push -u origin main
    ```
 4. Install Firebase CLI if needed; `firebase login`.
-5. Confirm `.firebaserc` **`default` project** is **`agenticop-io`** (dedicated Hosting for **`agenticop.io`**). Override only if you intentionally use another GCP project.
+5. Confirm `.firebaserc` **`default` project** is **`AgenticOps`** (dedicated Hosting for **`agenticop.io`**). Override only if you intentionally use another GCP project.
 6. Deploy:
    ```powershell
    firebase deploy --only hosting --project agenticop-io

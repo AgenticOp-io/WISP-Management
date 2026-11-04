@@ -25,7 +25,6 @@ app.use('/', hssManagementRouter);
 // Initialize services
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
 const ENCRYPTION_KEY = process.env.HSS_ENCRYPTION_KEY || '0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF';
-const GENIEACS_API_URL = process.env.GENIEACS_API_URL || 'http://localhost:7557';
 
 let userManagementService: UserManagementService;
 
@@ -34,8 +33,7 @@ let userManagementService: UserManagementService;
   try {
     userManagementService = new UserManagementService(
       MONGODB_URI,
-      ENCRYPTION_KEY,
-      GENIEACS_API_URL
+      ENCRYPTION_KEY
     );
     console.log('✅ HSS User Management Service initialized');
   } catch (error) {
@@ -364,49 +362,6 @@ app.post('/subscribers/:imsi/validate-attach', async (req: Request, res: Respons
   }
 });
 
-// ============================================================================
-// ACS INTEGRATION ENDPOINTS
-// ============================================================================
-
-/**
- * POST /acs/sync
- * Sync CPE devices from GenieACS
- */
-app.post('/acs/sync', authenticateUser, validateTenant, async (req: Request, res: Response) => {
-  try {
-    const tenantId = (req as any).tenantId;
-
-    const result = await userManagementService.syncACSDevices(tenantId);
-
-    res.json({
-      message: 'Sync completed',
-      ...result
-    });
-
-  } catch (error: any) {
-    console.error('Error syncing ACS devices:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * POST /acs/webhook
- * Webhook endpoint for GenieACS events
- */
-app.post('/acs/webhook', async (req: Request, res: Response) => {
-  try {
-    const { type, deviceId, timestamp } = req.body;
-
-    // TODO: Trigger sync for specific device
-    console.log(`ACS Webhook: ${type} for device ${deviceId}`);
-
-    res.json({ message: 'Webhook received' });
-
-  } catch (error: any) {
-    console.error('Error processing webhook:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // ============================================================================
 // DASHBOARD & STATISTICS

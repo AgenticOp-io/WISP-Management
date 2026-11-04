@@ -57,12 +57,12 @@ You need to create a Google OAuth Client ID for your application.
 
 **Find this line (line 17):**
 ```typescript
-const GOOGLE_CLIENT_ID = '1044782186913-yourappclientid.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
 ```
 
 **Replace with your actual Client ID:**
 ```typescript
-const GOOGLE_CLIENT_ID = '1044782186913-abc123xyz456.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
 ```
 
 ---
@@ -240,7 +240,7 @@ The token identifies the user to Google SAS and provides proof they're authorize
 
 The default Client ID is a placeholder:
 ```typescript
-const GOOGLE_CLIENT_ID = '1044782186913-yourappclientid.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
 ```
 
 **You MUST replace this** with your actual OAuth client ID from Google Cloud Console!

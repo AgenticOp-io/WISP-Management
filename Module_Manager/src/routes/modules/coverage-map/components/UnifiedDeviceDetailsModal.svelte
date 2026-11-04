@@ -5,22 +5,17 @@
   import { authService } from '$lib/services/authService';
   
   // Import device-specific components
-  import CPEPerformanceModal from '../../acs-cpe-management/components/CPEPerformanceModal.svelte';
-  import TR069Actions from '../../acs-cpe-management/components/TR069Actions.svelte';
-  import ParameterEditorModal from '../../acs-cpe-management/components/ParameterEditorModal.svelte';
   
   const dispatch = createEventDispatcher();
   
   export let show = false;
   export let device: any = null;
-  export let deviceType: 'snmp' | 'tr069' | 'mikrotik' | 'epc' | 'network-equipment' | 'unknown' = 'unknown';
+  export let deviceType: 'snmp' | 'mikrotik' | 'epc' | 'network-equipment' | 'unknown' = 'unknown';
   
   let activeTab: 'overview' | 'metrics' | 'configuration' | 'actions' = 'overview';
   let deviceDetails: any = null;
   let deviceMetrics: any = null;
   let isLoading = false;
-  let showTR069Actions = false;
-  let showParameterEditor = false;
   
   $: if (show && device) {
     loadDeviceDetails();
@@ -31,12 +26,8 @@
     deviceType = detectDeviceType(device);
   }
   
-  function detectDeviceType(dev: any): 'snmp' | 'tr069' | 'mikrotik' | 'epc' | 'network-equipment' | 'unknown' {
+  function detectDeviceType(dev: any): 'snmp' | 'mikrotik' | 'epc' | 'network-equipment' | 'unknown' {
     if (dev._id || dev.id) {
-      // TR-069 device (from GenieACS)
-      if (dev.parameters || dev._lastInform || dev.manufacturer) {
-        return 'tr069';
-      }
       // EPC device
       if (dev.epc_id || dev.deployment_type === 'epc' || dev.hss_config) {
         return 'epc';
@@ -70,9 +61,6 @@
       
       // Load device-specific details based on type
       switch (deviceType) {
-        case 'tr069':
-          await loadTR069Details(token);
-          break;
         case 'snmp':
           await loadSNMPDetails(token);
           break;
@@ -89,39 +77,6 @@
       console.error('Error loading device details:', error);
     } finally {
       isLoading = false;
-    }
-  }
-  
-  async function loadTR069Details(token: string) {
-    try {
-      // Load device parameters from GenieACS
-      const response = await fetch(`/api/tr069/device-metrics?deviceId=${device.id || device._id}&hours=24`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'X-Tenant-ID': $currentTenant.id,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        deviceMetrics = data.metrics || [];
-        deviceDetails = {
-          ...device,
-          metrics: deviceMetrics,
-          lastContact: device._lastInform || device.lastContact,
-          manufacturer: device.manufacturer || device.parameters?.['InternetGatewayDevice.DeviceInfo.Manufacturer']?._value,
-          model: device.model || device.parameters?.['InternetGatewayDevice.DeviceInfo.ModelName']?._value,
-          serialNumber: device.serialNumber || device.parameters?.['InternetGatewayDevice.DeviceInfo.SerialNumber']?._value,
-          firmware: device.firmware || device.parameters?.['InternetGatewayDevice.DeviceInfo.SoftwareVersion']?._value,
-          ipAddress: device.ipAddress || device.parameters?.['InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress']?._value
-        };
-      } else {
-        deviceDetails = device;
-      }
-    } catch (error) {
-      console.error('Error loading TR-069 details:', error);
-      deviceDetails = device;
     }
   }
   
@@ -226,7 +181,6 @@
   
   function getDeviceTypeLabel(type: string): string {
     const labels: Record<string, string> = {
-      'tr069': 'TR-069 / ACS Device',
       'snmp': 'SNMP Device',
       'mikrotik': 'MikroTik Router',
       'epc': 'EPC / Core Network',
@@ -238,7 +192,6 @@
   
   function getDeviceTypeIcon(type: string): string {
     const icons: Record<string, string> = {
-      'tr069': '📡',
       'snmp': '🔌',
       'mikrotik': '🌐',
       'epc': '📶',
@@ -306,7 +259,7 @@
             >
               Metrics
             </button>
-            {#if deviceType === 'tr069' || deviceType === 'snmp' || deviceType === 'mikrotik'}
+            {#if deviceType === 'snmp' || deviceType === 'mikrotik'}
               <button 
                 class="tab-button" 
                 class:active={activeTab === 'configuration'}
@@ -315,7 +268,7 @@
                 Configuration
               </button>
             {/if}
-            {#if deviceType === 'tr069' || deviceType === 'mikrotik'}
+            {#if deviceType === 'mikrotik'}
               <button 
                 class="tab-button" 
                 class:active={activeTab === 'actions'}
@@ -393,27 +346,7 @@
                   {/if}
                   
                   <!-- Type-Specific Information -->
-                  {#if deviceType === 'tr069'}
-                    <div class="detail-section">
-                      <h3>TR-069 Information</h3>
-                      <div class="detail-list">
-                        {#if deviceDetails?.lastContact || device._lastInform}
-                          <div class="detail-item">
-                            <span class="label">Last Contact:</span>
-                            <span class="value">
-                              {new Date(deviceDetails?.lastContact || device._lastInform).toLocaleString()}
-                            </span>
-                          </div>
-                        {/if}
-                        {#if device._id || device.id}
-                          <div class="detail-item">
-                            <span class="label">Device ID:</span>
-                            <span class="value mono">{device._id || device.id}</span>
-                          </div>
-                        {/if}
-                      </div>
-                    </div>
-                  {:else if deviceType === 'snmp'}
+                  {#if deviceType === 'snmp'}
                     <div class="detail-section">
                       <h3>SNMP Configuration</h3>
                       <div class="detail-list">
@@ -427,6 +360,12 @@
                           <div class="detail-item">
                             <span class="label">Community:</span>
                             <span class="value mono">{deviceDetails?.community || device.community}</span>
+                          </div>
+                        {/if}
+                        {#if device._id || device.id}
+                          <div class="detail-item">
+                            <span class="label">Device ID:</span>
+                            <span class="value mono">{device._id || device.id}</span>
                           </div>
                         {/if}
                       </div>
@@ -455,19 +394,26 @@
                         {/if}
                       </div>
                     </div>
+                  {:else if device._id || device.id}
+                    <div class="detail-section">
+                      <h3>Device</h3>
+                      <div class="detail-list">
+                        <div class="detail-item">
+                          <span class="label">Device ID:</span>
+                          <span class="value mono">{device._id || device.id}</span>
+                        </div>
+                      </div>
+                    </div>
                   {/if}
                 </div>
               </div>
             {:else if activeTab === 'metrics'}
               <div class="metrics-tab">
-                {#if deviceType === 'tr069' && deviceDetails}
-                  <CPEPerformanceModal device={deviceDetails} show={true} on:close={() => {}} />
-                {:else if deviceType === 'snmp' && deviceMetrics}
+                {#if deviceType === 'snmp' && deviceMetrics}
                   <div class="metrics-content">
                     <h3>SNMP Metrics (Last 24 Hours)</h3>
                     {#if deviceMetrics.length > 0}
                       <div class="metrics-grid">
-                        <!-- SNMP metrics visualization would go here -->
                         <p>SNMP metrics visualization coming soon...</p>
                       </div>
                     {:else}
@@ -482,20 +428,7 @@
               </div>
             {:else if activeTab === 'configuration'}
               <div class="configuration-tab">
-                {#if deviceType === 'tr069'}
-                  <div class="config-content">
-                    <h3>TR-069 Parameters</h3>
-                    <button class="btn btn-primary" onclick={() => showParameterEditor = true}>
-                      Edit Parameters
-                    </button>
-                    {#if device.parameters}
-                      <div class="parameters-list">
-                        <!-- Parameter list would go here -->
-                        <p>Parameter editor available via Actions tab.</p>
-                      </div>
-                    {/if}
-                  </div>
-                {:else if deviceType === 'snmp'}
+                {#if deviceType === 'snmp'}
                   <div class="config-content">
                     <h3>SNMP Configuration</h3>
                     <p>SNMP configuration editing coming soon...</p>
@@ -509,20 +442,7 @@
               </div>
             {:else if activeTab === 'actions'}
               <div class="actions-tab">
-                {#if deviceType === 'tr069'}
-                  <div class="quick-actions">
-                    <a href="/modules/acs-cpe-management/presets" class="btn btn-primary" target="_blank">
-                      ⚙️ Manage Presets
-                    </a>
-                    <a href="/modules/acs-cpe-management/devices" class="btn btn-secondary" target="_blank">
-                      📱 Full ACS Management
-                    </a>
-                  </div>
-                  <TR069Actions 
-                    device={deviceDetails || device} 
-                    on:close={() => showTR069Actions = false}
-                  />
-                {:else if deviceType === 'mikrotik'}
+                {#if deviceType === 'mikrotik'}
                   <div class="actions-content">
                     <h3>MikroTik Actions</h3>
                     <p>MikroTik device actions coming soon...</p>
@@ -539,14 +459,6 @@
       </div>
     </div>
   </div>
-{/if}
-
-{#if showParameterEditor && device}
-  <ParameterEditorModal 
-    bind:show={showParameterEditor}
-    device={deviceDetails || device}
-    on:close={() => showParameterEditor = false}
-  />
 {/if}
 
 <style>

@@ -1,4 +1,4 @@
-# December domain go/no-go checklist
+﻿# December domain go/no-go checklist
 
 Decision date target: first week of December 2026.
 
@@ -96,4 +96,4 @@ Regardless of path:
 
 - Do not pause pipeline or sales messaging for branding perfection.
 - Keep offers unchanged: Pilot, Run, Enablement.
-- Chrysalis code is public at **https://github.com/4GEngineer/chrysalis** (early); how you pitch pilots and roadmap stays your call.
+- Chrysalis code is public at **https://github.com/AgenticOp-io/chrysalis** (early); how you pitch pilots and roadmap stays your call.

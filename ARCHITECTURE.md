@@ -261,7 +261,7 @@ npm install express cors
 
 **.env file on backend:**
 ```bash
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/wisp-multitool
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/wisp-multitool
 FIREBASE_PROJECT_ID=lte-pci-mapper-65450042-bbf71
 PORT=3001
 ```

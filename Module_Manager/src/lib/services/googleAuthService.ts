@@ -14,9 +14,7 @@ import { getFirebaseAuth } from '$lib/firebase';
 // For wisptools-production, we need to get this from Firebase project settings
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID || 
                         import.meta.env.PUBLIC_GOOGLE_AUTH_CLIENT_ID || 
-                        // Default: This should be configured in environment variables
-                        // Get from Firebase Console > Project Settings > Your apps > Web app config
-                        '1048161130237-kehquaq56fcubedupb34611c0hm1ctob.apps.googleusercontent.com';
+                        '';
 
 // OAuth scopes for authentication
 const GOOGLE_SCOPES = [

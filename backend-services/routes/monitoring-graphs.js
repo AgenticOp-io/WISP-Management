@@ -25,6 +25,104 @@ const requireTenant = (req, res, next) => {
 router.use(requireTenant);
 
 /**
+ * GET /api/monitoring/graphs
+ * List graphable devices (alias of /devices for clients that hit the mount root).
+ */
+router.get('/', async (req, res) => {
+  try {
+    // Delegate to the same handler body as GET /devices without Express re-dispatch.
+    const inventoryItems = await InventoryItem.find({
+      tenantId: req.tenantId,
+      status: 'deployed',
+      $or: [
+        { ipAddress: { $exists: true, $ne: null, $ne: '' } },
+        { 'technicalSpecs.ipAddress': { $exists: true, $ne: null, $ne: '' } }
+      ]
+    })
+    .select('_id assetTag equipmentType manufacturer model ipAddress technicalSpecs.ipAddress currentLocation')
+    .lean();
+
+    const networkEquipment = await NetworkEquipment.find({
+      tenantId: req.tenantId,
+      $or: [
+        { status: 'active' },
+        { status: 'deployed' },
+        { status: { $exists: false } },
+        { notes: { $exists: true, $ne: null } }
+      ]
+    })
+    .select('_id name type manufacturer model notes siteId status')
+    .lean();
+
+    const devices = [];
+    for (const item of inventoryItems) {
+      const ipAddress = item.ipAddress || item.technicalSpecs?.ipAddress;
+      if (ipAddress && ipAddress.trim()) {
+        devices.push({
+          id: item._id.toString(),
+          name: item.assetTag || item.equipmentType || 'Unknown',
+          type: 'inventory',
+          manufacturer: item.manufacturer,
+          model: item.model,
+          ipAddress: ipAddress.trim(),
+          location: item.currentLocation?.siteName || 'Unknown',
+          hasPing: true,
+          hasSNMP: false
+        });
+      }
+    }
+    for (const equipment of networkEquipment) {
+      try {
+        const notes = equipment.notes ? (typeof equipment.notes === 'string' ? JSON.parse(equipment.notes) : equipment.notes) : {};
+        const ipAddress = notes.management_ip || notes.ip_address || notes.ipAddress;
+        if (ipAddress && ipAddress.trim()) {
+          const hasSNMPConfig = !!(notes.snmp_community || notes.snmp_version);
+          devices.push({
+            id: equipment._id.toString(),
+            name: equipment.name || notes.sysName || notes.sysDescr || ipAddress || 'Unknown',
+            type: 'network_equipment',
+            manufacturer: equipment.manufacturer || notes.manufacturer_detected_via_oui || notes.oui_detection?.manufacturer || 'Unknown',
+            model: equipment.model || notes.mikrotik?.board_name || notes.sysDescr || 'Unknown',
+            ipAddress: ipAddress.trim(),
+            location: 'Unknown',
+            hasPing: true,
+            hasSNMP: hasSNMPConfig
+          });
+        }
+      } catch (_e) {
+        continue;
+      }
+    }
+
+    const remoteEPCs = await RemoteEPC.find({ tenant_id: req.tenantId })
+      .select('_id epc_id site_name site_id ip_address location status')
+      .lean();
+    for (const epc of remoteEPCs) {
+      const ipAddress = epc.ip_address;
+      if (ipAddress && ipAddress.trim()) {
+        devices.push({
+          id: epc._id.toString(),
+          name: epc.site_name || epc.epc_id || 'Remote EPC',
+          type: 'remote_epc',
+          manufacturer: 'EPC',
+          model: 'Remote EPC',
+          ipAddress: ipAddress.trim(),
+          location: epc.location?.address || epc.site_name || 'Unknown',
+          siteId: epc.site_id ? (typeof epc.site_id === 'object' ? epc.site_id.toString() : epc.site_id) : null,
+          hasPing: true,
+          hasSNMP: true
+        });
+      }
+    }
+
+    res.json({ success: true, devices, count: devices.length });
+  } catch (error) {
+    console.error('[Monitoring Graphs] Error listing graphs root:', error);
+    res.status(500).json({ error: 'Failed to get devices', message: error.message });
+  }
+});
+
+/**
  * GET /api/monitoring/graphs/ping/:deviceId
  * Get ping metrics for a device (for graphing)
  */

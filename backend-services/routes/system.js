@@ -47,73 +47,6 @@ router.get('/services/status', requirePlatformAdmin, (req, res) => {
       console.error('Error getting PM2 services:', e);
     }
     
-    // Get systemd services (GenieACS)
-    const systemdServices = [
-      { name: 'genieacs-nbi', displayName: 'GenieACS NBI', port: 7557 },
-      { name: 'genieacs-cwmp', displayName: 'GenieACS CWMP', port: 7547 },
-      { name: 'genieacs-fs', displayName: 'GenieACS FS', port: 7567 },
-      { name: 'genieacs-ui', displayName: 'GenieACS UI', port: 8080 }
-    ];
-    
-    systemdServices.forEach(svc => {
-      try {
-        const status = execSync(`systemctl is-active ${svc.name} 2>/dev/null || echo "inactive"`, { encoding: 'utf8' }).trim();
-        const isActive = status === 'active';
-        
-        let uptime = 0;
-        let memory = 0;
-        
-        if (isActive) {
-          try {
-            // Get service uptime
-            const uptimeOutput = execSync(`systemctl show ${svc.name} --property=ActiveEnterTimestamp 2>/dev/null`, { encoding: 'utf8' });
-            const match = uptimeOutput.match(/ActiveEnterTimestamp=(.+)/);
-            if (match && match[1] && match[1] !== 'n/a') {
-              const startTime = new Date(match[1]).getTime();
-              if (!isNaN(startTime)) {
-                uptime = Date.now() - startTime;
-              }
-            }
-            
-            // Try to get memory usage
-            const memOutput = execSync(`systemctl show ${svc.name} --property=MemoryCurrent 2>/dev/null`, { encoding: 'utf8' });
-            const memMatch = memOutput.match(/MemoryCurrent=(\d+)/);
-            if (memMatch) {
-              memory = parseInt(memMatch[1]);
-            }
-          } catch (e) {
-            console.log(`[systemd] Could not get metrics for ${svc.name}:`, e.message);
-          }
-        }
-        
-        console.log(`[systemd] Service ${svc.name}: status=${status}, isActive=${isActive}`);
-        
-        services.push({
-          name: svc.name,
-          displayName: svc.displayName,
-          status: isActive ? 'online' : (status === 'inactive' ? 'offline' : 'unknown'),
-          uptime: uptime,
-          memory: memory,
-          cpu: 0,
-          restarts: 0,
-          port: svc.port,
-          canControl: true,
-          type: 'systemd'
-        });
-      } catch (e) {
-        console.error(`[systemd] Error checking ${svc.name}:`, e.message);
-        // Service doesn't exist or can't check status - still add it with unknown status
-        services.push({
-          name: svc.name,
-          displayName: svc.displayName,
-          status: 'unknown',
-          port: svc.port,
-          canControl: false,
-          type: 'systemd'
-        });
-      }
-    });
-    
     // MongoDB is cloud-based (MongoDB Atlas), not on this server
     
     console.log(`[Services Status] Returning ${services.length} services`);
@@ -179,15 +112,10 @@ router.get('/resources', requirePlatformAdmin, (req, res) => {
 router.post('/services/:serviceName/restart', requirePlatformAdmin, (req, res) => {
   try {
     const { serviceName } = req.params;
-    const systemdServices = ['genieacs-nbi', 'genieacs-cwmp', 'genieacs-fs', 'genieacs-ui'];
     
     console.log(`[System Management] Restarting service: ${serviceName}`);
     
-    if (systemdServices.includes(serviceName)) {
-      execSync(`systemctl restart ${serviceName}`, { encoding: 'utf8' });
-    } else {
-      execSync(`pm2 restart ${serviceName}`, { encoding: 'utf8' });
-    }
+    execSync(`pm2 restart ${serviceName}`, { encoding: 'utf8' });
     
     res.json({ success: true, message: `Service ${serviceName} restarted` });
   } catch (error) {
@@ -203,15 +131,10 @@ router.post('/services/:serviceName/restart', requirePlatformAdmin, (req, res) =
 router.post('/services/:serviceName/stop', requirePlatformAdmin, (req, res) => {
   try {
     const { serviceName } = req.params;
-    const systemdServices = ['genieacs-nbi', 'genieacs-cwmp', 'genieacs-fs', 'genieacs-ui'];
     
     console.log(`[System Management] Stopping service: ${serviceName}`);
     
-    if (systemdServices.includes(serviceName)) {
-      execSync(`systemctl stop ${serviceName}`, { encoding: 'utf8' });
-    } else {
-      execSync(`pm2 stop ${serviceName}`, { encoding: 'utf8' });
-    }
+    execSync(`pm2 stop ${serviceName}`, { encoding: 'utf8' });
     
     res.json({ success: true, message: `Service ${serviceName} stopped` });
   } catch (error) {
@@ -227,15 +150,10 @@ router.post('/services/:serviceName/stop', requirePlatformAdmin, (req, res) => {
 router.post('/services/:serviceName/start', requirePlatformAdmin, (req, res) => {
   try {
     const { serviceName} = req.params;
-    const systemdServices = ['genieacs-nbi', 'genieacs-cwmp', 'genieacs-fs', 'genieacs-ui'];
     
     console.log(`[System Management] Starting service: ${serviceName}`);
     
-    if (systemdServices.includes(serviceName)) {
-      execSync(`systemctl start ${serviceName}`, { encoding: 'utf8' });
-    } else {
-      execSync(`pm2 start ${serviceName}`, { encoding: 'utf8' });
-    }
+    execSync(`pm2 start ${serviceName}`, { encoding: 'utf8' });
     
     res.json({ success: true, message: `Service ${serviceName} started` });
   } catch (error) {
@@ -286,10 +204,6 @@ router.post('/system/reboot', requirePlatformAdmin, (req, res) => {
  */
 function getServicePort(serviceName) {
   const portMap = {
-    'genieacs-nbi': 7557,
-    'genieacs-cwmp': 7547,
-    'genieacs-fs': 7567,
-    'genieacs-ui': 8080,
     'hss-api': 3000
   };
   return portMap[serviceName] || null;

@@ -9,9 +9,12 @@
   import { isPlatformAdmin } from '$lib/services/adminService';
   import { getConfiguredSingleTenantId, isSingleTenantMode } from '$lib/config/tenantMode';
   import { isDemoVisitorLoginEnabled, isLoginDemoChromeEnabled } from '$lib/config/demoVisitor';
+  import { getSingleUseLoginTitle, isSimpleLoginOnly } from '$lib/config/loginMode';
 
-  const showDemoChrome = isLoginDemoChromeEnabled();
-  const demoVisitorEnabled = isDemoVisitorLoginEnabled();
+  const simpleLoginOnly = isSimpleLoginOnly();
+  const showDemoChrome = !simpleLoginOnly && isLoginDemoChromeEnabled();
+  const demoVisitorEnabled = !simpleLoginOnly && isDemoVisitorLoginEnabled();
+  const loginTitle = getSingleUseLoginTitle();
 
   let email = '';
   let password = '';
@@ -27,6 +30,24 @@
 
   onMount(async () => {
     if (!browser) return;
+
+    if (simpleLoginOnly) {
+      email = 'demo@wisptools.io';
+      // Only auto-enter the app when this tab already completed login (e.g. refresh).
+      // Avoids login ↔ dashboard loop when TenantGuard bounces here before auth is ready.
+      const sessionReady =
+        typeof sessionStorage !== 'undefined' &&
+        sessionStorage.getItem('wm_session_login_completed') === 'true';
+      if (!sessionReady) return;
+
+      const existing = await authService.waitForUser(4000);
+      if (existing?.email) {
+        isLoading = true;
+        await completeLoginSession(existing, existing.email);
+        isLoading = false;
+      }
+      return;
+    }
     
     console.log('[Login Page] 🔄 Page mounted, checking authentication...');
     console.log('[Login Page] Current URL:', window.location.href);
@@ -199,6 +220,31 @@
     }
   });
 
+  async function completeLoginSession(user: User, userEmail: string): Promise<void> {
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('userEmail', userEmail);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('wm_session_login_completed', 'true');
+    }
+    try {
+      await user.getIdToken(true);
+    } catch {
+      /* non-fatal */
+    }
+    await new Promise((resolve) => setTimeout(resolve, simpleLoginOnly ? 400 : 800));
+    const userIsPlatformAdmin = isPlatformAdmin(userEmail);
+    if (userIsPlatformAdmin) {
+      await goto('/admin/management', { replaceState: true });
+      return;
+    }
+    const userRole = await ensureTenantConnection(user, userEmail, false);
+    if (userRole === 'support') {
+      await goto('/support-dashboard', { replaceState: true });
+    } else {
+      await goto('/dashboard', { replaceState: true });
+    }
+  }
+
   async function handleSubmit() {
     isLoading = true;
     error = '';
@@ -213,85 +259,26 @@
 
     try {
       console.log('[Login Page] Form submitted:', { email });
-      console.log('[Login Page] Calling authService.signIn...');
-      
-      console.log('[Login Page] Attempting sign in...');
       const result = await authService.signIn(email, password);
-      console.log('[Login Page] Sign in result:', result);
 
       if (result.success) {
-        console.log('[Login Page] Authentication successful, waiting for auth state...');
-        
-        // Wait for Firebase auth state to fully update before redirecting
-        // This prevents redirect loops where dashboard checks auth before state is ready
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Verify auth state is ready
+        await new Promise((resolve) => setTimeout(resolve, 500));
         let user = authService.getCurrentUser();
         let retries = 0;
         while (!user && retries < 10) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
           user = authService.getCurrentUser();
           retries++;
         }
-        
         if (!user) {
-          console.error('[Login Page] Auth state not ready after login, retrying...');
           error = 'Authentication state not ready. Please try again.';
           isLoading = false;
           return;
         }
-        
-        console.log('[Login Page] Auth state ready');
-        
-        // Store user info in localStorage for compatibility
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userEmail', email);
-
-        // Mark this session as having completed an explicit login
         if (typeof sessionStorage !== 'undefined') {
           sessionStorage.setItem('wm_session_login_completed', 'true');
         }
-        
-        // Ensure token is ready before making API calls
-        // Force token refresh to ensure it's valid for backend
-        try {
-          const token = await user.getIdToken(true);
-          console.log('[Login Page] Token ready:', { 
-            hasToken: !!token, 
-            tokenLength: token?.length,
-            userId: user.uid 
-          });
-        } catch (tokenError: any) {
-          console.warn('[Login Page] Token refresh warning:', tokenError);
-          // Continue anyway - getAuthHeaders will retry
-        }
-        
-        // Wait longer to ensure Firebase auth state is fully propagated
-        // This is critical for tenant API calls to work
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        // Check if platform admin - redirect to admin management page
-        const userIsPlatformAdmin = isPlatformAdmin(email);
-        
-        if (userIsPlatformAdmin) {
-          console.log('[Login Page] Platform admin login, redirecting to admin pages');
-          await goto('/admin/management', { replaceState: true });
-        } else {
-        // Robust tenant connection for logins
-        const userRole = await ensureTenantConnection(user, email, false);
-          
-          console.log('[Login Page] User role:', userRole);
-          
-          // Redirect based on user role
-          if (userRole === 'support') {
-            console.log('[Login Page] Redirecting support user to support dashboard');
-            await goto('/support-dashboard', { replaceState: true });
-          } else {
-            console.log('[Login Page] Redirecting to dashboard');
-            await goto('/dashboard', { replaceState: true });
-          }
-        }
+        await completeLoginSession(user, email);
       } else {
         // Provide more helpful error messages
         const errorMsg = result.error || 'Authentication failed';
@@ -605,16 +592,29 @@
       {#if showDemoChrome}
         <div class="demo-site-ribbon" role="note">Demo site — not production data</div>
       {/if}
-      <h1>WISP Management</h1>
-      <p class="brand-tagline">wisptools.io</p>
-      <p class="poc-notice">Part of wisptools.io. Source code: <a href="https://github.com/theorem6/WISP-Management" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></p>
+      <h1>{simpleLoginOnly ? loginTitle : 'WISP Management'}</h1>
+      {#if !simpleLoginOnly}
+        <p class="brand-tagline">wisptools.io</p>
+        <p class="poc-notice">Part of wisptools.io. Source code: <a href="https://github.com/theorem6/WISP-Management" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></p>
+      {/if}
     </div>
 
     <!-- Login Form -->
     <div class="login-card">
-      <h2>Welcome Back</h2>
+      <h2>{simpleLoginOnly ? 'Sign in' : 'Welcome Back'}</h2>
+      {#if simpleLoginOnly}
+        <div class="demo-credentials-panel" role="note">
+          <p class="demo-credentials-title">Demo login (Firebase <code>wisptools-production</code>)</p>
+          <p><strong>Email:</strong> demo@wisptools.io</p>
+          <p><strong>Password:</strong> WisptoolsDemo2026!</p>
+          <p class="demo-credentials-hint">Use this URL only: <strong>wisptools-management.web.app</strong> — not agenticop.io or the old App Hosting link.</p>
+        </div>
+      {/if}
+
       <p class="subtitle">
-        {#if showDemoChrome}
+        {#if simpleLoginOnly}
+          Use your email and password to access {loginTitle}.
+        {:else if showDemoChrome}
           <strong class="demo-login-lead">Demo environment</strong> — explore with a temporary visitor identity or use your account below.
         {:else}
           Sign in to access your network management tools
@@ -764,30 +764,35 @@
       </form>
       {/if}
 
-      <div class="form-footer">
-        <span class="link-btn" style="text-decoration: none; opacity: 0.8;">
-          Contact your admin for access
-        </span>
-      </div>
+      {#if simpleLoginOnly}
+        <p class="form-footer simple-only-hint">Access is managed by your administrator.</p>
+      {:else}
+        <div class="form-footer">
+          <span class="link-btn" style="text-decoration: none; opacity: 0.8;">
+            Contact your admin for access
+          </span>
+        </div>
 
-      <div class="login-divider">
-        <span></span>
-        <p>or</p>
-        <span></span>
-      </div>
+        <div class="login-divider">
+          <span></span>
+          <p>or</p>
+          <span></span>
+        </div>
 
-      <button type="button" class="btn-google" onclick={handleGoogleSignIn} disabled={isLoading}>
-        <svg aria-hidden="true" viewBox="0 0 533.5 544.3">
-          <path fill="#4285f4" d="M533.5 278.4c0-17.4-1.4-34.1-4.1-50.2H272v95h147.5c-6.4 34-25 62.8-53.4 82v68h86.1c50.4-46.5 80.3-115.1 80.3-194.8z"/>
-          <path fill="#34a853" d="M272 544.3c72.2 0 132.8-23.9 177-64.7l-86.1-68c-23.9 16.1-54.5 25.7-90.9 25.7-69.9 0-129.2-47.2-150.4-110.5h-90.7v69.8c44 87.4 134.5 148.7 241.1 148.7z"/>
-          <path fill="#fbbc04" d="M121.6 326.8c-10.2-30-10.2-62.5 0-92.5v-69.8h-90.7c-37.3 74.6-37.3 158.4 0 233z"/>
-          <path fill="#ea4335" d="M272 107.7c39.2-.6 76.4 13.8 105 39.9l78.2-78.2C404.5 25.5 344 0 272 0 165.4 0 74.9 61.3 30.9 148.7l90.7 69.8C142.7 175 202.1 107.7 272 107.7z"/>
-        </svg>
-        <span>Sign in with Google</span>
-      </button>
+        <button type="button" class="btn-google" onclick={handleGoogleSignIn} disabled={isLoading}>
+          <svg aria-hidden="true" viewBox="0 0 533.5 544.3">
+            <path fill="#4285f4" d="M533.5 278.4c0-17.4-1.4-34.1-4.1-50.2H272v95h147.5c-6.4 34-25 62.8-53.4 82v68h86.1c50.4-46.5 80.3-115.1 80.3-194.8z"/>
+            <path fill="#34a853" d="M272 544.3c72.2 0 132.8-23.9 177-64.7l-86.1-68c-23.9 16.1-54.5 25.7-90.9 25.7-69.9 0-129.2-47.2-150.4-110.5h-90.7v69.8c44 87.4 134.5 148.7 241.1 148.7z"/>
+            <path fill="#fbbc04" d="M121.6 326.8c-10.2-30-10.2-62.5 0-92.5v-69.8h-90.7c-37.3 74.6-37.3 158.4 0 233z"/>
+            <path fill="#ea4335" d="M272 107.7c39.2-.6 76.4 13.8 105 39.9l78.2-78.2C404.5 25.5 344 0 272 0 165.4 0 74.9 61.3 30.9 148.7l90.7 69.8C142.7 175 202.1 107.7 272 107.7z"/>
+          </svg>
+          <span>Sign in with Google</span>
+        </button>
+      {/if}
 
     </div>
 
+    {#if !simpleLoginOnly}
     <!-- Features Section -->
     <div class="features">
       <div class="feature">
@@ -812,6 +817,7 @@
       <span class="sep">·</span>
       <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
     </footer>
+    {/if}
   </div>
 </div>
 
@@ -1088,6 +1094,46 @@
   .form-footer {
     margin-top: 1.5rem;
     text-align: center;
+  }
+
+  .simple-only-hint {
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    color: #a0d9e8;
+    text-align: center;
+    opacity: 0.85;
+  }
+
+  .demo-credentials-panel {
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(0, 217, 255, 0.35);
+    background: rgba(0, 217, 255, 0.08);
+    font-size: 0.875rem;
+    color: #d4eef5;
+    line-height: 1.5;
+  }
+
+  .demo-credentials-panel code {
+    font-size: 0.8em;
+    color: #7ee8ff;
+  }
+
+  .demo-credentials-title {
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+    color: #00d9ff;
+  }
+
+  .demo-credentials-panel p {
+    margin: 0.25rem 0;
+  }
+
+  .demo-credentials-hint {
+    margin-top: 0.75rem !important;
+    opacity: 0.85;
+    font-size: 0.8125rem;
   }
 
   .link-btn {

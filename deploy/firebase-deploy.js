@@ -132,17 +132,17 @@ async function setEnvironmentVariables() {
     });
   };
   
-  const serverIP = await question(`${colors.yellow}Enter your GenieACS server IP (or press Enter for localhost): ${colors.reset}`);
+  const serverIP = await question(`${colors.yellow}Enter your backend server IP (or press Enter for localhost): ${colors.reset}`);
   const finalIP = serverIP.trim() || 'localhost';
   
   rl.close();
   
   // Set environment variables
   const envVars = {
-    'genieacs.nbi_url': `http://${finalIP}:7557`,
-    'genieacs.ui_url': `http://${finalIP}:8080`,
-    'genieacs.cwmp_url': `http://${finalIP}:7547`,
-    'genieacs.fs_url': `http://${finalIP}:7567`
+    'backend.nbi_url': `http://${finalIP}:7557`,
+    'backend.ui_url': `http://${finalIP}:8080`,
+    'backend.cwmp_url': `http://${finalIP}:7547`,
+    'backend.fs_url': `http://${finalIP}:7567`
   };
   
   for (const [key, value] of Object.entries(envVars)) {
@@ -179,7 +179,7 @@ async function testFunctions() {
   const testFunctions = [
     'initializeSamplePresets',
     'getPresets',
-    'syncGenieACSDevices'
+    'syncbackendDevices'
   ];
   
   for (const funcName of testFunctions) {
@@ -226,8 +226,8 @@ async function displayResults() {
   log(`  • Delete Preset: DELETE ${functionsUrl}/deletePreset/{id}`);
   log(`  • Initialize: POST ${functionsUrl}/initializeSamplePresets`);
   
-  log(`\n${colors.cyan}GenieACS Bridge:${colors.reset}`);
-  log(`  • Sync Devices: POST ${functionsUrl}/syncGenieACSDevices`);
+  log(`\n${colors.cyan}backend Bridge:${colors.reset}`);
+  log(`  • Sync Devices: POST ${functionsUrl}/syncbackendDevices`);
   log(`  • Get Device: GET ${functionsUrl}/getDeviceParameters/{id}`);
   log(`  • Execute Task: POST ${functionsUrl}/executeDeviceTask/{id}`);
   log(`  • Performance: GET ${functionsUrl}/getDevicePerformanceMetrics/{id}`);
@@ -238,19 +238,19 @@ async function displayResults() {
   
   log('\n🧪 Test Functions:');
   log(`${colors.blue}Test Presets:${colors.reset} curl -X POST ${functionsUrl}/initializeSamplePresets`);
-  log(`${colors.blue}Test Sync:${colors.reset} curl -X POST ${functionsUrl}/syncGenieACSDevices`);
+  log(`${colors.blue}Test Sync:${colors.reset} curl -X POST ${functionsUrl}/syncbackendDevices`);
   
   log('\n📱 ACS Module Integration:');
   log('Your ACS module should now be able to:');
   log('• Load presets from database');
   log('• Delete presets with persistence');
-  log('• Sync CPE devices from GenieACS');
+  log('• Sync CPE devices from backend');
   log('• Execute tasks on CPE devices');
   log('• View real-time device metrics');
   
   log('\n🎯 Next Steps:');
   log('1. Test your ACS module in the web interface');
-  log('2. Connect CPE devices to GenieACS');
+  log('2. Connect CPE devices to backend');
   log('3. Monitor device connectivity and performance');
   
   log('\n' + '='.repeat(60));

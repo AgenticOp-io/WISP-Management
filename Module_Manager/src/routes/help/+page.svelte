@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { pciResolutionDocs } from '$lib/docs/pci-resolution-docs';
-  import { acsCpeDocs } from '$lib/docs/acs-cpe-docs';
   import { cbrsManagementDocs } from '$lib/docs/cbrs-management-docs';
   import { inventoryDocs } from '$lib/docs/inventory-docs';
   import { coverageMapDocs } from '$lib/docs/coverage-map-docs';
@@ -19,7 +18,6 @@
     { id: 'inventory', title: 'Inventory', icon: '📦' },
     { id: 'coverage-map', title: 'Coverage Map', icon: '🗺️' },
     { id: 'hss-subscribers', title: 'HSS & Subscribers', icon: '🔐' },
-    { id: 'acs-cpe', title: 'ACS CPE Management', icon: '📡' },
     { id: 'pci-resolution', title: 'PCI Resolution', icon: '📊' },
     { id: 'cbrs', title: 'CBRS Management', icon: '📡' },
     { id: 'wizards', title: 'Wizards & Quick Actions', icon: '🧙' },
@@ -541,11 +539,6 @@
       {:else if selectedTopic === 'pci-resolution'}
         <article>
           {@html pciResolutionDocs}
-        </article>
-      
-      {:else if selectedTopic === 'acs-cpe'}
-        <article>
-          {@html acsCpeDocs}
         </article>
       
       {:else if selectedTopic === 'cbrs'}

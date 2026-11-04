@@ -67,7 +67,7 @@ All recommended dependency updates have been successfully implemented and commit
 
 All services use correct MongoDB Atlas connection format:
 ```
-mongodb+srv://[username]:[password]@cluster0.1radgkw.mongodb.net/[database]?retryWrites=true&w=majority&appName=Cluster0
+mongodb+srv://<username>:<password>@<cluster>.mongodb.net/[database]?retryWrites=true&w=majority&appName=Cluster0
 ```
 
 ### Supported Features

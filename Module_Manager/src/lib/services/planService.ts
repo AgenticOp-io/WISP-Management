@@ -10,10 +10,9 @@ import { coverageMapService } from '../../routes/modules/coverage-map/lib/covera
 import type { InventoryItem } from './inventoryService';
 import type { TowerSite, Sector, CPEDevice, NetworkEquipment } from '../../routes/modules/coverage-map/lib/models';
 
-import { getApiUrl } from '$lib/config/api';
+import { API_CONFIG, getApiProxyRequestUrl, getBackendDirectBase } from '$lib/config/api';
 
-// API Configuration - Use centralized config
-const API_URL = getApiUrl('PLANS');
+const PLANS_API_PATH = API_CONFIG.PATHS.PLANS;
 
 export interface PlanProjectLocation {
   addressLine1?: string;
@@ -323,20 +322,23 @@ class PlanService {
       throw new Error('No tenant selected');
     }
     
-    // Use centralized API configuration. Append path param so authProxy gets path when Hosting rewrites send req.url as '/'
-    const apiPath = API_URL;
-    const base = `${apiPath}${endpoint}`;
-    const fullUrl = base.includes('?') ? `${base}&path=${encodeURIComponent(API_URL)}` : `${base}?path=${encodeURIComponent(API_URL)}`;
-    console.log('[planService] API URL:', { API_URL, apiPath, fullUrl, endpoint });
+    const logicalPath = `${PLANS_API_PATH}${endpoint}`;
+    const direct = getBackendDirectBase();
+    const fullUrl = direct ? `${direct}${logicalPath}` : getApiProxyRequestUrl(logicalPath);
+    const requestHeaders: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+      'X-Tenant-ID': resolvedTenantId,
+      'Content-Type': 'application/json',
+      ...(options.headers as Record<string, string> | undefined)
+    };
+    // Cross-origin to hss.wisptools.io: omit until nginx CORS allows X-User-Email (JWT carries identity).
+    if (!direct && currentUser?.email) {
+      requestHeaders['X-User-Email'] = currentUser.email;
+    }
+
     const response = await fetch(fullUrl, {
       ...options,
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'X-Tenant-ID': resolvedTenantId,
-        'X-User-Email': currentUser?.email || '',
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
+      headers: requestHeaders
     });
     
     if (!response.ok) {

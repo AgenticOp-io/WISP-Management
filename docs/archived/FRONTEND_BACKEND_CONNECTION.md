@@ -36,7 +36,7 @@ VITE_HSS_API_URL=http://136.112.111.167:3000
 PUBLIC_BACKEND_API_URL=http://136.112.111.167:3000/api
 
 # Firebase Configuration
-VITE_FIREBASE_API_KEY=AIzaSyCaMoHY6ZKcV_uazY0HlwolxVgPwwLT8V0
+VITE_FIREBASE_API_KEY=YOUR_FIREBASE_OR_GOOGLE_API_KEY
 VITE_FIREBASE_AUTH_DOMAIN=lte-pci-mapper-65450042-bbf71.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=lte-pci-mapper-65450042-bbf71
 VITE_FIREBASE_STORAGE_BUCKET=lte-pci-mapper-65450042-bbf71.firebasestorage.app
@@ -77,7 +77,7 @@ You need to deploy the Node.js HSS management API from `hss-module/` to the serv
 #!/bin/bash
 # Deploy HSS Management API to server
 
-MONGODB_URI="mongodb+srv://user:****@cluster0.1radgkw.mongodb.net/..."  # Set in .env; never commit
+MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/..."  # Set in .env; never commit
 
 # Create HSS API directory
 mkdir -p /opt/hss-api

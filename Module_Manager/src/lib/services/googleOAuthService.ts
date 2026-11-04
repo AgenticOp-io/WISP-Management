@@ -24,7 +24,7 @@ interface GoogleAuthState {
 // Google OAuth configuration - from environment variables
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID || 
                         import.meta.env.PUBLIC_GOOGLE_OAUTH_CLIENT_ID || 
-                        '1044782186913-kehquaq56fcubedupb34611c0hm1ctob.apps.googleusercontent.com';
+                        '';
 
 const GOOGLE_SCOPES = [
   'https://www.googleapis.com/auth/userinfo.email',

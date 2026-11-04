@@ -14,7 +14,7 @@
   <ul>
     <li><strong>Multi-tenant architecture</strong> – Manage multiple organizations</li>
     <li><strong>HSS management</strong> – Home Subscriber Server for Open5GS</li>
-    <li><strong>Device management</strong> – TR-069/CWMP via GenieACS</li>
+    <li><strong>Device management</strong> – network equipment and CPE inventory</li>
     <li><strong>Network planning</strong> – Coverage mapping and PCI collision prevention</li>
     <li><strong>Monitoring</strong> – SNMP monitoring and performance graphs</li>
     <li><strong>CBRS/SAS</strong> – Spectrum Access System integration</li>
@@ -33,7 +33,7 @@
   <ol>
     <li><strong>Deploy the platform</strong> – Follow the <a href="/help">deployment guide</a>; set up backend and frontend.</li>
     <li><strong>Configure HSS</strong> – Set up Open5GS and connect MMEs (see repo <code>docs/</code> for admin guides).</li>
-    <li><strong>Manage tenants</strong> – Use Admin Management from the dashboard; configure GenieACS and user roles.</li>
+    <li><strong>Manage tenants</strong> – Use Admin Management from the dashboard; configure modules and user roles.</li>
   </ol>
 </section>
 

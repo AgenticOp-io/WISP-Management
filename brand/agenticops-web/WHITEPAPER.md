@@ -1,4 +1,4 @@
-# AgenticOp.io & Chrysalis — Technical Whitepaper
+﻿# AgenticOp.io & Chrysalis — Technical Whitepaper
 
 **Version:** 1.0 · **Audience:** Engineering leadership, architects, and senior ICs evaluating verification-first legacy modernization.
 
@@ -56,7 +56,7 @@ The first flagship proving surface is **legacy PHP estates** (custom apps, long-
 
 ## 6. Pilots, maturity, and licensing
 
-Chrysalis is **early** in public maturity; commercial work runs as **scoped pilots** (“private alpha” describes **engagement shape**, not hidden source). Source: **https://github.com/4GEngineer/chrysalis** — verify **LICENSE** in that repository before legal claims.
+Chrysalis is **early** in public maturity; commercial work runs as **scoped pilots** (“private alpha” describes **engagement shape**, not hidden source). Source: **https://github.com/AgenticOp-io/chrysalis** — verify **LICENSE** in that repository before legal claims.
 
 ---
 
@@ -74,7 +74,10 @@ Chrysalis is **early** in public maturity; commercial work runs as **scoped pilo
 | Resource | URL |
 |----------|-----|
 | AgenticOp.io (marketing) | https://agenticop.io/ |
-| Chrysalis (engine source) | https://github.com/4GEngineer/chrysalis |
+| GitHub org | https://github.com/AgenticOp-io |
+| Chrysalis (engine source) | https://github.com/AgenticOp-io/chrysalis |
+| WISP Management (MIT) | https://github.com/AgenticOp-io/WISP-Management |
+| Bandwidth Test Manager | https://github.com/AgenticOp-io/Bandwidth-Test-Manager |
 | wisptools.io (production proof stack) | https://wisptools.io/ |
 
 ---

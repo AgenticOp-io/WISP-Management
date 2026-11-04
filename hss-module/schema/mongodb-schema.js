@@ -44,8 +44,8 @@ const activeSubscriberSchema = {
   
   // ACS Integration (CRITICAL for your use case)
   acs: {
-    cpe_serial_number: String,         // Link to GenieACS device
-    acs_device_id: String,             // GenieACS device _id
+    cpe_serial_number: String,         // Optional CPE serial number
+    acs_device_id: String,             // Legacy field (unused)
     last_acs_inform: Date,             // Last time device contacted ACS
     device_status: String,             // "online", "offline", "maintenance"
   },

@@ -63,7 +63,6 @@ export interface ModuleAccess {
   // Core Technical Modules
   pciResolution: boolean;
   cbrsManagement: boolean;
-  acsManagement: boolean;
   hssManagement: boolean;
   coverageMap: boolean;
   inventory: boolean;
@@ -104,7 +103,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Full access to everything
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -124,7 +122,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Full tenant access
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -144,7 +141,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Configurable by owner
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -164,7 +160,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Technical modules only
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -184,7 +179,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Field operations only
     pciResolution: false,
     cbrsManagement: false,
-    acsManagement: false,
     hssManagement: false,
     coverageMap: true,      // View only
     inventory: true,         // Checkout/deploy only
@@ -204,7 +198,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Customer support modules
     pciResolution: false,
     cbrsManagement: false,
-    acsManagement: true,     // Troubleshoot CPEs
     hssManagement: false,
     coverageMap: true,       // View only
     inventory: true,         // View only
@@ -224,7 +217,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Customer portal support only - goes directly to support dashboard
     pciResolution: false,
     cbrsManagement: false,
-    acsManagement: false,
     hssManagement: false,
     coverageMap: false,
     inventory: false,
@@ -244,7 +236,6 @@ export const DEFAULT_MODULE_ACCESS: Record<UserRole, ModuleAccess> = {
     // Read-only everything
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -458,7 +449,6 @@ export interface TenantConfigWithRoles {
   enabledModules: {
     pciResolution: boolean;
     cbrsManagement: boolean;
-    acsManagement: boolean;
     hssManagement: boolean;
     coverageMap: boolean;
     inventory: boolean;

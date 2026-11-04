@@ -18,10 +18,8 @@ param(
     [switch]$SkipRemote = $false   # Upload only; run remote install from Cloud Shell or another machine
 )
 
-# Windows: prefer OpenSSH over PuTTY (plink) so non-interactive gcloud ssh/scp does not fail on host keys.
-if (-not $env:CLOUDSDK_COMPUTE_SSH_USE_OPENSSH) {
-    $env:CLOUDSDK_COMPUTE_SSH_USE_OPENSSH = "true"
-}
+# Windows: always prefer OpenSSH over PuTTY (plink) so non-interactive gcloud ssh/scp does not fail on host keys.
+$env:CLOUDSDK_COMPUTE_SSH_USE_OPENSSH = "true"
 
 Write-Host "Deploying backend services to GCE ($DeployMethod)..." -ForegroundColor Green
 

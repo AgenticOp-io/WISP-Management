@@ -9,6 +9,8 @@
   import '../app.css';
   import DemoSiteBanner from '$lib/components/DemoSiteBanner.svelte';
   import { isPublicFlagTrue } from '$lib/config/publicEnv';
+  import { isSimpleLoginOnly } from '$lib/config/loginMode';
+  import { isSingleTenantMode } from '$lib/config/tenantMode';
   
   let isInitializing = true;
   let isAuthenticated = false;
@@ -41,15 +43,10 @@
     isAuthenticated &&
     isPublicFlagTrue('PUBLIC_DEMO_SITE');
   
-  // Enforce that every new session must pass through the login page at least once,
-  // regardless of any cached Firebase auth state.
+  // Multitenant prod: require explicit login once per tab session.
+  // Single-use / single-tenant: trust Firebase auth only (session flag races with TenantGuard).
   $: if (browser && !isInitializing) {
     const path = $page.url.pathname;
-    const loginCompleted = typeof sessionStorage !== 'undefined'
-      ? sessionStorage.getItem('wm_session_login_completed') === 'true'
-      : false;
-
-    // Allow the actual login and auth callback/reset routes to be accessed freely
     const isLoginOrAuthRoute =
       path === '/login' ||
       path === '/signup' ||
@@ -57,9 +54,14 @@
       path.startsWith('/auth/') ||
       path.startsWith('/oauth/');
 
-    // If this session has not yet completed an explicit login,
-    // force the user to the login page for any other route.
-    if (!loginCompleted && !isLoginOrAuthRoute) {
+    const useFirebaseAuthOnly = isSimpleLoginOnly() || isSingleTenantMode();
+    const sessionAllowsApp =
+      useFirebaseAuthOnly
+        ? isAuthenticated
+        : typeof sessionStorage !== 'undefined' &&
+          sessionStorage.getItem('wm_session_login_completed') === 'true';
+
+    if (!sessionAllowsApp && !isLoginOrAuthRoute) {
       goto('/login', { replaceState: true });
     }
   }
@@ -67,19 +69,20 @@
   onMount(async () => {
     if (!browser) return;
 
-    // Ensure login is always the first step for a new browser session.
-    // On the very first load in this tab/session, clear any cached Firebase auth
-    // so that the user must visit the login screen explicitly.
-    try {
-      const sessionKey = 'wm_session_login_initialized';
-      const alreadyInitialized = sessionStorage.getItem(sessionKey) === 'true';
-      if (!alreadyInitialized) {
-        console.log('[Root Layout] Clearing cached auth for new session - forcing explicit login');
-        await authService.signOut();
-        sessionStorage.setItem(sessionKey, 'true');
+    // Multitenant prod: clear stale Firebase session on first tab load so users must sign in explicitly.
+    // Single-use / demo Hosting: skip — signOut() here races with email/password login and causes false "invalid password".
+    if (!isSimpleLoginOnly() && !isSingleTenantMode()) {
+      try {
+        const sessionKey = 'wm_session_login_initialized';
+        const alreadyInitialized = sessionStorage.getItem(sessionKey) === 'true';
+        if (!alreadyInitialized) {
+          console.log('[Root Layout] Clearing cached auth for new session - forcing explicit login');
+          await authService.signOut();
+          sessionStorage.setItem(sessionKey, 'true');
+        }
+      } catch (e) {
+        console.warn('[Root Layout] Failed to enforce first-login session rule', e);
       }
-    } catch (e) {
-      console.warn('[Root Layout] Failed to enforce first-login session rule', e);
     }
     
     console.log('[Root Layout] Initializing theme system...');
@@ -127,6 +130,14 @@
     // Only handle sign-out (let TenantGuard handle sign-in)
     if (!isAuthenticated) {
       tenantStore.clearTenantData();
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.removeItem('wm_session_login_completed');
+      }
+    } else if (
+      typeof sessionStorage !== 'undefined' &&
+      (isSimpleLoginOnly() || isSingleTenantMode())
+    ) {
+      sessionStorage.setItem('wm_session_login_completed', 'true');
     }
   });
 </script>

@@ -16,7 +16,7 @@ env:
   # FIREBASE CONFIGURATION
   # ==========================================
   - variable: PUBLIC_FIREBASE_API_KEY
-    value: "AIzaSyCaMoHY6ZKcV_uazY0HlwolxVgPwwLT8V0"
+    value: "YOUR_FIREBASE_OR_GOOGLE_API_KEY"
     availability:
       - BUILD
       - RUNTIME
@@ -105,7 +105,7 @@ env:
   # AI SERVICES CONFIGURATION
   # ==========================================
   - variable: PUBLIC_GEMINI_API_KEY
-    value: "AIzaSyAVBmH_eC98f6GCIpHZJ8B_y40TuoIjXOg"
+    value: "YOUR_FIREBASE_OR_GOOGLE_API_KEY"
     availability:
       - BUILD
       - RUNTIME

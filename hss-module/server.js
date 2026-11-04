@@ -3,7 +3,7 @@
  * Automated deployment via Firebase App Hosting to GCE
  * 
  * Project: lte-pci-mapper-65450042-bbf71
- * Instance: genieacs-backend
+ * Instance: hss-backend
  * Zone: us-central1-a
  */
 
@@ -33,12 +33,6 @@ if (fs.existsSync(configPath)) {
       uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/hss',
       database: 'hss'
     },
-    acs_integration: {
-      enabled: true,
-      sync_interval_minutes: 5,
-      genieacs_mongodb_uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/genieacs',
-      genieacs_database: 'genieacs'
-    }
   };
 }
 
@@ -52,7 +46,7 @@ console.log('══════════════════════�
 console.log('     Cloud HSS Server - Automated Firebase Deployment');
 console.log('═══════════════════════════════════════════════════════════');
 console.log(`Project:  lte-pci-mapper-65450042-bbf71`);
-console.log(`Instance: genieacs-backend`);
+console.log(`Instance: hss-backend`);
 console.log(`Zone:     us-central1-a`);
 console.log('═══════════════════════════════════════════════════════════');
 console.log('');
@@ -73,7 +67,7 @@ console.log('✅ Environment validation passed');
 console.log('');
 
 // Initialize services
-let hssApi, s6aInterface, acsIntegration;
+let hssApi, s6aInterface;
 
 async function startServices() {
   try {
@@ -97,7 +91,6 @@ async function startServices() {
           components: {
             rest_api: 'running',
             s6a_interface: s6aInterface ? 'running' : 'not started',
-            acs_integration: acsIntegration ? 'running' : 'not started'
           }
         });
       });
@@ -155,47 +148,6 @@ async function startServices() {
       console.log('⚠️  S6a interface module not found, skipping...');
     }
     
-    // Start ACS Integration (if enabled)
-    if (config.acs_integration.enabled) {
-      console.log('🔄 Starting ACS Integration...');
-      try {
-        const ACSIntegrationService = require('./services/acs-integration').ACSIntegrationService;
-        
-        acsIntegration = new ACSIntegrationService(
-          MONGODB_URI,
-          'http://localhost:7557'  // GenieACS NBI on same server
-        );
-        
-        // Sync every configured interval
-        const intervalMs = config.acs_integration.sync_interval_minutes * 60 * 1000;
-        setInterval(async () => {
-          try {
-            console.log('🔄 Running ACS sync...');
-            const result = await acsIntegration.syncCPEDevices();
-            console.log(`   ✅ Synced: ${result.synced}, Linked: ${result.linked}, Errors: ${result.errors}`);
-          } catch (error) {
-            console.error('   ❌ ACS sync error:', error.message);
-          }
-        }, intervalMs);
-        
-        // Initial sync after 30 seconds
-        setTimeout(async () => {
-          try {
-            console.log('🔄 Initial ACS sync...');
-            const result = await acsIntegration.syncCPEDevices();
-            console.log(`   ✅ Synced: ${result.synced}, Linked: ${result.linked}, Errors: ${result.errors}`);
-          } catch (error) {
-            console.error('   ❌ Initial sync error:', error.message);
-          }
-        }, 30000);
-        
-        console.log(`✅ ACS Integration enabled (sync every ${config.acs_integration.sync_interval_minutes} minutes)`);
-      } catch (error) {
-        console.error('⚠️  ACS Integration error:', error.message);
-        console.log('   Continuing without ACS integration...');
-      }
-    }
-    
     console.log('');
     console.log('═══════════════════════════════════════════════════════════');
     console.log('     🚀 Cloud HSS Server - Ready');
@@ -204,7 +156,6 @@ async function startServices() {
     console.log('📊 Service Status:');
     console.log(`   REST API:           ✅ Port ${REST_PORT}`);
     console.log(`   S6a Diameter:       ${s6aInterface ? '✅' : '⚠️'}  Port ${S6A_PORT}`);
-    console.log(`   ACS Integration:    ${acsIntegration ? '✅' : '⚠️'}  ${config.acs_integration.enabled ? 'Enabled' : 'Disabled'}`);
     console.log('');
     console.log('🔗 Endpoints:');
     console.log(`   Health Check:  http://localhost:${REST_PORT}/health`);
@@ -214,7 +165,6 @@ async function startServices() {
     console.log('📝 Database:');
     console.log(`   MongoDB:       ${MONGODB_URI.replace(/\/\/.*@/, '//***:***@')}`);
     console.log(`   HSS DB:        ${config.mongodb.database}`);
-    console.log(`   GenieACS DB:   ${config.acs_integration.genieacs_database}`);
     console.log('');
     console.log('═══════════════════════════════════════════════════════════');
     console.log('');

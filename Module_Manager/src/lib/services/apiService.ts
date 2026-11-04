@@ -3,15 +3,15 @@
 
 import { browser } from '$app/environment';
 import { getPublicEnv } from '$lib/config/publicEnv';
+import { getBackendDirectBase } from '$lib/config/api';
 import { authService } from './authService';
 
 export class ApiService {
   private baseUrl: string;
 
   constructor() {
-    // Use relative URLs that go through Firebase Hosting rewrites to backend
-    // This routes /api/* to the backend API via apiProxy function
-    this.baseUrl = browser ? '/api' : '';
+    const direct = browser ? getBackendDirectBase() : '';
+    this.baseUrl = direct ? `${direct}/api` : browser ? '/api' : '';
   }
 
   /**
@@ -152,87 +152,6 @@ export class ApiService {
       console.error(`API DELETE ${endpoint} failed:`, error);
       return { success: false, error: String(error) };
     }
-  }
-
-  // ============================================================================
-  // Multi-Tenant GenieACS Endpoints
-  // ============================================================================
-
-  /**
-   * Sync devices from GenieACS (tenant-specific)
-   */
-  async syncGenieACSDevices() {
-    return this.post('/syncGenieACSDevicesMultitenant');
-  }
-
-  /**
-   * Get device parameters (tenant-specific)
-   */
-  async getDeviceParameters(deviceId: string) {
-    return this.get(`/getDeviceParametersMultitenant?deviceId=${deviceId}`);
-  }
-
-  /**
-   * Execute device task (tenant-specific with permission check)
-   */
-  async executeDeviceTask(deviceId: string, taskName: string, parameter?: string, value?: any) {
-    return this.post('/executeDeviceTaskMultitenant', {
-      deviceId,
-      name: taskName,
-      parameter,
-      value,
-    });
-  }
-
-  // ============================================================================
-  // TR-069 Configuration
-  // ============================================================================
-
-  async getTR069Config() {
-    return this.get('/api/tr069/configuration');
-  }
-
-  async saveTR069Config(genieacsUrl: string, genieacsApiUrl: string) {
-    return this.post('/api/tr069/configuration', { genieacsUrl, genieacsApiUrl });
-  }
-
-  async testTR069Connection(genieacsApiUrl: string) {
-    return this.post('/api/tr069/connection-test', { genieacsApiUrl });
-  }
-
-  /**
-   * Get devices (tenant-filtered)
-   */
-  async getDevices() {
-    return this.get('/genieacsNBIMultitenant/devices');
-  }
-
-  /**
-   * Get faults (tenant-filtered)
-   */
-  async getFaults() {
-    return this.get('/genieacsNBIMultitenant/faults');
-  }
-
-  /**
-   * Get presets (tenant-filtered)
-   */
-  async getPresets() {
-    return this.get('/genieacsNBIMultitenant/presets');
-  }
-
-  /**
-   * Create preset (permission-checked)
-   */
-  async createPreset(presetName: string, config: any) {
-    return this.put(`/genieacsNBIMultitenant/presets/${presetName}`, config);
-  }
-
-  /**
-   * Delete preset (permission-checked)
-   */
-  async deletePreset(presetName: string) {
-    return this.delete(`/genieacsNBIMultitenant/presets/${presetName}`);
   }
 }
 

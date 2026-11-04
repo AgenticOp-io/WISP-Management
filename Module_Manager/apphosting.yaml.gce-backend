@@ -24,7 +24,7 @@ env:
   # FIREBASE CONFIGURATION
   # ==========================================
   - variable: PUBLIC_FIREBASE_API_KEY
-    value: "AIzaSyCaMoHY6ZKcV_uazY0HlwolxVgPwwLT8V0"
+    value: "YOUR_FIREBASE_OR_GOOGLE_API_KEY"
     availability:
       - BUILD
       - RUNTIME
@@ -71,7 +71,6 @@ env:
       - BUILD
       - RUNTIME
   
-  - variable: PUBLIC_GENIEACS_NBI_URL
     value: "https://<YOUR-GCE-DOMAIN>/nbi"
     availability:
       - BUILD
@@ -79,19 +78,16 @@ env:
   
   # CWMP must use HTTP and direct IP (TR-069 protocol requirement)
   # Replace <YOUR-GCE-IP> with your GCE external IP
-  - variable: PUBLIC_GENIEACS_CWMP_URL
     value: "http://<YOUR-GCE-IP>:7547"
     availability:
       - BUILD
       - RUNTIME
   
-  - variable: PUBLIC_GENIEACS_FS_URL
     value: "https://<YOUR-GCE-DOMAIN>/fs"
     availability:
       - BUILD
       - RUNTIME
   
-  - variable: PUBLIC_GENIEACS_UI_URL
     value: "https://<YOUR-GCE-DOMAIN>/admin"
     availability:
       - BUILD
@@ -120,7 +116,7 @@ env:
   # AI SERVICES CONFIGURATION
   # ==========================================
   - variable: PUBLIC_GEMINI_API_KEY
-    value: "AIzaSyAVBmH_eC98f6GCIpHZJ8B_y40TuoIjXOg"
+    value: "YOUR_FIREBASE_OR_GOOGLE_API_KEY"
     availability:
       - BUILD
       - RUNTIME

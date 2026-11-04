@@ -42,7 +42,6 @@ const DEFAULT_MODULE_ACCESS = {
   platform_admin: {
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -59,7 +58,6 @@ const DEFAULT_MODULE_ACCESS = {
   owner: {
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -76,7 +74,6 @@ const DEFAULT_MODULE_ACCESS = {
   admin: {
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -93,7 +90,6 @@ const DEFAULT_MODULE_ACCESS = {
   engineer: {
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -115,7 +111,6 @@ const DEFAULT_MODULE_ACCESS = {
   installer: {
     pciResolution: false,
     cbrsManagement: false,
-    acsManagement: false,
     hssManagement: false,
     coverageMap: true,    // Can view sites for installation
     inventory: true,      // Can check out/return equipment
@@ -138,7 +133,6 @@ const DEFAULT_MODULE_ACCESS = {
   helpdesk: {
     pciResolution: false,
     cbrsManagement: false,
-    acsManagement: true,
     hssManagement: false,
     coverageMap: true,
     inventory: true,
@@ -156,7 +150,6 @@ const DEFAULT_MODULE_ACCESS = {
     // Customer support - portal management only
     pciResolution: false,
     cbrsManagement: false,
-    acsManagement: false,
     hssManagement: false,
     coverageMap: false,
     inventory: false,
@@ -174,7 +167,6 @@ const DEFAULT_MODULE_ACCESS = {
   viewer: {
     pciResolution: true,   // Read-only
     cbrsManagement: true,  // Read-only
-    acsManagement: true,   // Read-only
     hssManagement: true,   // Read-only
     coverageMap: true,     // Read-only
     inventory: true,       // Read-only
@@ -199,7 +191,6 @@ const DEFAULT_MODULE_ACCESS = {
   sales: {
     pciResolution: false,
     cbrsManagement: false,
-    acsManagement: false,
     hssManagement: false,
     coverageMap: true,     // Can view coverage map for sales presentations
     inventory: true,       // Can view inventory availability
@@ -360,7 +351,6 @@ async function getModuleAccess(role, tenantId) {
     const tenant = await Tenant.findById(tenantId).lean();
     const features = tenant?.settings?.features || {};
 
-    if (features.acs === false) baseAccess.acsManagement = false;
     if (features.hss === false) baseAccess.hssManagement = false;
     if (features.pci === false) baseAccess.pciResolution = false;
     if (features.helpDesk === false) baseAccess.helpDesk = false;

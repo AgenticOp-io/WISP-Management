@@ -51,6 +51,7 @@ ui-debug.log
 !apphosting*.yaml
 !firestore.*.json
 !cloudbuild.json
+!**/google-services.json.example
 gcloud-key*.json
 service-account*.json
 *-service-account.json
@@ -88,9 +89,20 @@ coverage/
 *.tar.gz
 *.tar.bz2
 *.rar
+*.apk
+*.aab
+
+# Mobile Firebase config (contains API keys) — keep local only
+**/google-services.json
+!**/google-services.json.example
+**/GoogleService-Info.plist
+!**/GoogleService-Info.plist.example
 
 # TypeScript
 *.tsbuildinfo
 
 # Misc
 .eslintcache
+
+# Chrysalis generated output
+.chrysalis/

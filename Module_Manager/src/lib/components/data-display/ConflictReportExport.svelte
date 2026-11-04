@@ -1,14 +1,11 @@
 <script lang="ts">
   import { reportGenerator, type ConflictReport } from '$lib/reportGenerator';
   import type { Cell, PCIConflict } from '$lib/pciMapper';
-  import NokiaConfig from '../acs/NokiaConfig.svelte';
 
   export let cells: Cell[] = [];
   export let conflicts: PCIConflict[] = [];
   export let recommendations: string[] = [];
   
-  let showNokiaConfig = false;
-
   let report: ConflictReport | null = null;
   let isGenerating = false;
 
@@ -104,9 +101,6 @@
         <button class="export-button pdf" on:click={exportToPDF}>
           📋 Export PDF
         </button>
-        <button class="export-button nokia" on:click={() => showNokiaConfig = true}>
-          📻 Nokia XML
-        </button>
       </div>
       
       <div class="report-details">
@@ -144,9 +138,6 @@
     </div>
   {/if}
 </div>
-
-<!-- Nokia Export Modal -->
-<NokiaConfig bind:visible={showNokiaConfig} />
 
 <style>
   .export-panel {

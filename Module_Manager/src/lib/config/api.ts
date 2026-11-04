@@ -62,11 +62,25 @@ export const API_CONFIG = {
 } as const;
 
 /**
+ * Chimera / GCE gateway: same-origin `/api/*` (proxied by chimera), not Firebase apiProxy.
+ * Set at build time via `VITE_CHRYSALIS_SAME_ORIGIN_API=1` (see Chrysalis `wisp-cwl-client-build.mjs`).
+ */
+export function usesChrysalisSameOriginApi(): boolean {
+  return (
+    typeof import.meta.env !== 'undefined' &&
+    String(import.meta.env?.VITE_CHRYSALIS_SAME_ORIGIN_API ?? '') === '1'
+  );
+}
+
+/**
  * Build URL for the apiProxy Cloud Function. Firebase Hosting rewrites to apiProxy can drop the path on POST,
  * causing 404 on same-origin `/api/tenants`. Use the function URL with `?path=` (same pattern as notificationService).
  */
 export function getApiProxyRequestUrl(path: string): string {
   const p = path.startsWith('/') ? path : `/${path}`;
+  if (usesChrysalisSameOriginApi()) {
+    return p;
+  }
   const proxyBase = API_CONFIG.CLOUD_FUNCTIONS.API_PROXY;
   if (typeof window === 'undefined' || !proxyBase) {
     return p;
@@ -107,13 +121,25 @@ export function getAdminApiRequest(suffix: string): { url: string; logicalPath: 
 }
 
 /**
- * Get API URL for a specific service
+ * Full URL for an API path: direct GCE (VITE_BACKEND_URL) or apiProxy / same-origin.
+ */
+export function resolveApiRequestUrl(logicalPath: string): string {
+  const path = logicalPath.startsWith('/') ? logicalPath : `/${logicalPath}`;
+  const direct = getBackendDirectBase();
+  if (direct) return `${direct}${path}`;
+  return getApiProxyRequestUrl(path);
+}
+
+/**
+ * Resolve API base for a service: direct GCE (VITE_BACKEND_URL) or same-origin /api (Hosting + apiProxy).
  */
 export function getApiUrl(service?: keyof typeof API_CONFIG.PATHS): string {
-  if (service) {
-    return API_CONFIG.PATHS[service];
+  const path = service ? API_CONFIG.PATHS[service] : API_CONFIG.BASE;
+  const direct = getBackendDirectBase();
+  if (direct) {
+    return `${direct}${path}`;
   }
-  return API_CONFIG.BASE;
+  return path;
 }
 
 /**

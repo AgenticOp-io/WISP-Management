@@ -8,7 +8,6 @@ export interface TenantModuleConfig {
   enabledModules: {
     pciResolution: boolean;
     cbrsManagement: boolean;
-    acsManagement: boolean;
     hssManagement: boolean;
     coverageMap: boolean;
     inventory: boolean;
@@ -50,7 +49,6 @@ export const DEFAULT_TENANT_CONFIG: TenantModuleConfig = {
   enabledModules: {
     pciResolution: true,
     cbrsManagement: true,
-    acsManagement: true,
     hssManagement: true,
     coverageMap: true,
     inventory: true,
@@ -84,8 +82,7 @@ export const SUBSCRIPTION_TIERS = {
     enabledModules: {
       pciResolution: true,
       cbrsManagement: false,
-      acsManagement: true,
-      hssManagement: false,
+        hssManagement: false,
       coverageMap: true,
       inventory: true,
       distributedEpc: false,
@@ -112,8 +109,7 @@ export const SUBSCRIPTION_TIERS = {
     enabledModules: {
       pciResolution: true,
       cbrsManagement: true,
-      acsManagement: true,
-      hssManagement: true,
+        hssManagement: true,
       coverageMap: true,
       inventory: true,
       distributedEpc: false,
@@ -140,8 +136,7 @@ export const SUBSCRIPTION_TIERS = {
     enabledModules: {
       pciResolution: true,
       cbrsManagement: true,
-      acsManagement: true,
-      hssManagement: true,
+        hssManagement: true,
       coverageMap: true,
       inventory: true,
       distributedEpc: true,
@@ -168,8 +163,7 @@ export const SUBSCRIPTION_TIERS = {
     enabledModules: {
       pciResolution: true,
       cbrsManagement: true,
-      acsManagement: true,
-      hssManagement: true,
+        hssManagement: true,
       coverageMap: true,
       inventory: true,
       distributedEpc: true,

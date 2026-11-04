@@ -27,6 +27,10 @@ This repository supports **one fixed organization** per deployment while keeping
 For a full test site with seeded data and Hosting deploy steps, see [docs/deployment/DEMO_SITE.md](../deployment/DEMO_SITE.md).  
 For fixed logins, isolation, feature expectations, and reset policy, see [docs/deployment/DEMO_RUNBOOK.md](../deployment/DEMO_RUNBOOK.md).
 
+## Single-use fork (simple login)
+
+For a dedicated branch and email/password-only login UI, see [docs/single-tenant-fork/README.md](../single-tenant-fork/README.md) and `npm run build:single-use` in `Module_Manager`.
+
 ## Multitenant again
 
 See [docs/multitenant-fork/README.md](../multitenant-fork/README.md) and [MULTITENANT_RESTORATION.md](../multitenant-fork/MULTITENANT_RESTORATION.md).

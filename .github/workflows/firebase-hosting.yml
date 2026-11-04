@@ -81,7 +81,7 @@ jobs:
           fi
           echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-sa.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-sa.json" >> "$GITHUB_ENV"
-          firebase deploy --only hosting --project ${{ env.FIREBASE_PROJECT_ID }} --non-interactive
+          firebase deploy --only hosting:landing --project ${{ env.FIREBASE_PROJECT_ID }} --non-interactive
 
       - name: Deployment summary
         run: |
